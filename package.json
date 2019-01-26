@@ -1,7 +1,7 @@
 {
   "name": "polyaes",
   "version": "1.0.0",
-  "description": "Encrypt and decrypt data with AES-256 GCM, compatible with PHP's openssl_encrypt() and Python's PyCryptodome",
+  "description": "Encrypt and decrypt data with AES-256 GCM; compatible with PHP's openssl_encrypt() and Python's PyCryptodome.",
   "main": "index.js",
   "scripts": {
     "build": "npx babel --presets=@babel/preset-env node/PolyAES.js --out-file index.js",
