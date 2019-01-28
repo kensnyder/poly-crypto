@@ -1,6 +1,5 @@
 const PolyAES = require('../../index.js').default;
 const expect = require('chai').expect;
-const forge = require('node-forge');
 
 const keyUpper = 'C639A572E14D5075C526FDDD43E4ECF6B095EA17783D32EF3D2710AF9F359DD4';
 const keyLower = 'c639a572e14d5075c526fddd43e4ecf6b095ea17783d32ef3d2710af9f359dd4';
@@ -50,6 +49,7 @@ describe('PolyAES.withKey', () => {
 		const decrypted = PolyAES.withKey(keyLower).decrypt(encrypted);
 		expect(decrypted).to.equal(data);
 
+		console.log('encrypted ', encrypted);
 		const encrypted2 = PolyAES.withKey(keyLower).encrypt(data);
 		const decrypted2 = PolyAES.withKey(keyMixed).decrypt(encrypted2);
 		expect(decrypted2).to.equal(data);

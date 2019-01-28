@@ -124,26 +124,24 @@ var PolyAES =
 					key: '_utf8ToBin',
 					value: function _utf8ToBin(data) {
 						if (typeof Buffer !== 'undefined') {
-							// node
-							return Buffer.from(data, 'utf8').toString('binary');
-						} else if (typeof TextEncoder !== 'undefined') {
-							// modern browsers
-							var encoder = new TextEncoder();
-							var buf = encoder.encode(data);
-							var bin = '';
-							buf.forEach(function(i) {
-								bin += String.fromCharCode(i);
-							});
-							return bin;
-						} else {
+							// 	// node
+							// 	return Buffer.from(data, 'utf8').toString('binary');
+							// } else if (typeof TextEncoder !== 'undefined') {
+							// 	// modern browsers
+							// 	const encoder = new TextEncoder();
+							// 	const buf = encoder.encode(data);
+							// 	let bin = '';
+							// 	buf.forEach(function(i) {
+							// 		bin += String.fromCharCode(i);
+							// 	});
+							// 	return bin;
+							// } else {
 							// slower but vanilla js
-							var escstr = encodeURIComponent(str);
-
-							var _bin = escstr.replace(/%([0-9A-F]{2})/gi, function(_, hex) {
+							var escstr = encodeURIComponent(data);
+							var bin = escstr.replace(/%([0-9A-F]{2})/gi, function($0, hex) {
 								return String.fromCharCode(parseInt(hex, 16));
 							});
-
-							return _bin;
+							return bin;
 						}
 					},
 					/**
@@ -173,8 +171,8 @@ var PolyAES =
 							return decoder.decode(Uint8Array.from(arr));
 						} else {
 							// slower but vanilla js
-							var escstr = binstr.replace(/(.)/g, function(m, p) {
-								var code = p
+							var escstr = data.replace(/./g, function(char) {
+								var code = char
 									.charCodeAt(0)
 									.toString(16)
 									.toUpperCase();

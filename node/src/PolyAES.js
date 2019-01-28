@@ -104,8 +104,8 @@ export default class PolyAES {
 			return bin;
 		} else {
 			// slower but vanilla js
-			const escstr = encodeURIComponent(str);
-			const bin = escstr.replace(/%([0-9A-F]{2})/gi, function(_, hex) {
+			const escstr = encodeURIComponent(data);
+			const bin = escstr.replace(/%([0-9A-F]{2})/gi, function($0, hex) {
 				return String.fromCharCode(parseInt(hex, 16));
 			});
 			return bin;
@@ -133,8 +133,8 @@ export default class PolyAES {
 			return decoder.decode(Uint8Array.from(arr));
 		} else {
 			// slower but vanilla js
-			const escstr = binstr.replace(/(.)/g, function(m, p) {
-				let code = p
+			const escstr = data.replace(/./g, function(char) {
+				let code = char
 					.charCodeAt(0)
 					.toString(16)
 					.toUpperCase();

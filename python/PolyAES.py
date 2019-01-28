@@ -21,39 +21,6 @@ class PolyAES(object):
         decrypted = PolyAES.withPassword(password, salt).decrypt(encrypted)
     """
 
-    @staticmethod
-    def withKey(hexKey):
-        """Return new PolyAES instance with the given key
-
-        Args:
-            hexKey (string): The 256-bit key in hexadecimal (should be 64 characters)
-
-        Returns:
-            PolyAES
-        """
-        if (!re.match('^[A-F0-9]{64}$', hexKey, flags=re.I)):
-            raise Exception('PolyAES: key must be 64-character hexadecimal string.')
-        binKey = hexKey.decode('hex')
-        return PolyAES(binKey)
-
-    @staticmethod
-    def withPassword(password, salt, iterations=10000):
-        """Return new Crypto instance with the given user-supplied password
-
-        Args:
-            password (string): The password from the user
-            salt (string): An application secret
-            numIterations (int): The number of iterations for the PBKDF2 hash. Defaults to 10000.
-
-        Returns:
-            PolyAES
-	    """
-	    if (len(salt) < 8):
-	        Error('PolyAES: salt must be 8+ characters.')
-        bytes = 32
-        binKey = PBKDF2(password, salt, bytes, numIterations)
-        return PolyAES(binKey)
-
     def encrypt(self, data):
         """Encrypt the given data
 
@@ -62,7 +29,7 @@ class PolyAES(object):
 
         Returns:
             string: The value encrypted and base64 encoded
-	    """
+        """
         mode = AES.MODE_GCM
         iv = Random.new().read(128 / 8)
         cipher = AES.new(self._key, mode, iv)
@@ -97,3 +64,34 @@ class PolyAES(object):
     def __init__(self, binKey):
         """Create using a binary key"""
         self._key = binKey
+
+def withKey(hexKey):
+    """Return new PolyAES instance with the given key
+
+    Args:
+        hexKey (string): The 256-bit key in hexadecimal (should be 64 characters)
+
+    Returns:
+        PolyAES
+    """
+    if (re.match('^[A-F0-9]{64}$', hexKey, flags=re.I) is None):
+        raise Exception('PolyAES: key must be 64-character hexadecimal string.')
+    binKey = hexKey.decode('hex')
+    return PolyAES(binKey)
+
+def withPassword(password, salt, iterations=10000):
+    """Return new Crypto instance with the given user-supplied password
+
+    Args:
+        password (string): The password from the user
+        salt (string): An application secret
+        numIterations (int): The number of iterations for the PBKDF2 hash. Defaults to 10000.
+
+    Returns:
+        PolyAES
+    """
+    if (len(salt) < 8):
+        Error('PolyAES: salt must be 8+ characters.')
+    bytes = 32
+    binKey = PBKDF2(password, salt, bytes, numIterations)
+    return PolyAES(binKey)

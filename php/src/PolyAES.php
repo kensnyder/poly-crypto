@@ -1,6 +1,6 @@
 <?php
 
-namespace PolyAES;
+namespace PolyCrypto;
 
 /**
  * Service for encrypting and decrypting data with openssl
@@ -89,7 +89,7 @@ class PolyAES {
 	 * PolyAES constructor
 	 * @param string $binKey  The 265-bit key in binary
 	 */
-	protected function __construct(string $binKey) {
+	public function __construct(string $binKey) {
 		$this->_key = $binKey;
 	}
 

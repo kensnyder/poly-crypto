@@ -15,8 +15,10 @@
   },
   "autoload": {
     "psr-0": {
-      "PolyAES": "php/src/"
+      "PolyCrypto": "php/src/"
     }
+  },
+  "require-dev": {
+    "kahlan/kahlan": "4.5.0"
   }
 }
-
