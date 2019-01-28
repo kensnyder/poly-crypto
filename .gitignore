@@ -5,7 +5,7 @@ node_modules
 vendor
 
 # Python
-# *.pyc
+*.pyc
 __pycache__
 
 # IDEs
