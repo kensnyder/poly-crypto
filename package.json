@@ -4,8 +4,8 @@
   "description": "Encrypt and decrypt data with AES-256 GCM; compatible with PHP's openssl_encrypt() and Python's PyCryptodome.",
   "main": "index.js",
   "scripts": {
-    "build": "npx babel --presets=@babel/preset-env node/PolyAES.js --out-file index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dist": "npx babel --presets=@babel/preset-env node/src/PolyAES.js --out-file index.js",
+    "test": "npx mocha node/tests/*.spec.js"
   },
   "keywords": [
     "encryption",
@@ -31,6 +31,9 @@
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.3.1"
+    "@babel/preset-env": "^7.3.1",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "prettier": "^1.16.1"
   }
 }

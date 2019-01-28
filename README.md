@@ -20,6 +20,8 @@ pip install poly-aes
 #### With Encryption Key
 
 ```php
+use PolyAES/PolyAES;
+
 // store hexKey in a secure parameter store
 $hexKey = '64-char hex encoded string from secure param store';
 $encrypted = PolyAES::withKey($hexKey)->encrypt($data);
@@ -29,6 +31,8 @@ $decrypted = PolyAES::withKey($hexKey)->decrypt($encrypted);
 #### With Password and Salt
 
 ```php
+use PolyAES/PolyAES;
+
 $password = 'User-supplied password';
 // store salt in a secure parameter store
 $salt = 'System-supplied salt 8+ characters long';
@@ -88,4 +92,4 @@ decrypted = PolyAES.withPassword(password, salt).decrypt(encrypted)
 
 ## License
 
-[ISC](https://opensource.org/licenses/ISC)
+Open Source, under the [ISC](https://opensource.org/licenses/ISC) License.

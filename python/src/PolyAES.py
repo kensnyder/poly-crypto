@@ -1,4 +1,5 @@
 import base64
+import re
 from Crypto import Random
 from Crypto.Cipher import AES
 from Crypto.Protocol.KDF import PBKDF2
@@ -30,6 +31,8 @@ class PolyAES(object):
         Returns:
             PolyAES
         """
+        if (!re.match('^[A-F0-9]{64}$', hexKey, flags=re.I)):
+            raise Exception('PolyAES: key must be 64-character hexadecimal string.')
         binKey = hexKey.decode('hex')
         return PolyAES(binKey)
 
@@ -45,6 +48,8 @@ class PolyAES(object):
         Returns:
             PolyAES
 	    """
+	    if (len(salt) < 8):
+	        Error('PolyAES: salt must be 8+ characters.')
         bytes = 32
         binKey = PBKDF2(password, salt, bytes, numIterations)
         return PolyAES(binKey)

@@ -1,16 +1,22 @@
 {
-    "name": "kensnyder/poly-aes",
-    "description": "Encrypt and decrypt data with AES-256 GCM, compatible with Node's node-forge and Python's PyCryptodome",
-    "type": "library",
-    "license": "ISC",
-    "authors": [
-        {
-            "name": "Ken Snyder",
-            "email": "kendsnyder@gmail.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {
-        "php": ">=7.1.0"
+  "name": "kensnyder/poly-aes",
+  "description": "Encrypt and decrypt data with AES-256 GCM, compatible with Node's node-forge and Python's PyCryptodome",
+  "type": "library",
+  "license": "ISC",
+  "authors": [
+   {
+      "name": "Ken Snyder",
+      "email": "kendsnyder@gmail.com"
     }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.1.0"
+  },
+  "autoload": {
+    "psr-0": {
+      "PolyAES": "php/src/"
+    }
+  }
 }
+
