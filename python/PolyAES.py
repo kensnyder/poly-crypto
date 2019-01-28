@@ -79,7 +79,7 @@ def withKey(hexKey):
     binKey = hexKey.decode('hex')
     return PolyAES(binKey)
 
-def withPassword(password, salt, iterations=10000):
+def withPassword(password, salt, numIterations=10000):
     """Return new Crypto instance with the given user-supplied password
 
     Args:

@@ -32,6 +32,7 @@ a different salt for each piece of data.
 #### With Encryption Key
 
 ```php
+require_once('vendor/autoload.php');
 use PolyCrypto/PolyAES;
 
 // store hexKey in a secure parameter store
@@ -43,6 +44,7 @@ $decrypted = PolyAES::withKey($hexKey)->decrypt($encrypted);
 #### With Password and Salt
 
 ```php
+require_once('vendor/autoload.php');
 use PolyCrypto/PolyAES;
 
 $password = 'User-supplied password';
