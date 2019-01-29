@@ -1,1 +1,2 @@
 pycryptodome==3.7.3
+py-bcrypt==0.4

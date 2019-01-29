@@ -4,8 +4,9 @@
   "description": "Encrypt and decrypt data with AES-256 GCM; compatible with PHP's openssl_encrypt() and Python's PyCryptodome.",
   "main": "index.js",
   "scripts": {
-    "dist": "npx babel --presets=@babel/preset-env node/src/PolyAES.js --out-file index.js",
-    "test": "npx mocha node/tests/*.spec.js"
+    "dist": "npx babel --presets=@babel/preset-env node/src/* --out-file index.js",
+    "test": "npx mocha node/tests/*.spec.js",
+    "test-all": "./vendor/bin/kahlan --spec=php/tests && npm test && pytest"
   },
   "keywords": [
     "encryption",
@@ -36,6 +37,7 @@
   "author": "Ken Snyder",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "node-forge": "^0.7.6"
   },
   "devDependencies": {

@@ -14,7 +14,7 @@ import forge from 'node-forge';
  * const encrypted = PolyAES.withPassword(password, salt).encrypt(data);
  * const decrypted = PolyAES.withPassword(password, salt).decrypt(encrypted);
  */
-export default class PolyAES {
+export class PolyAES {
 	/**
 	 * Static function to return new Crypto instance
 	 * @param {String} hexKey  The 256-bit key in hexadecimal (should be 64 characters)
@@ -76,9 +76,6 @@ export default class PolyAES {
 		decipher.start({ iv, tag });
 		decipher.update(forge.util.createBuffer(ciphertext));
 		const ok = decipher.finish();
-		if (!ok) {
-			console.log('failed to decrypt ' + data);
-		}
 		return ok ? this._binToUtf8(decipher.output.data) : false;
 	}
 

@@ -1,4 +1,4 @@
-const PolyAES = require('../../index.js').default;
+const { PolyAES } = require('../../index.js');
 const expect = require('chai').expect;
 
 const password = 'The quick brown fox jumped over the lazy dog';

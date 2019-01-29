@@ -2,7 +2,7 @@
 
 require_once(__DIR__ . '/../src/PolyAES.php');
 
-use PolyAES\PolyAES;
+use PolyCrypto\PolyAES;
 
 describe('PolyAES::withKey', function() {
 

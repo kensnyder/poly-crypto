@@ -1,4 +1,4 @@
-# PolyAES
+# poly-crypto
 
 Encrypt and decrypt data with AES-256 GCM; interoperable with NodeJS, PHP 7.1+, and Python.
 
@@ -107,6 +107,9 @@ decrypted = PolyAES.withPassword(password, salt).decrypt(encrypted)
 ## Run unit tests
 
 ```bash
+# test all languages
+npm run test-all
+
 # PHP
 ./vendor/bin/kahlan --spec=php/tests
 

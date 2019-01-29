@@ -9,9 +9,12 @@ setup(
     url = 'https://github.com/kensnyder/poly-aes',
     py_modules=['poly-aes'],
     install_requires=[
-        'PyCryptodome'
+        'pycryptodome==3.7.3',
+        'py-bcrypt==0.4'
     ],
+    namespace_packages=['PolyCrypto'],
     entry_points='''
-        
+        [PolyCrypto.PolyAES]
+        [PolyCrypto.PolyBcrypt]
     ''',
 )

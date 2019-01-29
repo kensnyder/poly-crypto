@@ -3,7 +3,7 @@
 Object.defineProperty(exports, '__esModule', {
 	value: true,
 });
-exports.default = void 0;
+exports.PolyAES = void 0;
 
 var _nodeForge = _interopRequireDefault(require('node-forge'));
 
@@ -105,11 +105,6 @@ var PolyAES =
 						});
 						decipher.update(_nodeForge.default.util.createBuffer(ciphertext));
 						var ok = decipher.finish();
-
-						if (!ok) {
-							console.log('failed to decrypt ' + data);
-						}
-
 						return ok ? this._binToUtf8(decipher.output.data) : false;
 					},
 					/**
@@ -124,24 +119,26 @@ var PolyAES =
 					key: '_utf8ToBin',
 					value: function _utf8ToBin(data) {
 						if (typeof Buffer !== 'undefined') {
-							// 	// node
-							// 	return Buffer.from(data, 'utf8').toString('binary');
-							// } else if (typeof TextEncoder !== 'undefined') {
-							// 	// modern browsers
-							// 	const encoder = new TextEncoder();
-							// 	const buf = encoder.encode(data);
-							// 	let bin = '';
-							// 	buf.forEach(function(i) {
-							// 		bin += String.fromCharCode(i);
-							// 	});
-							// 	return bin;
-							// } else {
-							// slower but vanilla js
-							var escstr = encodeURIComponent(data);
-							var bin = escstr.replace(/%([0-9A-F]{2})/gi, function($0, hex) {
-								return String.fromCharCode(parseInt(hex, 16));
+							// node
+							return Buffer.from(data, 'utf8').toString('binary');
+						} else if (typeof TextEncoder !== 'undefined') {
+							// modern browsers
+							var encoder = new TextEncoder();
+							var buf = encoder.encode(data);
+							var bin = '';
+							buf.forEach(function(i) {
+								bin += String.fromCharCode(i);
 							});
 							return bin;
+						} else {
+							// slower but vanilla js
+							var escstr = encodeURIComponent(data);
+
+							var _bin = escstr.replace(/%([0-9A-F]{2})/gi, function($0, hex) {
+								return String.fromCharCode(parseInt(hex, 16));
+							});
+
+							return _bin;
 						}
 					},
 					/**
@@ -256,4 +253,67 @@ var PolyAES =
 		return PolyAES;
 	})();
 
-exports.default = PolyAES;
+exports.PolyAES = PolyAES;
+('use strict');
+
+Object.defineProperty(exports, '__esModule', {
+	value: true,
+});
+exports.PolyBcrypt = void 0;
+
+var _bcryptjs = _interopRequireDefault(require('bcryptjs'));
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError('Cannot call a class as a function');
+	}
+}
+
+function _defineProperties(target, props) {
+	for (var i = 0; i < props.length; i++) {
+		var descriptor = props[i];
+		descriptor.enumerable = descriptor.enumerable || false;
+		descriptor.configurable = true;
+		if ('value' in descriptor) descriptor.writable = true;
+		Object.defineProperty(target, descriptor.key, descriptor);
+	}
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+	if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+	if (staticProps) _defineProperties(Constructor, staticProps);
+	return Constructor;
+}
+
+var PolyBcrypt =
+	/*#__PURE__*/
+	(function() {
+		function PolyBcrypt() {
+			_classCallCheck(this, PolyBcrypt);
+		}
+
+		_createClass(PolyBcrypt, null, [
+			{
+				key: 'hash',
+				value: function hash(password) {
+					// example output:
+					// $2a$10$Smzv/blYQbJBp8v8Wk26uuXEFXSeyjvGsx3VBzZ1zPgXg/Nx9GDuy
+					return _bcryptjs.default.hashSync(password);
+				},
+			},
+			{
+				key: 'verify',
+				value: function verify(password, hash) {
+					return _bcryptjs.default.compareSync(password, hash);
+				},
+			},
+		]);
+
+		return PolyBcrypt;
+	})();
+
+exports.PolyBcrypt = PolyBcrypt;
