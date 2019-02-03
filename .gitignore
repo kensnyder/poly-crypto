@@ -3,8 +3,8 @@
 
 # JavaScript
 node_modules
-demo/dist
-demo/.cache
+node/demo/dist
+node/demo/.cache
 
 # PHP
 vendor
