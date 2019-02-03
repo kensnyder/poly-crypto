@@ -1,8 +1,13 @@
 import base64
 import re
+import os
 from Crypto import Random
 from Crypto.Cipher import AES
 from Crypto.Protocol.KDF import PBKDF2
+
+KEY_FORMAT_ERROR = 'PolyAES: key must be 64-character hexadecimal string.'
+
+SALT_SIZE_ERROR = 'PolyAES: salt must be 8+ characters.'
 
 class PolyAES(object):
     """Service for encrypting and decrypting data with openssl
@@ -25,10 +30,10 @@ class PolyAES(object):
         """Encrypt the given data
 
         Args:
-            data (string): The string to encrypt
+            data (str): The string to encrypt
 
         Returns:
-            string: The value encrypted and base64 encoded
+            str: The value encrypted and base64 encoded
         """
         mode = AES.MODE_GCM
         iv = Random.new().read(128 / 8)
@@ -41,12 +46,12 @@ class PolyAES(object):
         """Decrypt the given data
 
         Args:
-	       data (string): Data encrypted with AES-256 GCM mode
+	       data (str): Data encrypted with AES-256 GCM mode
            note: The first 16 characters must be the binary IV
 	       note: The second 16 characters must be the binary GCM tag
 
         Returns:
-            string
+            str
         """
         mode = AES.MODE_GCM
         bytes = base64.b64decode(data)
@@ -69,13 +74,13 @@ def withKey(hexKey):
     """Return new PolyAES instance with the given key
 
     Args:
-        hexKey (string): The 256-bit key in hexadecimal (should be 64 characters)
+        hexKey (str): The 256-bit key in hexadecimal (should be 64 characters)
 
     Returns:
         PolyAES
     """
     if (re.match('^[A-F0-9]{64}$', hexKey, flags=re.I) is None):
-        raise Exception('PolyAES: key must be 64-character hexadecimal string.')
+        raise Exception(KEY_FORMAT_ERROR)
     binKey = hexKey.decode('hex')
     return PolyAES(binKey)
 
@@ -83,15 +88,37 @@ def withPassword(password, salt, numIterations=10000):
     """Return new Crypto instance with the given user-supplied password
 
     Args:
-        password (string): The password from the user
-        salt (string): An application secret
+        password (str): The password from the user
+        salt (str): An application secret
         numIterations (int): The number of iterations for the PBKDF2 hash. Defaults to 10000.
 
     Returns:
         PolyAES
     """
     if (len(salt) < 8):
-        Error('PolyAES: salt must be 8+ characters.')
+        Error(SALT_SIZE_ERROR)
     bytes = 32
     binKey = PBKDF2(password, salt, bytes, numIterations)
     return PolyAES(binKey)
+
+def generateKey(length=64):
+    """Generate key to use with PolyAES.withKey()
+
+    Args:
+        length (int): The character length of the key
+
+    Returns:
+        string: The key in hexadecimal
+	"""
+    return os.urandom(length / 2).encode('hex')
+
+def generateSalt(length=64):
+    """Generate salt to use with PolyAES.withPassword()
+
+    Args:
+        length (int): The character length of the salt
+
+    Returns:
+        string: The salt in hexadecimal
+	"""
+    return os.urandom(length / 2).encode('hex')

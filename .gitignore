@@ -1,5 +1,10 @@
+# Mac
+.DS_Store
+
 # JavaScript
 node_modules
+demo/dist
+demo/.cache
 
 # PHP
 vendor

@@ -4,7 +4,7 @@ require_once(__DIR__ . '/../src/PolyAES.php');
 
 use PolyCrypto\PolyAES;
 
-describe('PolyAES::withKey', function() {
+describe('PolyAES::withKey()', function() {
 
 	$keyUpper = 'C639A572E14D5075C526FDDD43E4ECF6B095EA17783D32EF3D2710AF9F359DD4';
 	$keyLower = 'c639a572e14d5075c526fddd43e4ecf6b095ea17783d32ef3d2710af9f359dd4';
@@ -66,3 +66,63 @@ describe('PolyAES::withKey', function() {
 		expect($data)->toBe($sheSellsDecrypted);
 	});
 });
+
+describe('PolyAes::withPassword()', function() {
+
+	$password = 'The quick brown fox jumped over the lazy dog';
+	$salt = 'Four score and seven years ago';
+	$sheSellsDecrypted = 'She sells sea shells by the sea shore';
+	$sheSellsEncrypted = 'GiObuZIKnYW7L9Jx2goDVGF1FH+COmCEGqk+T3gwZMeXi+ZMQbyOPN8GOwtuIEPS5YDAear0j9lNmOqxrr/iM7nfBAya';
+
+	it('should throw exception if salt is too short', function() use($password) {
+		try {
+			PolyAes::withPassword($password, 'hello w');
+			expect(false)->toBe(true);
+		} catch (Exception $e) {
+			expect($e)->toBeAnInstanceOf('Exception');
+		}
+	});
+
+	it('should encrypt ok', function() use($password, $salt) {
+		$crypto = PolyAes::withPassword($password, $salt);
+		$data = 'I love encryption';
+		$encrypted = $crypto->encrypt($data);
+		$decrypted = $crypto->decrypt($encrypted);
+		expect($decrypted)->toBe($data);
+	});
+
+	it('should handle unicode', function() use($password, $salt) {
+		$crypto = PolyAes::withPassword($password, $salt);
+		$data = 'I ❤️ encryption';
+		$encrypted = $crypto->encrypt($data);
+		$decrypted = $crypto->decrypt($encrypted);
+		expect($decrypted)->toBe($data);
+	});
+
+	it('should encrypt differently every time', function() {
+		$password = 'Pack my box with five dozen liquor jugs';
+		$salt = 'Eat more chicken';
+		$crypto = PolyAes::withPassword($password, $salt);
+		$data = 'If I only had a dollar for every string I\'ve encrypted...';
+		$encrypted1 = $crypto->encrypt($data);
+		$encrypted2 = $crypto->encrypt($data);
+		expect($encrypted1)->not->toEqual($encrypted2);
+	});
+
+	it('should interoperate with Python and PHP', function() use($password, $salt, $sheSellsEncrypted, $sheSellsDecrypted) {
+		$data = PolyAes::withPassword($password, $salt)->decrypt($sheSellsEncrypted);
+		expect($data)->toBe($sheSellsDecrypted);
+	});
+
+	it('should generate salt of proper length', function() {
+		$salt = PolyAes::generateSalt(64);
+		expect($salt)->toHaveLength(64);
+	});
+
+	it('should generate different salt each time', function() {
+		$salt1 = PolyAes::generateSalt(64);
+		$salt2 = PolyAes::generateSalt(64);
+		expect($salt1)->not->toEqual($salt2);
+	});
+});
+

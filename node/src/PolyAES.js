@@ -1,4 +1,5 @@
 import forge from 'node-forge';
+import { binToHex } from './binToHex.js';
 
 /**
  * Service for encrypting and decrypting data with AES-256 GCM
@@ -22,7 +23,7 @@ export class PolyAES {
 	 */
 	static withKey(hexKey) {
 		if (!/^[A-F0-9]{64}$/i.test(hexKey)) {
-			throw new Error('PolyAES: key must be 64-character hexadecimal string.');
+			throw new Error(PolyAES.KEY_FORMAT_ERROR);
 		}
 		const binKey = forge.util.hexToBytes(hexKey);
 		return new PolyAES(binKey);
@@ -37,7 +38,7 @@ export class PolyAES {
 	 */
 	static withPassword(password, salt, numIterations = 10000) {
 		if (String(salt).length < 8) {
-			throw new Error('PolyAES: salt must be 8+ characters.');
+			throw new Error(PolyAES.SALT_SIZE_ERROR);
 		}
 		const bytes = 32;
 		const binKey = forge.pkcs5.pbkdf2(password, salt, numIterations, bytes);
@@ -77,6 +78,24 @@ export class PolyAES {
 		decipher.update(forge.util.createBuffer(ciphertext));
 		const ok = decipher.finish();
 		return ok ? this._binToUtf8(decipher.output.data) : false;
+	}
+
+	/**
+	 * Generate a key to use with PolyAES.withKey()
+	 * @param {Number} length  The character length of the key
+	 * @return {String}  The key in hexadecimal
+	 */
+	static generateKey(length = 64) {
+		return binToHex(forge.random.getBytesSync(length / 2));
+	}
+
+	/**
+	 * Generate salt to use with PolyAES.withPassword()
+	 * @param {Number} length  The character length of the salt
+	 * @return {String}  The salt in hexadecimal
+	 */
+	static generateSalt(length = 64) {
+		return binToHex(forge.random.getBytesSync(length / 2));
 	}
 
 	/**
@@ -152,3 +171,7 @@ export class PolyAES {
 		this._key = binKey;
 	}
 }
+
+PolyAES.KEY_FORMAT_ERROR = 'PolyAES: key must be 64-character hexadecimal string.';
+
+PolyAES.SALT_SIZE_ERROR = 'PolyAES: salt must be 8+ characters.';

@@ -1,18 +1,48 @@
 import bcrypt
+import math
 
-password = 'abc'
-# Hash a password for the first time, with a randomly-generated salt
-hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+"""
+PolyBcrypt - to hash and verify passwords using bcrypt
+"""
 
-print 'hashed', hashed
+LENGTH_ERROR = 'PolyBcrypt: password must be 72 bytes or less'
 
-# gensalt's log_rounds parameter determines the complexity.
-# The work factor is 2**log_rounds, and the default is 12
-hashed = bcrypt.hashpw(password, bcrypt.gensalt(10))
+COST_ERROR = 'PolyBcrypt: cost must be between 4 and 31'
 
-# Check that an unencrypted password matches one that has
-# previously been hashed
-if bcrypt.hashpw(password, hashed) == hashed:
-        print "It matches"
-else:
-        print "It does not match"
+def hash(password, cost=10):
+    """Hash a password using bcrypt
+
+    Args:
+        password (str): The password to check
+        cost (int): The compute cost (a logarithmic factor) between 4 and 31
+
+    Returns:
+        str: The hash string
+
+    Raises:
+        Exception if password is too long or cost is out of range
+    """
+    if (len(password) > 72):
+		raise Exception(LENGTH_ERROR)
+    cost = int(cost)
+    if (math.isnan(cost) or cost < 4 or cost > 31):
+        raise Exception(COST_ERROR)
+    salt = bcrypt.gensalt(cost)
+    return bcrypt.hashpw(password, salt)
+
+def verify(password, hash):
+    """Verify that the given password matches the given hash
+
+    Args:
+        password (str): The password to check
+        hash (str): The hash the password should match
+
+    Returns:
+        boolean: True if the password is correct
+
+    Raises:
+        Exception if password is too long
+    """
+    if (len(password) > 72):
+		raise Exception(LENGTH_ERROR)
+    return bcrypt.hashpw(password, hash) == hash

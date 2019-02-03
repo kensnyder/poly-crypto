@@ -7,6 +7,8 @@ exports.PolyAES = void 0;
 
 var _nodeForge = _interopRequireDefault(require('node-forge'));
 
+var _binToHex = require('./binToHex.js');
+
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -108,15 +110,21 @@ var PolyAES =
 						return ok ? this._binToUtf8(decipher.output.data) : false;
 					},
 					/**
+					 * Generate a key to use with PolyAES.withKey()
+					 * @param {Number} length  The character length of the key
+					 * @return {String}  The key in hexadecimal
+					 */
+				},
+				{
+					key: '_utf8ToBin',
+
+					/**
 					 * Convert a JavaScript string into binary for encryption
 					 * @param {String} data  The regular JavaScript string
 					 * @return {String}
 					 * @see https://coolaj86.com/articles/javascript-and-unicode-strings-how-to-deal/
 					 * @private
 					 */
-				},
-				{
-					key: '_utf8ToBin',
 					value: function _utf8ToBin(data) {
 						if (typeof Buffer !== 'undefined') {
 							// node
@@ -200,9 +208,7 @@ var PolyAES =
 					 */
 					value: function withKey(hexKey) {
 						if (!/^[A-F0-9]{64}$/i.test(hexKey)) {
-							throw new Error(
-								'PolyAES: key must be 64-character hexadecimal string.'
-							);
+							throw new Error(PolyAES.KEY_FORMAT_ERROR);
 						}
 
 						var binKey = _nodeForge.default.util.hexToBytes(hexKey);
@@ -226,7 +232,7 @@ var PolyAES =
 								: 10000;
 
 						if (String(salt).length < 8) {
-							throw new Error('PolyAES: salt must be 8+ characters.');
+							throw new Error(PolyAES.SALT_SIZE_ERROR);
 						}
 
 						var bytes = 32;
@@ -239,6 +245,31 @@ var PolyAES =
 						);
 
 						return new PolyAES(binKey);
+					},
+				},
+				{
+					key: 'generateKey',
+					value: function generateKey() {
+						var length =
+							arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 64;
+						return (0, _binToHex.binToHex)(
+							_nodeForge.default.random.getBytesSync(length / 2)
+						);
+					},
+					/**
+					 * Generate salt to use with PolyAES.withPassword()
+					 * @param {Number} length  The character length of the salt
+					 * @return {String}  The salt in hexadecimal
+					 */
+				},
+				{
+					key: 'generateSalt',
+					value: function generateSalt() {
+						var length =
+							arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 64;
+						return (0, _binToHex.binToHex)(
+							_nodeForge.default.random.getBytesSync(length / 2)
+						);
 					},
 				},
 			]
@@ -254,6 +285,8 @@ var PolyAES =
 	})();
 
 exports.PolyAES = PolyAES;
+PolyAES.KEY_FORMAT_ERROR = 'PolyAES: key must be 64-character hexadecimal string.';
+PolyAES.SALT_SIZE_ERROR = 'PolyAES: salt must be 8+ characters.';
 ('use strict');
 
 Object.defineProperty(exports, '__esModule', {
@@ -267,53 +300,280 @@ function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
 
-function _classCallCheck(instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError('Cannot call a class as a function');
-	}
-}
+/**
+ * Functions to hash and verify passwords using bcrypt
+ */
+var PolyBcrypt = {
+	/**
+	 * Exception message when password is too long
+	 */
+	LENGTH_ERROR: 'PolyBcrypt: password must be 72 bytes or less',
 
-function _defineProperties(target, props) {
-	for (var i = 0; i < props.length; i++) {
-		var descriptor = props[i];
-		descriptor.enumerable = descriptor.enumerable || false;
-		descriptor.configurable = true;
-		if ('value' in descriptor) descriptor.writable = true;
-		Object.defineProperty(target, descriptor.key, descriptor);
-	}
-}
+	/**
+	 * Exception message when compute cost is out of range
+	 */
+	COST_ERROR: 'PolyBcrypt: cost must be between 4 and 31',
 
-function _createClass(Constructor, protoProps, staticProps) {
-	if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-	if (staticProps) _defineProperties(Constructor, staticProps);
-	return Constructor;
-}
+	/**
+	 * Hash a password using bcrypt
+	 * @param {String} password  The password to hash
+	 * @param {Number} cost  The compute cost (a logarithmic factor) between 4 and 31
+	 * @return {String}
+	 * @throws Error  When password is too long or cost is out of range
+	 */
+	hash: function hash(password) {
+		var cost = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
 
-var PolyBcrypt =
-	/*#__PURE__*/
-	(function() {
-		function PolyBcrypt() {
-			_classCallCheck(this, PolyBcrypt);
+		if (password.length > 72) {
+			throw Error(PolyBcrypt.LENGTH_ERROR);
 		}
 
-		_createClass(PolyBcrypt, null, [
-			{
-				key: 'hash',
-				value: function hash(password) {
-					// example output:
-					// $2a$10$Smzv/blYQbJBp8v8Wk26uuXEFXSeyjvGsx3VBzZ1zPgXg/Nx9GDuy
-					return _bcryptjs.default.hashSync(password);
-				},
-			},
-			{
-				key: 'verify',
-				value: function verify(password, hash) {
-					return _bcryptjs.default.compareSync(password, hash);
-				},
-			},
-		]);
+		cost = Number(cost);
 
-		return PolyBcrypt;
-	})();
+		if (isNaN(cost) || cost < 4 || cost > 31) {
+			throw Error(PolyBcrypt.COST_ERROR);
+		}
 
+		var salt = _bcryptjs.default.genSaltSync(cost);
+
+		return _bcryptjs.default.hashSync(password, salt);
+	},
+
+	/**
+	 * Verify that the given password matches the given hash
+	 * @param {String} password  The password to check
+	 * @param {String} hash  The hash the password should match
+	 * @return {Boolean}  True if password is correct
+	 * @throws Error  When password is too long
+	 */
+	verify: function verify(password, hash) {
+		if (password.length > 72) {
+			throw Error(PolyBcrypt.LENGTH_ERROR);
+		}
+
+		return _bcryptjs.default.compareSync(password, hash);
+	},
+};
 exports.PolyBcrypt = PolyBcrypt;
+('use strict');
+
+Object.defineProperty(exports, '__esModule', {
+	value: true,
+});
+exports.PolyHash = void 0;
+
+var _nodeForge = _interopRequireDefault(require('node-forge'));
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+/**
+ * Calculate hashes of strings
+ */
+var PolyHash = {
+	/**
+	 * Calculate the md5 hash of a string
+	 * @param {String} data  The string to digest
+	 * @return {String} The digest in hexadecimal
+	 */
+	md5: function md5(data) {
+		return PolyHash._hash('md5', data);
+	},
+
+	/**
+	 * Calculate the sha1 hash of a string
+	 * @param {String} data  The string to digest
+	 * @return {String} The digest in hexadecimal
+	 */
+	sha1: function sha1(data) {
+		return PolyHash._hash('sha1', data);
+	},
+
+	/**
+	 * Calculate the sha256 hash of a string
+	 * @param {String} data  The string to digest
+	 * @return {String} The digest in hexadecimal
+	 */
+	sha256: function sha256(data) {
+		return PolyHash._hash('sha256', data);
+	},
+
+	/**
+	 * Calculate the sha512 hash of a string
+	 * @param {String} data  The string to digest
+	 * @return {String} The digest in hexadecimal
+	 */
+	sha512: function sha512(data) {
+		return PolyHash._hash('sha512', data);
+	},
+
+	/**
+	 * Private function to calculate hashes for the given algorithm
+	 * @param {String} algo  An algorithm on the forge.md namespace
+	 * @param {String} data  The string to digest
+	 * @return {String} The digest in hexadecimal
+	 * @private
+	 */
+	_hash: function _hash(algo, data) {
+		var md = _nodeForge.default.md[algo].create();
+
+		md.update(data);
+		return md.digest().toHex();
+	},
+};
+exports.PolyHash = PolyHash;
+('use strict');
+
+Object.defineProperty(exports, '__esModule', {
+	value: true,
+});
+exports.PolyPkcs5 = void 0;
+
+var _nodeForge = _interopRequireDefault(require('node-forge'));
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+var PolyPkcs5 = {
+	hash: function hash(password) {
+		var numIterations = 100000;
+
+		var salt = _nodeForge.default.random.getBytesSync(128);
+
+		var key = _nodeForge.default.pkcs5.pbkdf2(password, salt, numIterations, 16);
+
+		return _nodeForge.default.util.bytesToHex(salt) + _nodeForge.default.util.bytesToHex(key);
+	},
+	verify: function verify(password, hash) {
+		var numIterations = 100000;
+
+		var salt = _nodeForge.default.util.hexToBytes(hash.slice(0, 64));
+
+		var key = _nodeForge.default.util.hexToBytes(hash.slice(64));
+
+		var digest = _nodeForge.default.pkcs5.pbkdf2(password, salt, numIterations, 16); // sha256 ?
+
+		return digest === key;
+	},
+};
+exports.PolyPkcs5 = PolyPkcs5;
+('use strict');
+
+Object.defineProperty(exports, '__esModule', {
+	value: true,
+});
+exports.PolyRand = void 0;
+
+var _nodeForge = _interopRequireDefault(require('node-forge'));
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+/**
+ * Methods to generate random strings
+ */
+var PolyRand = {
+	/**
+	 * {String} Error message to throw when symbol list is too big or small
+	 */
+	SYMBOL_LIST_ERROR: 'PolyRand: Symbol list must contain between 2 and 256 characters.',
+
+	/**
+	 * {Array} The list of symbols to use for slug()
+	 */
+	SLUG_SYMBOL_LIST: '0123456789bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ'.split(''),
+
+	/**
+	 * {Array} The list of symbols to use for fax()
+	 */
+	FAX_SYMBOL_LIST: '3467bcdfhjkmnpqrtvwxy'.split(''),
+
+	/**
+	 * Create a string of the given length with random bytes
+	 * @param {Number} length  The desired length
+	 * @return {String}
+	 */
+	bytes: function bytes(length) {
+		return _nodeForge.default.random.getBytesSync(length);
+	},
+
+	/**
+	 * Create a string of the given length with hexidecimal characters
+	 * @param {Number} length  The desired length
+	 * @return {String}
+	 */
+	hex: function hex(length) {
+		return _nodeForge.default.util.bytesToHex(PolyRand.bytes(length / 2));
+	},
+
+	/**
+	 * Create a string of the given length with numbers, letters, but no vowels
+	 * @param {Number} length  The desired length
+	 * @return {String}
+	 */
+	slug: function slug(length) {
+		return PolyRand.string(length, PolyRand.SLUG_SYMBOL_LIST);
+	},
+
+	/**
+	 * Create a string of the given length with numbers and lowercase letters that are unambiguious when written down
+	 * @param {Number} length  The desired length
+	 * @return {String}
+	 */
+	fax: function fax(length) {
+		return PolyRand.string(length, PolyRand.FAX_SYMBOL_LIST);
+	},
+
+	/**
+	 * Create a random string of the given length limited to the given symbols
+	 * @param {Number} length  The desired length
+	 * @param {Array} symbolList  An array of characters to use
+	 * @return {String}
+	 * @throws {Error} if size of symbolList is not between 2 and 256
+	 */
+	string: function string(length, symbolList) {
+		var randomBytes = PolyRand.bytes(length);
+
+		if (!Array.isArray(symbolList) || symbolList.length < 2 || symbolList.length > 256) {
+			throw new Error(PolyRand.SYMBOL_LIST_ERROR);
+		}
+
+		var numSymbols = symbolList.length;
+		var output = '';
+
+		for (var i = 0; i < length; i++) {
+			var ord = randomBytes.charCodeAt(i);
+			output += symbolList[ord % numSymbols];
+		}
+
+		return output;
+	},
+};
+exports.PolyRand = PolyRand;
+('use strict');
+
+Object.defineProperty(exports, '__esModule', {
+	value: true,
+});
+exports.binToHex = binToHex;
+
+/**
+ * Convert a binary string to hexadecimal
+ * @see https://run.perf.zone/view/bin2hex-implementations-1548825552527
+ * @param bin
+ * @return {string}
+ * @private
+ */
+function binToHex(bin) {
+	var output = '';
+
+	for (var i = 0, len = bin.length; i < len; i++) {
+		var hex = bin.charCodeAt(i).toString(16);
+		output += hex.length === 1 ? '0' + hex : hex;
+	}
+
+	return output;
+}
