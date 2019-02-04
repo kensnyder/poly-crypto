@@ -45,18 +45,22 @@ describe('PolyRand.fax()', () => {
 describe('PolyRand.string()', () => {
 	it('should throw error if symbol list is too short', () => {
 		try {
-			PolyRand.string(101, ['a']);
+			PolyRand.string(['a'], 42);
 			expect(false).to.equal(true);
 		} catch (e) {
 			expect(true).to.equal(true);
 		}
 	});
 	it('should return requested size', () => {
-		const hash = PolyRand.string(101, ['a', 'b', 'c']);
+		const hash = PolyRand.string(['a', 'b', 'c'], 101);
 		expect(hash.length).to.equal(101);
 	});
 	it('should return the proper symbol list', () => {
-		const hash = PolyRand.string(200, ['a', 'b', 'c']);
+		const hash = PolyRand.string(['a', 'b', 'c'], 200);
 		expect(hash).to.match(/^[abc]{200}$/i);
+	});
+	it('should handle unicode symbol list', () => {
+		const hash = PolyRand.string(['💻', '🖥️'], 1);
+		expect(hash === '💻' || hash === '🖥️').to.equal(true);
 	});
 });

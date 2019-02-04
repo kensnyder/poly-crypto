@@ -22,7 +22,8 @@
     "rand:bytes": "node ./node/cli/rand.js bytes",
     "rand:hex": "node ./node/cli/rand.js hex",
     "rand:slug": "node ./node/cli/rand.js slug",
-    "rand:fax": "node ./node/cli/rand.js fax"
+    "rand:fax": "node ./node/cli/rand.js fax",
+    "rand:string": "node ./node/cli/rand-string.js"
   },
   "keywords": [
     "encryption",

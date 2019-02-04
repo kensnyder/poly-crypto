@@ -5,17 +5,52 @@
 	<meta name="viewport"
 		  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<script src="demo.js"></script>
+	<script src="assets/demo.js"></script>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-	<title>poly-crypto demo</title>
+	<link rel="stylesheet" href="assets/demo.css">
+	<title>poly-crypto Demo</title>
 </head>
 <body>
 	<main>
+		<h1>poly-crypto Demo</h1>
 		<div>
 			<h2>AES Encryption</h2>
-			<p>
-				PolyAES.withKey("<input type="text" size="64">").encrypt("<input type="text" size="64">")
-			</p>
+			<form onsubmit="return false;">
+				<div class="form-inline function">
+					const cipher = PolyAES.withKey("
+					<span class="input-group">
+						<input type="text" id="aes-key" class="form-control" placeholder="64 character hex string" size="74">
+						<span class="input-group-append">
+							<button class="btn btn-primary" type="button" title="Generate Now" onclick="keygen('aes-key')">Gen</button>
+						</span>
+					</span>
+					")
+				</div>
+				<div class="form-inline function">
+					cipher.encrypt("
+					<span class="input-group">
+						<input type="text" id="aes-key-plaintext" class="form-control" placeholder="Enter a string" size="40">
+						<span class="input-group-append">
+							<button class="btn btn-primary" type="submit" onclick="keyEncrypt()" title="Run">Run</button>
+						</span>
+					</span>
+					")
+				</div>
+				<h3>Output</h3>
+				<pre><code id="aes-key-encrypted">Enter or generate a key, add data and then click "Run."</code></pre>
+				<div class="form-inline function">
+					cipher.decrypt("
+					<span class="input-group">
+						<input type="text" id="aes-key-ciphertext" class="form-control" placeholder="Enter encrypted" size="40">
+						<span class="input-group-append">
+							<button class="btn btn-primary" type="submit" onclick="keyDecrypt()" title="Run">Run</button>
+						</span>
+					</span>
+					")
+				</div>
+				<h3>Output</h3>
+				<pre><code id="aes-key-decrypted">Enter or generate a key, add data and then click "Run."</code></pre>
+			</form>
 		</div>
 	</main>
 </body>

@@ -1,5 +1,4 @@
 import forge from 'node-forge';
-import { binToHex } from './binToHex.js';
 
 /**
  * Service for encrypting and decrypting data with AES-256 GCM
@@ -86,7 +85,7 @@ export class PolyAES {
 	 * @return {String}  The key in hexadecimal
 	 */
 	static generateKey(length = 64) {
-		return binToHex(forge.random.getBytesSync(length / 2));
+		return forge.util.bytesToHex(forge.random.getBytesSync(length / 2));
 	}
 
 	/**
@@ -95,7 +94,7 @@ export class PolyAES {
 	 * @return {String}  The salt in hexadecimal
 	 */
 	static generateSalt(length = 64) {
-		return binToHex(forge.random.getBytesSync(length / 2));
+		return forge.util.bytesToHex(forge.random.getBytesSync(length / 2));
 	}
 
 	/**

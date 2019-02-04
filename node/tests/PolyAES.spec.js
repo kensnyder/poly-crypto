@@ -10,7 +10,7 @@ describe('PolyAES.withKey()', () => {
 	const sheSellsEncrypted =
 		'dOdjhDQkzxa+RS5HuafKdiUC9N20Hd58w1A26RVfanhvAgI5OkHDoWihExGDI1xNZ8d4eH3a0JzQZeGh9BTfNTEatrLr';
 
-	it('should throw exception if key is not 64-char hex', () => {
+	it('should throw Error if key is not 64-char hex', () => {
 		try {
 			PolyAES.withKey('xyz');
 			expect(false).to.equal(true);

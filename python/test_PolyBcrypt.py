@@ -11,4 +11,8 @@ def test_should_produce_60_char_string():
 
 def test_should_verify_a_php_hash():
     doesMatch = PolyBcrypt.verify('abc', fromPhp)
-    assert doesMatch is true    
+    assert doesMatch is True
+
+def test_should_verify_a_js_hash():
+    doesMatch = PolyBcrypt.verify('abc', fromJs)
+    assert doesMatch is True

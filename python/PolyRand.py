@@ -41,7 +41,7 @@ def slug(length):
     Returns:
         str: The bytes as a string
     """
-	return string(length, SLUG_SYMBOL_LIST)
+	return string(SLUG_SYMBOL_LIST, length)
 
 def fax(length):
     """Create a string of the given length with numbers and lowercase letters that are unambiguious when written down
@@ -52,9 +52,9 @@ def fax(length):
     Returns:
         str: The bytes as a string
     """
-	return string(length, FAX_SYMBOL_LIST)
+	return string(FAX_SYMBOL_LIST, length)
 
-def string(length, symbolList):
+def string(symbolList, length):
     """Create a string of the given length with random bytes
 
     Args:

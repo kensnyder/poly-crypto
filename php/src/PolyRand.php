@@ -46,7 +46,7 @@ class PolyRand {
 	 * @return string
 	 */
 	public static function slug(int $length) : string {
-		return static::string($length, static::SLUG_SYMBOL_LIST);
+		return static::string(static::SLUG_SYMBOL_LIST, $length);
 	}
 
 	/**
@@ -56,17 +56,17 @@ class PolyRand {
 	 * @return string
 	 */
 	public static function fax(int $length) : string {
-		return static::string($length, static::FAX_SYMBOL_LIST);
+		return static::string(static::FAX_SYMBOL_LIST, $length);
 	}
 
 	/**
 	 * Create a random string of the given length limited to the given symbols
-	 * @param int length  The desired length
 	 * @param array symbolList  An array of characters to use
+	 * @param int length  The desired length
 	 * @throws \Exception if size of $symbolList is not between 2 and 256
 	 * @return string
 	 */
-	public static function string(int $length, array $symbolList) : string {
+	public static function string(array $symbolList, int $length) : string {
 		$randomBytes = static::bytes($length);
 		$numSymbols = count($symbolList);
 		if (!is_array($symbolList) || $numSymbols < 2 || $numSymbols > 256) {

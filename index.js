@@ -7,8 +7,6 @@ exports.PolyAES = void 0;
 
 var _nodeForge = _interopRequireDefault(require('node-forge'));
 
-var _binToHex = require('./binToHex.js');
-
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -252,7 +250,7 @@ var PolyAES =
 					value: function generateKey() {
 						var length =
 							arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 64;
-						return (0, _binToHex.binToHex)(
+						return _nodeForge.default.util.bytesToHex(
 							_nodeForge.default.random.getBytesSync(length / 2)
 						);
 					},
@@ -267,7 +265,7 @@ var PolyAES =
 					value: function generateSalt() {
 						var length =
 							arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 64;
-						return (0, _binToHex.binToHex)(
+						return _nodeForge.default.util.bytesToHex(
 							_nodeForge.default.random.getBytesSync(length / 2)
 						);
 					},
@@ -515,7 +513,7 @@ var PolyRand = {
 	 * @return {String}
 	 */
 	slug: function slug(length) {
-		return PolyRand.string(length, PolyRand.SLUG_SYMBOL_LIST);
+		return PolyRand.string(PolyRand.SLUG_SYMBOL_LIST, length);
 	},
 
 	/**
@@ -524,17 +522,17 @@ var PolyRand = {
 	 * @return {String}
 	 */
 	fax: function fax(length) {
-		return PolyRand.string(length, PolyRand.FAX_SYMBOL_LIST);
+		return PolyRand.string(PolyRand.FAX_SYMBOL_LIST, length);
 	},
 
 	/**
 	 * Create a random string of the given length limited to the given symbols
-	 * @param {Number} length  The desired length
 	 * @param {Array} symbolList  An array of characters to use
+	 * @param {Number} length  The desired length
 	 * @return {String}
 	 * @throws {Error} if size of symbolList is not between 2 and 256
 	 */
-	string: function string(length, symbolList) {
+	string: function string(symbolList, length) {
 		var randomBytes = PolyRand.bytes(length);
 
 		if (!Array.isArray(symbolList) || symbolList.length < 2 || symbolList.length > 256) {
@@ -553,27 +551,3 @@ var PolyRand = {
 	},
 };
 exports.PolyRand = PolyRand;
-('use strict');
-
-Object.defineProperty(exports, '__esModule', {
-	value: true,
-});
-exports.binToHex = binToHex;
-
-/**
- * Convert a binary string to hexadecimal
- * @see https://run.perf.zone/view/bin2hex-implementations-1548825552527
- * @param bin
- * @return {string}
- * @private
- */
-function binToHex(bin) {
-	var output = '';
-
-	for (var i = 0, len = bin.length; i < len; i++) {
-		var hex = bin.charCodeAt(i).toString(16);
-		output += hex.length === 1 ? '0' + hex : hex;
-	}
-
-	return output;
-}
