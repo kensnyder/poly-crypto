@@ -45,4 +45,9 @@ def verify(password, hash):
     """
     if (len(password) > 72):
 		raise Exception(LENGTH_ERROR)
+    # Note that versions $2x$ and $2y$ are peculiar to PHP and equivalent to $2a$
+    # See https://en.wikipedia.org/wiki/Bcrypt#Versioning_history    
+    version = hash[0:4]
+    if (version == '$2x$' or version == '$2y$'):
+        hash = '$2a$' + hash[4:]
     return bcrypt.hashpw(password, hash) == hash

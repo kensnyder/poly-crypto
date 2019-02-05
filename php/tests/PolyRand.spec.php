@@ -62,4 +62,8 @@ describe('PolyRand::string()', function() {
 		$hash = PolyRand::string(['a', 'b', 'c'], 200);
 		expect($hash)->toMatch('/^[abc]{200}$/i');
 	});
+	it('should handle unicode symbol list', function() {
+		$hash = PolyRand::string(['💻', '🖥️'], 1);
+		expect($hash === '💻' || $hash === '🖥️')->toEqual(true);
+	});
 });

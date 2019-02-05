@@ -12,6 +12,7 @@ vendor
 # Python
 *.pyc
 __pycache__
+.tox
 
 # IDEs
 .idea

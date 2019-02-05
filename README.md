@@ -4,7 +4,8 @@
 
 ## Project Goals
 
-1. Encryption and hashing functions for common app features that use security best practices
+1. Two-way symmetric encryption with a key or with password and salt
+1. Password hashing
 1. APIs that work exactly the same on NodeJS, PHP 7.1, and Python
 
 ## Installation
@@ -24,13 +25,13 @@ pip install poly-crypto
 
 | Section | NodeJS/Python | PHP |
 | --- | --- | --- |
-| [Encrypt with key](#encrypt-with-key) | PolyAES.withKey(key).encrypt(data) | PolyAES::withKey($key)->encrypt($data) | 
-| [Decrypt with key](#decrypt-with-key) | PolyAES.withKey(key).decrypt(encrypted) | PolyAES::withKey($key)->decrypt($encrypted) | 
-| [Encrypt with password](#encrypt-with-password) | PolyAES.withPassword(password, salt).encrypt(data) | PolyAES::withPassword($password, $salt)->encrypt($data) |
-| [Decrypt with password](#decrypt-with-password) | PolyAES.withPassword(password, salt).decrypt(encrypted) | PolyAES::withPassword($password, $salt)->decrypt($encrypted) |
-| [Bcrypt hash](#hash-password) | PolyBcrypt.hash(password) | PolyBcrypt::hash($password) |
-| [Bcrypt verify](#verify-password) | PolyBcrypt.verify(password, hash) | PolyBcrypt::verify($password, $hash) |
-| [Hash functions](#hash-function) | PolyHash.sha256(data) | PolyHash::sha256($data) |
+| [Encrypt with key](#encrypt-and-decrypt-with-key) | PolyAES.withKey(key).encrypt(data) | PolyAES::withKey($key)->encrypt($data) | 
+| [Decrypt with key](#encrypt-and-decrypt-with-key) | PolyAES.withKey(key).decrypt(encrypted) | PolyAES::withKey($key)->decrypt($encrypted) | 
+| [Encrypt with password](#encrypt-and-decrypt-with-password) | PolyAES.withPassword(password, salt).encrypt(data) | PolyAES::withPassword($password, $salt)->encrypt($data) |
+| [Decrypt with password](#encrypt-and-decrypt-with-password) | PolyAES.withPassword(password, salt).decrypt(encrypted) | PolyAES::withPassword($password, $salt)->decrypt($encrypted) |
+| [Bcrypt hash](#password-hashing) | PolyBcrypt.hash(password) | PolyBcrypt::hash($password) |
+| [Bcrypt verify](#password-hashing) | PolyBcrypt.verify(password, hash) | PolyBcrypt::verify($password, $hash) |
+| [Digest functions](#digest-functions) | PolyHash.sha256(data) | PolyHash::sha256($data) |
 | [Random functions](#random-functions) | PolyRand.slug(length) | PolyRand::slug($length) |
 
 ## Table of Contents
@@ -38,13 +39,12 @@ pip install poly-crypto
 1. [Technology choices](#technology-choices)
 	1. [AES-255 GCM](#aes-256-gcm)
 	1. [Bcrypt](#bcrypt)
-	1. [Hashing](#hashing)
 1. [Use Cases](#use-cases)	
 1. [AES encryption](#aes-encryption)
 	1. [Encrypt and decrypt with key](#encrypt-and-decrypt-with-key)
 	1. [Encrypt and decrypt with password](#encrypt-and-decrypt-with-password)
 1. [Password hashing](#password-hashing) 
-1. [Hash functions](#hash-functions)
+1. [Digest functions](#digest-functions)
 1. [Random functions](#random-functions)
 1. [Performance](#performance)
 1. [Command line utilities](#command-line-utilities)	
@@ -66,11 +66,6 @@ one another's encrypted strings: Python's PyCryptodome, PHP 7.1's openssl_* func
 As of January 2019, the industry standard for hashing passwords is bcrypt. These 3 libraries can hash and
 verify one another's hashes: Python's bcrypt, PHP's password_hash function, npm's bcrypt-js
 
-### Hashing
-
-When one-way hashing is needed, sha256 and sha512 are good bets. PolyHash also provides md5 and sha1
-hashing functions for working with existing systems that use those.
-
 ### urandom
 
 Cryptographic randomness is hard. These 3 sources can provide good randomness: Python's os.urandom()
@@ -86,15 +81,25 @@ poly-crypto's basic use cases:
 | 2.  | Encrypt data for a user that he or she can decrypt later | User-supplied password & system salt | base-64 encoded string | PolyAES.withPassword(password, salt).encrypt(data) |
 | 3.  | Hash passwords with bcrypt | Password string | bcrypt hash | PolyBcrypt.hash(password) |
 | 4.  | Check if a password matches the given bcrypt hash | Password string & bcrypt hash | True if password matches | PolyBcrypt.verify(password, hash) |
-| 5.  | Generate digest hashes (e.g. sha256) | String data | digest string | PolyHash.sha256(data) |
+| 5.  | Generate digests (e.g. sha256) | String data | digest string | PolyHash.sha256(data) |
 | 6.  | Generate random slugs | number of characters | a string with random characters | PolyRand.slug(numCharacters) |
 
 ## Misuse
 
-1. poly-crypto modules are not meant to be used to encrypt entire files. You'll
-want to use a fast encryption approach that is beyond the scope of this project.
-1.  If you store encryption keys or user passwords in plain text, encryption
-will be useless.
+1. **File encryption.** poly-crypto modules are not meant to be used to encrypt 
+entire files. You'll want to use a C-based library that is designed to encrypt
+large amounts of data quickly. File encryption considerations:
+	1. poly-crypto is not fast for large files.
+	1. AES-256 GCM encryption can be parallelized for faster processing
+	of large chunks of data.
+	1. You don't want the extra overhead or storage space of base64 encoding
+	that poly-crypto uses.
+1. **Streaming data.** PolyAES is not designed to encrypt streaming data.	
+1. **Secure key storage.** If you store encryption keys or user passwords in 
+plain text, encryption will not provide protection.
+1. **Digests for passwords.** Do not use md5 or any sha* digest for hashing
+passwords, even if you use salt. PolyBcrypt is the only poly-crypto module 
+designed for hashing passwords.
 
 ### AES Encryption
 
@@ -131,6 +136,12 @@ use PolyCrypto\PolyAES;
 $hexKey = '64-char hex encoded string from secure param store';
 $encrypted = PolyAES::withKey($hexKey)->encrypt($data);
 $decrypted = PolyAES::withKey($hexKey)->decrypt($encrypted);
+```
+
+OpenSSL on commmand line:
+```bash
+openssl enc -aes-256-gcm  openssl dgst -md5 -hex ~/abc.txt
+
 ```
 
 #### Encrypt and decrypt with password
@@ -209,7 +220,7 @@ $hash = PolyBcrypt::hash($password);
 $isCorrect = PolyBcrypt::verify($password, $hash);
 ```
 
-### Hash functions 
+### Digest functions 
 
 Standard one-way digest functions.
 
@@ -244,6 +255,12 @@ PolyHash::sha512($data);
 PolyHash::sha256($data);
 PolyHash::sha1($data);
 PolyHash::md5($data);
+```
+
+OpenSSL on commmand line:
+```bash
+openssl dgst -md5 -hex $filepath | cut -c-32
+
 ```
 
 ### Random functions
@@ -338,11 +355,11 @@ npx hash:md5 $string
 npx hash:sha1 $string
 npx hash:sha256 $string
 npx hash:sha512 $string
-npx hash:bytes $length
-npx hash:hex $length
-npx hash:slug $length
-npx hash:fax $length
-npx hash:string $length $symbolString
+npx rand:bytes $length
+npx rand:hex $length
+npx rand:slug $length
+npx rand:fax $length
+npx rand:string $length $symbolString
 ```
 
 ## Browser usage
