@@ -13,6 +13,7 @@ vendor
 *.pyc
 __pycache__
 .tox
+ENV
 
 # IDEs
 .idea

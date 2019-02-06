@@ -358,7 +358,7 @@ exports.PolyBcrypt = PolyBcrypt;
 Object.defineProperty(exports, '__esModule', {
 	value: true,
 });
-exports.PolyHash = void 0;
+exports.PolyDigest = void 0;
 
 var _nodeForge = _interopRequireDefault(require('node-forge'));
 
@@ -367,60 +367,60 @@ function _interopRequireDefault(obj) {
 }
 
 /**
- * Calculate hashes of strings
+ * Calculate digests of strings
  */
-var PolyHash = {
+var PolyDigest = {
 	/**
-	 * Calculate the md5 hash of a string
+	 * Calculate the md5 digest of a string
 	 * @param {String} data  The string to digest
 	 * @return {String} The digest in hexadecimal
 	 */
 	md5: function md5(data) {
-		return PolyHash._hash('md5', data);
+		return PolyDigest._digest('md5', data);
 	},
 
 	/**
-	 * Calculate the sha1 hash of a string
+	 * Calculate the sha1 digest of a string
 	 * @param {String} data  The string to digest
 	 * @return {String} The digest in hexadecimal
 	 */
 	sha1: function sha1(data) {
-		return PolyHash._hash('sha1', data);
+		return PolyDigest._digest('sha1', data);
 	},
 
 	/**
-	 * Calculate the sha256 hash of a string
+	 * Calculate the sha256 digest of a string
 	 * @param {String} data  The string to digest
 	 * @return {String} The digest in hexadecimal
 	 */
 	sha256: function sha256(data) {
-		return PolyHash._hash('sha256', data);
+		return PolyDigest._digest('sha256', data);
 	},
 
 	/**
-	 * Calculate the sha512 hash of a string
+	 * Calculate the sha512 digest of a string
 	 * @param {String} data  The string to digest
 	 * @return {String} The digest in hexadecimal
 	 */
 	sha512: function sha512(data) {
-		return PolyHash._hash('sha512', data);
+		return PolyDigest._digest('sha512', data);
 	},
 
 	/**
-	 * Private function to calculate hashes for the given algorithm
+	 * Private function to calculate digests for the given algorithm
 	 * @param {String} algo  An algorithm on the forge.md namespace
 	 * @param {String} data  The string to digest
 	 * @return {String} The digest in hexadecimal
 	 * @private
 	 */
-	_hash: function _hash(algo, data) {
+	_digest: function _digest(algo, data) {
 		var md = _nodeForge.default.md[algo].create();
 
 		md.update(data);
 		return md.digest().toHex();
 	},
 };
-exports.PolyHash = PolyHash;
+exports.PolyDigest = PolyDigest;
 ('use strict');
 
 Object.defineProperty(exports, '__esModule', {

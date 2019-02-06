@@ -3,12 +3,12 @@
 namespace PolyCrypto;
 
 /**
- * Calculate hashes of strings
+ * Calculate digests of strings
  */
-class PolyHash {
+class PolyDigest {
 
 	/**
-	 * Calculate the md5 hash of a string
+	 * Calculate the md5 digest of a string
 	 * @param string $data  The string to digest
 	 * @return string  The digest in hexadecimal
 	 */
@@ -17,7 +17,7 @@ class PolyHash {
 	}
 
 	/**
-	 * Calculate the sha1 hash of a string
+	 * Calculate the sha1 digest of a string
 	 * @param string $data  The string to digest
 	 * @return string  The digest in hexadecimal
 	 */
@@ -26,7 +26,7 @@ class PolyHash {
 	}
 
 	/**
-	 * Calculate the sha256 hash of a string
+	 * Calculate the sha256 digest of a string
 	 * @param string $data  The string to digest
 	 * @return string  The digest in hexadecimal
 	 */
@@ -35,7 +35,7 @@ class PolyHash {
 	}
 
 	/**
-	 * Calculate the sha512 hash of a string
+	 * Calculate the sha512 digest of a string
 	 * @param string $data  The string to digest
 	 * @return string  The digest in hexadecimal
 	 */

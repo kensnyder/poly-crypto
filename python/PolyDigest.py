@@ -1,11 +1,11 @@
 import hashlib
 
 """
-Calculate hashes of strings
+Calculate digests of strings
 """
 
 def md5(data):
-    """Calculate the md5 hash of a string
+    """Calculate the md5 digest of a string
     Args:
         data (str): The string to digest
 
@@ -15,7 +15,7 @@ def md5(data):
     return hashlib.md5(data).hexdigest()
 
 def sha1(data):
-    """Calculate the sha1 hash of a string
+    """Calculate the sha1 digest of a string
     Args:
         data (str): The string to digest
 
@@ -25,7 +25,7 @@ def sha1(data):
     return hashlib.sha1(data).hexdigest()
 
 def sha256(data):
-    """Calculate the sha256 hash of a string
+    """Calculate the sha256 digest of a string
     Args:
         data (str): The string to digest
 
@@ -35,7 +35,7 @@ def sha256(data):
     return hashlib.sha256(data).hexdigest()
 
 def sha512(data):
-    """Calculate the sha512 hash of a string
+    """Calculate the sha512 digest of a string
     Args:
         data (str): The string to digest
 

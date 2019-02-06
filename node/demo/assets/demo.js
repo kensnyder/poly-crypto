@@ -1,6 +1,6 @@
 import { PolyAES } from '../../src/PolyAES.js';
 import { PolyBcrypt } from '../../src/PolyBcrypt.js';
-import { PolyHash } from '../../src/PolyHash.js';
+import { PolyDigest } from '../../src/PolyDigest.js';
 import { PolyRand } from '../../src/PolyRand.js';
 
 window.keygen = function(inputId) {
