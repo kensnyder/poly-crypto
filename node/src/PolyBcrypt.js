@@ -21,7 +21,7 @@ export const PolyBcrypt = {
 	 * @return {String}
 	 * @throws Error  When password is too long or cost is out of range
 	 */
-	hash(password, cost = 10) {
+	hash(password, cost = 13) {
 		if (password.length > 72) {
 			throw Error(PolyBcrypt.LENGTH_ERROR);
 		}

@@ -9,7 +9,7 @@ LENGTH_ERROR = 'PolyBcrypt: password must be 72 bytes or less'
 
 COST_ERROR = 'PolyBcrypt: cost must be between 4 and 31'
 
-def hash(password, cost=10):
+def hash(password, cost=13):
     """Hash a password using bcrypt
 
     Args:

@@ -24,7 +24,7 @@ class PolyBcrypt {
 	 * @return string
 	 * @throws \Exception  When password is too long or cost is out of range
 	 */
-	public static function hash(string $password, int $cost=10) : string {
+	public static function hash(string $password, int $cost=13) : string {
 		if (strlen($password) > 72) {
 			throw new \Exception(static::LENGTH_ERROR);
 		}
