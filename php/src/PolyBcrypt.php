@@ -48,4 +48,25 @@ class PolyBcrypt {
 		return password_verify($password, $hash);
 	}
 
+	/**
+	 * Get information about the given hash including version and cost
+	 * @param string $hash  The hash to parse
+	 * @return \stdClass
+	 */
+	public static function info(string $hash) : \stdClass {
+		preg_match('/^(\$..?\$)(\d\d)\$(.{22})(.{31})$/', $hash, $match);
+		if (empty($match)) {
+			return (object) [
+				'valid' => false,
+			];
+		}
+		return (object) [
+			'valid' => true,
+			'version' => $match[1],
+			'cost' => intval($match[2]),
+			'salt' => $match[3],
+			'hash' => $match[4],
+		];
+	}
+
 }

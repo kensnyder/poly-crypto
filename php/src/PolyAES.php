@@ -25,8 +25,31 @@ class PolyAES {
 	 */
 	protected $_key;
 
+	/**
+	 * The current encoding type. One of: base64, hex, bin
+	 * @var string
+	 */
+	protected $_encoding;
+
+	/**
+	 * Exception message when key is not in correct format
+	 */
 	const KEY_FORMAT_ERROR = 'PolyAES: key must be 64-character hexadecimal string.';
+
+	/**
+	 * Exception message when salt is too short
+	 */
 	const SALT_SIZE_ERROR = 'PolyAES: salt must be 8+ characters.';
+
+	/**
+	 * Exception message when encoding is set to an invalid value
+	 */
+	const ENCODING_ERROR = 'PolyAES: encoding must be base64, hex, or bin.';
+
+	/**
+	 * Default value for $this->_encoding
+	 */
+	const DEFAULT_ENCODING = 'base64';
 
 	/**
 	 * Return new PolyAES instance with the given key
@@ -60,6 +83,75 @@ class PolyAES {
 	}
 
 	/**
+	 * Instantiate using a binary key
+	 * @param string $binKey  The 265-bit key in binary
+	 * @throws \Exception  If PolyAES::DEFAULT_ENCODING is invalid
+	 */
+	public function __construct(string $binKey) {
+		$this->_key = $binKey;
+		$this->setEncoding(static::DEFAULT_ENCODING);
+	}
+
+	/**
+	 * After encryption, use base64 encoding, hexadecimal or binary
+	 * @param string $encoding  One of: base64, hex, bin
+	 * @return PolyAES
+	 * @throws \Exception  If $encoding is invalid
+	 * @chainable
+	 */
+	public function setEncoding(string $encoding) : PolyAES {
+		$allowed = ['base64', 'hex', 'bin'];
+		if (!in_array($encoding, $allowed)) {
+			throw new \Exception(static::ENCODING_ERROR);
+		}
+		$this->_encoding = $encoding;
+		return $this;
+	}
+
+	/**
+	 * Get the current encoding type
+	 * @return string  One of: base64, hex, bin
+	 */
+	public function getEncoding() : string {
+		return $this->_encoding;
+	}
+
+	/**
+	 * Encode encrypted bytes using the current encoding
+	 * @param string $bin  The ciphertext in binary
+	 * @return string  The encoded ciphertext
+	 * @private
+	 */
+	protected function _binToStr(string $bin) : string {
+		if ($this->_encoding === 'bin') {
+			return $bin;
+		}
+		elseif ($this->_encoding === 'base64') {
+			return base64_encode($bin);
+		}
+		elseif ($this->_encoding === 'hex') {
+			return bin2hex($bin);
+		}
+	}
+
+	/**
+	 * Decode encrypted bytes using the current encoding
+	 * @param string $str  The encoded ciphertext
+	 * @return string  The ciphertext in binary
+	 */
+	protected function _strToBin(string $str) : string {
+		if ($this->_encoding === 'bin') {
+			return $str;
+		}
+		elseif ($this->_encoding === 'base64') {
+			return base64_decode($str);
+		}
+		elseif ($this->_encoding === 'hex') {
+			return hex2bin($str);
+		}
+	}
+
+	/**
 	 * Encrypt the given data
 	 * @param string data  The string to encrypt
 	 * @return string
@@ -68,7 +160,7 @@ class PolyAES {
 		$mode = 'aes-256-gcm';
 		$iv = openssl_random_pseudo_bytes(128 / 8);
 		$ciphertext = openssl_encrypt($data, $mode, $this->_key, OPENSSL_RAW_DATA, $iv, $tag); // tag is 128 bits or (16 bytes)
-		return base64_encode($iv . $tag . $ciphertext);
+		return $this->_binToStr($iv . $tag . $ciphertext);
 	}
 
 	/**
@@ -80,7 +172,7 @@ class PolyAES {
 	 */
 	public function decrypt(string $data) : string {
 		$mode = 'aes-256-gcm';
-		$bytes = base64_decode($data);
+		$bytes = $this->_strToBin($data);
 		$iv = substr($bytes, 0, 16);
 		$tag = substr($bytes, 16, 16);
 		$ciphertext = substr($bytes, 32);
@@ -104,14 +196,6 @@ class PolyAES {
 	 */
 	public static function generateSalt($length = 64) {
 		return bin2hex(openssl_random_pseudo_bytes($length / 2));
-	}
-
-	/**
-	 * PolyAES constructor
-	 * @param string $binKey  The 265-bit key in binary
-	 */
-	public function __construct(string $binKey) {
-		$this->_key = $binKey;
 	}
 
 }

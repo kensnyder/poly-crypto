@@ -45,6 +45,71 @@ export class PolyAES {
 	}
 
 	/**
+	 * Instantiate using a binary key
+	 * @param {String} binKey  The encryption key in binary
+	 * @throws Error  If PolyAES.DEFAULT_ENCODING is invalid
+	 */
+	constructor(binKey) {
+		this._key = binKey;
+		this.setEncoding(PolyAES.DEFAULT_ENCODING);
+	}
+
+	/**
+	 * After encryption, use base64 encoding, hexadecimal or binary
+	 * @param {String} encoding  One of: base64, hex, bin
+	 * @return {PolyAES}
+	 * @chainable
+	 */
+	setEncoding(encoding) {
+		const allowed = ['base64', 'hex', 'bin'];
+		if (allowed.indexOf(encoding) === -1) {
+			throw new Error(PolyAES.ENCODING_ERROR);
+		}
+		this._encoding = encoding;
+		return this;
+	}
+
+	/**
+	 * Get the current encoding type
+	 * @return {String}  One of: base64, hex, bin
+	 */
+	getEncoding() {
+		return this._encoding;
+	}
+
+	/**
+	 * Encode encrypted bytes using the current encoding
+	 * @param {String} bin  The ciphertext in binary
+	 * @return {String}  The encoded ciphertext
+	 * @private
+	 */
+	_binToStr(bin) {
+		if (this._encoding === 'bin') {
+			return bin;
+		} else if (this._encoding === 'base64') {
+			return forge.util.encode64(bin);
+		} else if (this._encoding === 'hex') {
+			return forge.util.bytesToHex(bin);
+		}
+	}
+
+	/**
+	 * Decode encrypted bytes using the current encoding
+	 * @param {String} str  The encoded ciphertext
+	 * @return {String}  The ciphertext in binary
+	 * @private
+	 */
+	_strToBin(str) {
+		if (this._encoding === 'bin') {
+			return str;
+		} else if (this._encoding === 'base64') {
+			return forge.util.decode64(str);
+		} else if (this._encoding === 'hex') {
+			return forge.util.hexToBytes(str);
+		}
+	}
+
+	/**
 	 * Encrypt the given data
 	 * @param {String} data  The string to encrypt
 	 * @note The first 32 characters of output will be the IV (128 bits in hexadecimal)
@@ -57,7 +122,7 @@ export class PolyAES {
 		cipher.start({ iv, tagLength: 128 });
 		cipher.update(forge.util.createBuffer(this._utf8ToBin(data)));
 		cipher.finish();
-		return forge.util.encode64(iv + cipher.mode.tag.data + cipher.output.data);
+		return this._binToStr(iv + cipher.mode.tag.data + cipher.output.data);
 	}
 
 	/**
@@ -68,7 +133,7 @@ export class PolyAES {
 	 */
 	decrypt(data) {
 		const mode = 'AES-GCM';
-		const bytes = forge.util.decode64(data);
+		const bytes = this._strToBin(data);
 		const iv = bytes.slice(0, 16);
 		const tag = bytes.slice(16, 32);
 		const ciphertext = bytes.slice(32);
@@ -161,16 +226,24 @@ export class PolyAES {
 			return decodeURIComponent(escstr);
 		}
 	}
-
-	/**
-	 * Crypto constructor
-	 * @param {String} binKey  The encryption key in binary
-	 */
-	constructor(binKey) {
-		this._key = binKey;
-	}
 }
 
+/**
+ * Error message when key is not in correct format
+ */
 PolyAES.KEY_FORMAT_ERROR = 'PolyAES: key must be 64-character hexadecimal string.';
 
+/**
+ * Error message when salt is too short
+ */
 PolyAES.SALT_SIZE_ERROR = 'PolyAES: salt must be 8+ characters.';
+
+/**
+ * Error message when encoding is set to an invalid value
+ */
+PolyAES.ENCODING_ERROR = 'PolyAES: encoding must be base64, hex, or bin.';
+
+/**
+ * Default value for this._encoding
+ */
+PolyAES.DEFAULT_ENCODING = 'base64';

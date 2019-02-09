@@ -10,8 +10,10 @@ describe('PolyAES::withKey()', function() {
 	$keyLower = 'c639a572e14d5075c526fddd43e4ecf6b095ea17783d32ef3d2710af9f359dd4';
 	$keyMixed = 'C639a572e14d5075c526fddd43e4ecf6b095ea17783d32ef3d2710af9f359DD4';
 	$key2     = 'E59DD4C639CF6B095EA17783D32EF3D2710ADD43E4F9F3A572E14D5075C526FD';
-	$sheSellsDecrypted = 'She sells sea shells by the sea shore';
-	$sheSellsEncrypted = 'dOdjhDQkzxa+RS5HuafKdiUC9N20Hd58w1A26RVfanhvAgI5OkHDoWihExGDI1xNZ8d4eH3a0JzQZeGh9BTfNTEatrLr';
+	$plaintext = 'abc';
+	$jsCiphertext = 'vXDhlmEg34iqeAconwUj6blYEsZzyZFoHavO7I1FNWUnYus=';
+	$pyCiphertext = 'x+XOkaWvvhpEddwI5bgP7qAGsRm7mxtcJclnoWZmBGOmsi4=';
+	$phpCiphertext = '38yxiaAquwZwqlHX7TWuxBPLoZKsPt4Lb4w6S3f1nLuffSM=';
 
 	it('should throw exception if key is not 64-char hex', function() {
 		try {
@@ -61,9 +63,19 @@ describe('PolyAES::withKey()', function() {
 		expect($decrypted3)->toBe($data);
 	});
 
-	it('should interoperate with Python and PHP', function() use($keyUpper, $sheSellsEncrypted, $sheSellsDecrypted) {
-		$data = PolyAES::withKey($keyUpper)->decrypt($sheSellsEncrypted);
-		expect($data)->toBe($sheSellsDecrypted);
+	it('should decrypt php ciphertext', function() use($keyUpper, $plaintext, $phpCiphertext) {
+		$data = PolyAES::withKey($keyUpper)->decrypt($phpCiphertext);
+		expect($data)->toBe($plaintext);
+	});
+
+	it('should decrypt js ciphertext', function() use($keyUpper, $plaintext, $jsCiphertext) {
+		$data = PolyAES::withKey($keyUpper)->decrypt($jsCiphertext);
+		expect($data)->toBe($plaintext);
+	});
+
+	it('should decrypt python cipertext', function() use($keyUpper, $plaintext, $pyCiphertext) {
+		$data = PolyAES::withKey($keyUpper)->decrypt($pyCiphertext);
+		expect($data)->toBe($plaintext);
 	});
 });
 
@@ -71,8 +83,10 @@ describe('PolyAes::withPassword()', function() {
 
 	$password = 'The quick brown fox jumped over the lazy dog';
 	$salt = 'Four score and seven years ago';
-	$sheSellsDecrypted = 'She sells sea shells by the sea shore';
-	$sheSellsEncrypted = 'GiObuZIKnYW7L9Jx2goDVGF1FH+COmCEGqk+T3gwZMeXi+ZMQbyOPN8GOwtuIEPS5YDAear0j9lNmOqxrr/iM7nfBAya';
+	$plaintext = 'abc';
+	$jsCiphertext = 'eX8GRry2EX1v8dKJAEDl4114AaOLGaBlJyNW9JvLiQ8ZHGk=';
+	$pyCiphertext = 'AH70szpL2yBv6WK4Ig8BJvlyTRCe7N5EYwvY+0Zv427xCck=';
+	$phpCiphertext = '8Qcjp8nNJgiPZIFl5X+qI6E9M/Vej6IurL/y8gdCVMYRhh0=';
 
 	it('should throw exception if salt is too short', function() use($password) {
 		try {
@@ -109,9 +123,19 @@ describe('PolyAes::withPassword()', function() {
 		expect($encrypted1)->not->toEqual($encrypted2);
 	});
 
-	it('should interoperate with Python and PHP', function() use($password, $salt, $sheSellsEncrypted, $sheSellsDecrypted) {
-		$data = PolyAes::withPassword($password, $salt)->decrypt($sheSellsEncrypted);
-		expect($data)->toBe($sheSellsDecrypted);
+	it('should decrypt js ciphertext', function() use($password, $salt, $jsCiphertext, $plaintext) {
+		$data = PolyAes::withPassword($password, $salt)->decrypt($jsCiphertext);
+		expect($data)->toBe($plaintext);
+	});
+
+	it('should decrypt php ciphertext', function() use($password, $salt, $phpCiphertext, $plaintext) {
+		$data = PolyAes::withPassword($password, $salt)->decrypt($phpCiphertext);
+		expect($data)->toBe($plaintext);
+	});
+
+	it('should decrypt python ciphertext', function() use($password, $salt, $pyCiphertext, $plaintext) {
+		$data = PolyAes::withPassword($password, $salt)->decrypt($pyCiphertext);
+		expect($data)->toBe($plaintext);
 	});
 
 	it('should generate salt of proper length', function() {

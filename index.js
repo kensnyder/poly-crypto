@@ -50,18 +50,144 @@ function _createClass(Constructor, protoProps, staticProps) {
 var PolyAES =
 	/*#__PURE__*/
 	(function() {
+		_createClass(PolyAES, null, [
+			{
+				key: 'withKey',
+
+				/**
+				 * Static function to return new Crypto instance
+				 * @param {String} hexKey  The 256-bit key in hexadecimal (should be 64 characters)
+				 * @return {PolyAES}
+				 */
+				value: function withKey(hexKey) {
+					if (!/^[A-F0-9]{64}$/i.test(hexKey)) {
+						throw new Error(PolyAES.KEY_FORMAT_ERROR);
+					}
+
+					var binKey = _nodeForge.default.util.hexToBytes(hexKey);
+
+					return new PolyAES(binKey);
+				},
+				/**
+				 * Return new Crypto instance with the given user-supplied password
+				 * @param {String} password  The password from the user
+				 * @param {String} salt  An application secret salt
+				 * @param {Number} [numIterations=10000]  The number of iterations for the PBKDF2 hash
+				 * @return {PolyAES}
+				 */
+			},
+			{
+				key: 'withPassword',
+				value: function withPassword(password, salt) {
+					var numIterations =
+						arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10000;
+
+					if (String(salt).length < 8) {
+						throw new Error(PolyAES.SALT_SIZE_ERROR);
+					}
+
+					var bytes = 32;
+
+					var binKey = _nodeForge.default.pkcs5.pbkdf2(
+						password,
+						salt,
+						numIterations,
+						bytes
+					);
+
+					return new PolyAES(binKey);
+				},
+				/**
+				 * Instantiate using a binary key
+				 * @param {String} binKey  The encryption key in binary
+				 * @throws Error  If PolyAES.DEFAULT_ENCODING is invalid
+				 */
+			},
+		]);
+
+		function PolyAES(binKey) {
+			_classCallCheck(this, PolyAES);
+
+			this._key = binKey;
+			this.setEncoding(PolyAES.DEFAULT_ENCODING);
+		}
+		/**
+		 * After encryption, use base64 encoding, hexadecimal or binary
+		 * @param {String} encoding  One of: base64, hex, bin
+		 * @return {PolyAES}
+		 * @chainable
+		 */
+
 		_createClass(
 			PolyAES,
 			[
 				{
-					key: 'encrypt',
+					key: 'setEncoding',
+					value: function setEncoding(encoding) {
+						var allowed = ['base64', 'hex', 'bin'];
 
+						if (allowed.indexOf(encoding) === -1) {
+							throw new Error(PolyAES.ENCODING_ERROR);
+						}
+
+						this._encoding = encoding;
+						return this;
+					},
+					/**
+					 * Get the current encoding type
+					 * @return {String}  One of: base64, hex, bin
+					 */
+				},
+				{
+					key: 'getEncoding',
+					value: function getEncoding() {
+						return this._encoding;
+					},
+					/**
+					 * Encode encrypted bytes using the current encoding
+					 * @param {String} bin  The ciphertext in binary
+					 * @return {String}  The encoded ciphertext
+					 * @private
+					 */
+				},
+				{
+					key: '_binToStr',
+					value: function _binToStr(bin) {
+						if (this._encoding === 'bin') {
+							return bin;
+						} else if (this._encoding === 'base64') {
+							return _nodeForge.default.util.encode64(bin);
+						} else if (this._encoding === 'hex') {
+							return _nodeForge.default.util.bytesToHex(bin);
+						}
+					},
+					/**
+					 * Decode encrypted bytes using the current encoding
+					 * @param {String} str  The encoded ciphertext
+					 * @return {String}  The ciphertext in binary
+					 * @private
+					 */
+				},
+				{
+					key: '_strToBin',
+					value: function _strToBin(str) {
+						if (this._encoding === 'bin') {
+							return str;
+						} else if (this._encoding === 'base64') {
+							return _nodeForge.default.util.decode64(str);
+						} else if (this._encoding === 'hex') {
+							return _nodeForge.default.util.hexToBytes(str);
+						}
+					},
 					/**
 					 * Encrypt the given data
 					 * @param {String} data  The string to encrypt
 					 * @note The first 32 characters of output will be the IV (128 bits in hexadecimal)
 					 * @return {String}
 					 */
+				},
+				{
+					key: 'encrypt',
 					value: function encrypt(data) {
 						var mode = 'AES-GCM';
 
@@ -75,9 +201,7 @@ var PolyAES =
 						});
 						cipher.update(_nodeForge.default.util.createBuffer(this._utf8ToBin(data)));
 						cipher.finish();
-						return _nodeForge.default.util.encode64(
-							iv + cipher.mode.tag.data + cipher.output.data
-						);
+						return this._binToStr(iv + cipher.mode.tag.data + cipher.output.data);
 					},
 					/**
 					 * Decrypt the given data
@@ -91,7 +215,7 @@ var PolyAES =
 					value: function decrypt(data) {
 						var mode = 'AES-GCM';
 
-						var bytes = _nodeForge.default.util.decode64(data);
+						var bytes = this._strToBin(data);
 
 						var iv = bytes.slice(0, 16);
 						var tag = bytes.slice(16, 32);
@@ -189,62 +313,9 @@ var PolyAES =
 							return decodeURIComponent(escstr);
 						}
 					},
-					/**
-					 * Crypto constructor
-					 * @param {String} binKey  The encryption key in binary
-					 */
 				},
 			],
 			[
-				{
-					key: 'withKey',
-
-					/**
-					 * Static function to return new Crypto instance
-					 * @param {String} hexKey  The 256-bit key in hexadecimal (should be 64 characters)
-					 * @return {PolyAES}
-					 */
-					value: function withKey(hexKey) {
-						if (!/^[A-F0-9]{64}$/i.test(hexKey)) {
-							throw new Error(PolyAES.KEY_FORMAT_ERROR);
-						}
-
-						var binKey = _nodeForge.default.util.hexToBytes(hexKey);
-
-						return new PolyAES(binKey);
-					},
-					/**
-					 * Return new Crypto instance with the given user-supplied password
-					 * @param {String} password  The password from the user
-					 * @param {String} salt  An application secret salt
-					 * @param {Number} [numIterations=10000]  The number of iterations for the PBKDF2 hash
-					 * @return {PolyAES}
-					 */
-				},
-				{
-					key: 'withPassword',
-					value: function withPassword(password, salt) {
-						var numIterations =
-							arguments.length > 2 && arguments[2] !== undefined
-								? arguments[2]
-								: 10000;
-
-						if (String(salt).length < 8) {
-							throw new Error(PolyAES.SALT_SIZE_ERROR);
-						}
-
-						var bytes = 32;
-
-						var binKey = _nodeForge.default.pkcs5.pbkdf2(
-							password,
-							salt,
-							numIterations,
-							bytes
-						);
-
-						return new PolyAES(binKey);
-					},
-				},
 				{
 					key: 'generateKey',
 					value: function generateKey() {
@@ -273,18 +344,29 @@ var PolyAES =
 			]
 		);
 
-		function PolyAES(binKey) {
-			_classCallCheck(this, PolyAES);
-
-			this._key = binKey;
-		}
-
 		return PolyAES;
 	})();
+/**
+ * Error message when key is not in correct format
+ */
 
 exports.PolyAES = PolyAES;
 PolyAES.KEY_FORMAT_ERROR = 'PolyAES: key must be 64-character hexadecimal string.';
+/**
+ * Error message when salt is too short
+ */
+
 PolyAES.SALT_SIZE_ERROR = 'PolyAES: salt must be 8+ characters.';
+/**
+ * Error message when encoding is set to an invalid value
+ */
+
+PolyAES.ENCODING_ERROR = 'PolyAES: encoding must be base64, hex, or bin.';
+/**
+ * Default value for this._encoding
+ */
+
+PolyAES.DEFAULT_ENCODING = 'base64';
 ('use strict');
 
 Object.defineProperty(exports, '__esModule', {
@@ -320,7 +402,7 @@ var PolyBcrypt = {
 	 * @throws Error  When password is too long or cost is out of range
 	 */
 	hash: function hash(password) {
-		var cost = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+		var cost = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 13;
 
 		if (password.length > 72) {
 			throw Error(PolyBcrypt.LENGTH_ERROR);
@@ -350,6 +432,29 @@ var PolyBcrypt = {
 		}
 
 		return _bcryptjs.default.compareSync(password, hash);
+	},
+
+	/**
+	 * Get information about the given hash including version and cost
+	 * @param {String} hash  The hash to parse
+	 * @return {Object}
+	 */
+	info: function info(hash) {
+		var match = String(hash).match(/^(\$..?\$)(\d\d)\$(.{22})(.{31})$/);
+
+		if (!match) {
+			return {
+				valid: false,
+			};
+		}
+
+		return {
+			valid: true,
+			version: match[1],
+			cost: parseInt(match[2], 10),
+			salt: match[3],
+			hash: match[4],
+		};
 	},
 };
 exports.PolyBcrypt = PolyBcrypt;
@@ -421,42 +526,6 @@ var PolyDigest = {
 	},
 };
 exports.PolyDigest = PolyDigest;
-('use strict');
-
-Object.defineProperty(exports, '__esModule', {
-	value: true,
-});
-exports.PolyPkcs5 = void 0;
-
-var _nodeForge = _interopRequireDefault(require('node-forge'));
-
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { default: obj };
-}
-
-var PolyPkcs5 = {
-	hash: function hash(password) {
-		var numIterations = 100000;
-
-		var salt = _nodeForge.default.random.getBytesSync(128);
-
-		var key = _nodeForge.default.pkcs5.pbkdf2(password, salt, numIterations, 16);
-
-		return _nodeForge.default.util.bytesToHex(salt) + _nodeForge.default.util.bytesToHex(key);
-	},
-	verify: function verify(password, hash) {
-		var numIterations = 100000;
-
-		var salt = _nodeForge.default.util.hexToBytes(hash.slice(0, 64));
-
-		var key = _nodeForge.default.util.hexToBytes(hash.slice(64));
-
-		var digest = _nodeForge.default.pkcs5.pbkdf2(password, salt, numIterations, 16); // sha256 ?
-
-		return digest === key;
-	},
-};
-exports.PolyPkcs5 = PolyPkcs5;
 ('use strict');
 
 Object.defineProperty(exports, '__esModule', {

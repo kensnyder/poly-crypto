@@ -3,9 +3,11 @@
 const { PolyAES } = require('../../index.js');
 
 try {
-	const cipher = PolyAES.withKey(process.argv[2]);
-	const encrypted = cipher.encrypt(process.argv[3]);
-	process.stdout.write(encrypted);
+	const [$0, $1, key, ciphertext] = process.argv;
+	const cipher = PolyAES.withKey(key);
+	const plaintext = cipher.decrypt(ciphertext);
+	process.stdout.write(plaintext);
 } catch (e) {
+	process.stderr.write(e.message);
 	process.exit(1);
 }

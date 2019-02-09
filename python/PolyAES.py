@@ -5,9 +5,17 @@ from Crypto import Random
 from Crypto.Cipher import AES
 from Crypto.Protocol.KDF import PBKDF2
 
+# Exception message when key is not in correct format
 KEY_FORMAT_ERROR = 'PolyAES: key must be 64-character hexadecimal string.'
 
+# Exception message when salt is too short
 SALT_SIZE_ERROR = 'PolyAES: salt must be 8+ characters.'
+
+# Exception message when encoding is set to an invalid value
+ENCODING_ERROR = 'PolyAES: encoding must be base64, hex, or bin.'
+
+# Default value for self._encoding
+DEFAULT_ENCODING = 'base64'
 
 class PolyAES(object):
     """Service for encrypting and decrypting data with openssl
@@ -26,6 +34,66 @@ class PolyAES(object):
         decrypted = PolyAES.withPassword(password, salt).decrypt(encrypted)
     """
 
+    def __init__(self, binKey):
+        """Instantiate using a binary key"""
+        self._key = binKey
+        self.setEncoding(DEFAULT_ENCODING);
+
+    def setEncoding(self, encoding):
+        """After encryption, use base64 encoding, hexadecimal or binary
+
+        Args:
+            encoding (str): One of: base64, hex, bin
+
+        Returns:
+            PolyAES
+        """
+        allowed = ['base64', 'hex', 'bin']
+        if encoding not in allowed:
+            raise Exception(ENCODING_ERROR)
+        self._encoding = encoding
+        return self
+
+    def getEncoding(self):
+        """Get the current encoding type
+
+        Returns:
+            str: One of: base64, hex, bin
+        """
+        return self._encoding
+
+    def _binToStr(self, bin):
+        """Encode encrypted bytes using the current encoding
+
+        Args:
+            bin (str): The ciphertext in binary
+
+        Returns:
+            str: The encoded ciphertext
+        """
+        if self._encoding == 'bin':
+            return bin
+        elif self._encoding == 'base64':
+            return base64.b64encode(bin)
+        elif self._encoding == 'hex':
+            return bin.encode('hex')
+
+    def _strToBin(self, str):
+        """Decode encrypted bytes using the current encoding
+
+        Args:
+            bin (str): The encoded ciphertext
+
+        Returns:
+            str: The ciphertext in binary
+        """
+        if self._encoding == 'bin':
+            return str
+        elif self._encoding == 'base64':
+            return base64.b64decode(str)
+        elif self._encoding == 'hex':
+            return str.decode('hex')
+
     def encrypt(self, data):
         """Encrypt the given data
 
@@ -40,7 +108,7 @@ class PolyAES(object):
         cipher = AES.new(self._key, mode, iv)
         ciphertext = cipher.encrypt(data)
         tag = cipher.digest()
-        return base64.b64encode(iv + tag + ciphertext)
+        return self._binToStr(iv + tag + ciphertext)
 
     def decrypt(self, data):
         """Decrypt the given data
@@ -54,7 +122,7 @@ class PolyAES(object):
             str
         """
         mode = AES.MODE_GCM
-        bytes = base64.b64decode(data)
+        bytes = self._strToBin(data)
         iv = bytes[:16]
         tag = bytes[16:32]
         ciphertext = bytes[32:]
@@ -65,10 +133,6 @@ class PolyAES(object):
             return plaintext
         except Exception as e:
             return false
-
-    def __init__(self, binKey):
-        """Create using a binary key"""
-        self._key = binKey
 
 def withKey(hexKey):
     """Return new PolyAES instance with the given key

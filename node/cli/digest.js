@@ -2,7 +2,6 @@
 
 const { PolyDigest } = require('../../index.js');
 
-const algo = process.argv[2];
-const data = process.argv[3];
+const [$0, $1, algo, data] = process.argv;
 const digest = PolyDigest[algo](data);
 process.stdout.write(digest);

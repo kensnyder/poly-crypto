@@ -2,7 +2,6 @@
 
 const { PolyRand } = require('../../index.js');
 
-const type = process.argv[2];
-const length = process.argv[3];
+const [$0, $1, type, length] = process.argv;
 const out = PolyRand[type](length);
 process.stdout.write(out);

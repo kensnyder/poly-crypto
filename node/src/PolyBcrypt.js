@@ -46,4 +46,25 @@ export const PolyBcrypt = {
 		}
 		return bcrypt.compareSync(password, hash);
 	},
+
+	/**
+	 * Get information about the given hash including version and cost
+	 * @param {String} hash  The hash to parse
+	 * @return {Object}
+	 */
+	info(hash) {
+		const match = String(hash).match(/^(\$..?\$)(\d\d)\$(.{22})(.{31})$/);
+		if (!match) {
+			return {
+				valid: false,
+			};
+		}
+		return {
+			valid: true,
+			version: match[1],
+			cost: parseInt(match[2], 10),
+			salt: match[3],
+			hash: match[4],
+		};
+	},
 };

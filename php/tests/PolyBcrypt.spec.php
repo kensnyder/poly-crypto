@@ -60,6 +60,7 @@ describe('PolyBcrypt::verify()', function() {
 	$password = 'abc';
 	$fromJs = '$2a$10$f5449ok7vQOhhHwKwjZqx.cKeuroAr68DDwhxd78JUPJVqoVFqseS';
 	$fromPython = '$2a$12$GZJDKqVrXLi0JWdhWZ55EuCb7tKoMINe3Z/RrFFIbQpG3sW8sR7qu';
+	$fromPhp = '$2y$10$npEa/T9.5/aR36tMgICKYufSsReq9P9ioxV0cIpbB20KynjoYOz4.';
 
 	it('should verify passwords from js', function() use($password, $fromJs) {
 		$doesMatch = PolyBcrypt::verify($password, $fromJs);
@@ -70,5 +71,58 @@ describe('PolyBcrypt::verify()', function() {
 		$doesMatch = PolyBcrypt::verify($password, $fromPython);
 		expect($doesMatch)->toBe(true);
 	});
+
+	it('should verify passwords from php', function() use($password, $fromPhp) {
+		$doesMatch = PolyBcrypt::verify($password, $fromPhp);
+		expect($doesMatch)->toBe(true);
+	});
+
 });
 
+
+describe('PolyBcrypt::info()', function() {
+
+	$fromJs = '$2a$10$f5449ok7vQOhhHwKwjZqx.cKeuroAr68DDwhxd78JUPJVqoVFqseS';
+	$fromPython = '$2a$12$GZJDKqVrXLi0JWdhWZ55EuCb7tKoMINe3Z/RrFFIbQpG3sW8sR7qu';
+	$fromPhp = '$2y$10$npEa/T9.5/aR36tMgICKYufSsReq9P9ioxV0cIpbB20KynjoYOz4.';
+
+	it('should parse hashes from js', function() use($fromJs) {
+		$actual = (array) PolyBcrypt::info($fromJs);
+		$expected = [
+			'valid' => true,
+			'version' => '$2a$',
+			'cost' => 10,
+			'salt' => 'f5449ok7vQOhhHwKwjZqx.',
+			'hash' => 'cKeuroAr68DDwhxd78JUPJVqoVFqseS',
+		];
+		$diff = array_diff_assoc($actual, $expected);
+		expect($diff)->toBeEmpty();
+	});
+
+	it('should parse hashes from python', function() use($fromPython) {
+		$actual = (array) PolyBcrypt::info($fromPython);
+		$expected = [
+			'valid' => true,
+			'version' => '$2a$',
+			'cost' => 12,
+			'salt' => 'GZJDKqVrXLi0JWdhWZ55Eu',
+			'hash' => 'Cb7tKoMINe3Z/RrFFIbQpG3sW8sR7qu',
+		];
+		$diff = array_diff_assoc($actual, $expected);
+		expect($diff)->toBeEmpty();
+	});
+
+	it('should parse hashes from php', function() use($fromPhp) {
+		$actual = (array) PolyBcrypt::info($fromPhp);
+		$expected = [
+			'valid' => true,
+			'version' => '$2y$',
+			'cost' => 10,
+			'salt' => 'npEa/T9.5/aR36tMgICKYu',
+			'hash' => 'fSsReq9P9ioxV0cIpbB20KynjoYOz4.',
+		];
+		$diff = array_diff_assoc($actual, $expected);
+		expect($diff)->toBeEmpty();
+	});
+
+});
