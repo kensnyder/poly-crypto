@@ -5,4 +5,4 @@ import PolyDigest
 
 _, algo, data = sys.argv
 out = getattr(PolyDigest, algo)(data)
-print out
+sys.stdout.write(out)

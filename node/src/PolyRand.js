@@ -57,12 +57,12 @@ export const PolyRand = {
 
 	/**
 	 * Create a random string of the given length limited to the given symbols
-	 * @param {Array} symbolList  An array of characters to use
 	 * @param {Number} length  The desired length
+	 * @param {Array} symbolList  An array of characters to use
 	 * @return {String}
 	 * @throws {Error} if size of symbolList is not between 2 and 256
 	 */
-	string(symbolList, length) {
+	string(length, symbolList) {
 		const randomBytes = PolyRand.bytes(length);
 		if (!Array.isArray(symbolList) || symbolList.length < 2 || symbolList.length > 256) {
 			throw new Error(PolyRand.SYMBOL_LIST_ERROR);

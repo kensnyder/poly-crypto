@@ -6,7 +6,7 @@ import PolyRand
 try:
     _, length, symbols = sys.argv
     out = PolyRand.string(length, list(symbols))
-    print out
+    sys.stdout.write(out)
 except Exception as e:
     sys.stderr.write(e.message)
     exit(1)

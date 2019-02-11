@@ -48,22 +48,22 @@ describe('PolyRand::fax()', function() {
 describe('PolyRand::string()', function() {
 	it('should throw error if symbol list is too short', function() {
 		try {
-			PolyRand::string(['a'], 101);
+			PolyRand::string(101, ['a']);
 			expect(false)->toEqual(true);
 		} catch (Exception $e) {
 			expect(true)->toEqual(true);
 		}
 	});
 	it('should return requested size', function() {
-		$hash = PolyRand::string(['a', 'b', 'c'], 101);
+		$hash = PolyRand::string(101, ['a', 'b', 'c']);
 		expect($hash)->toHaveLength(101);
 	});
 	it('should return the proper symbol list', function() {
-		$hash = PolyRand::string(['a', 'b', 'c'], 200);
+		$hash = PolyRand::string(200, ['a', 'b', 'c']);
 		expect($hash)->toMatch('/^[abc]{200}$/i');
 	});
 	it('should handle unicode symbol list', function() {
-		$hash = PolyRand::string(['💻', '🖥️'], 1);
+		$hash = PolyRand::string(1, ['💻', '🖥️']);
 		expect($hash === '💻' || $hash === '🖥️')->toEqual(true);
 	});
 });

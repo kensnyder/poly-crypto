@@ -4,5 +4,5 @@ import sys
 import PolyRand
 
 _, type, length = sys.argv
-out = PolyRand[type](length)
-print out
+out = getattr(PolyRand, type)(length)
+sys.stdout.write(out)

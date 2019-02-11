@@ -7,7 +7,7 @@ try:
     _, key, plaintext = sys.argv
     crypto = PolyAES.withKey(key)
     ciphertext = crypto.encrypt(plaintext)
-    print ciphertext
+    sys.stdout.write(ciphertext)
 except Exception as e:
     sys.stderr.write(e.message)
     exit(1)
