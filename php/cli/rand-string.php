@@ -7,7 +7,7 @@ use PolyCrypto\PolyRand;
 
 try {
 	list (, $length, $symbols) = $argv;
-	$out = PolyRand::string($length, explode('', $symbols));
+	$out = PolyRand::string((int) $length, explode('', $symbols));
 	echo $digest;
 } catch (Exception $e) {
 	fwrite(STDERR, $e->getMessage());

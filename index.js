@@ -582,7 +582,7 @@ var PolyRand = {
 	 * @return {String}
 	 */
 	slug: function slug(length) {
-		return PolyRand.string(PolyRand.SLUG_SYMBOL_LIST, length);
+		return PolyRand.string(length, PolyRand.SLUG_SYMBOL_LIST);
 	},
 
 	/**
@@ -591,17 +591,17 @@ var PolyRand = {
 	 * @return {String}
 	 */
 	fax: function fax(length) {
-		return PolyRand.string(PolyRand.FAX_SYMBOL_LIST, length);
+		return PolyRand.string(length, PolyRand.FAX_SYMBOL_LIST);
 	},
 
 	/**
 	 * Create a random string of the given length limited to the given symbols
-	 * @param {Array} symbolList  An array of characters to use
 	 * @param {Number} length  The desired length
+	 * @param {Array} symbolList  An array of characters to use
 	 * @return {String}
 	 * @throws {Error} if size of symbolList is not between 2 and 256
 	 */
-	string: function string(symbolList, length) {
+	string: function string(length, symbolList) {
 		var randomBytes = PolyRand.bytes(length);
 
 		if (!Array.isArray(symbolList) || symbolList.length < 2 || symbolList.length > 256) {

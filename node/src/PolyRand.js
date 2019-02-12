@@ -43,7 +43,7 @@ export const PolyRand = {
 	 * @return {String}
 	 */
 	slug(length) {
-		return PolyRand.string(PolyRand.SLUG_SYMBOL_LIST, length);
+		return PolyRand.string(length, PolyRand.SLUG_SYMBOL_LIST);
 	},
 
 	/**
@@ -52,7 +52,7 @@ export const PolyRand = {
 	 * @return {String}
 	 */
 	fax(length) {
-		return PolyRand.string(PolyRand.FAX_SYMBOL_LIST, length);
+		return PolyRand.string(length, PolyRand.FAX_SYMBOL_LIST);
 	},
 
 	/**

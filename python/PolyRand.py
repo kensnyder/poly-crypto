@@ -44,7 +44,7 @@ def slug(length):
     Returns:
         str: The bytes as a string
     """
-    return string(SLUG_SYMBOL_LIST, length)
+    return string(length, SLUG_SYMBOL_LIST)
 
 def fax(length):
     """Create a string of the given length with numbers and lowercase letters that are unambiguious when written down
@@ -55,7 +55,7 @@ def fax(length):
     Returns:
         str: The bytes as a string
     """
-    return string(FAX_SYMBOL_LIST, length)
+    return string(length, FAX_SYMBOL_LIST)
 
 def string(length, symbolList):
     """Create a string of the given length with random bytes
@@ -70,7 +70,7 @@ def string(length, symbolList):
         Exception: if size of symbolList is not between 2 and 256
     """
     randomBytes = bytes(length)
-    if (len(symbolList) < 2 or len(symbolList) > 256):
+    if (not isinstance(symbolList, list) or len(symbolList) < 2 or len(symbolList) > 256):
         raise Exception(SYMBOL_LIST_ERROR)
     numSymbols = len(symbolList)
     output = ''

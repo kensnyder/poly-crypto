@@ -46,7 +46,7 @@ class PolyRand {
 	 * @return string
 	 */
 	public static function slug(int $length) : string {
-		return static::string(static::SLUG_SYMBOL_LIST, $length);
+		return static::string($length, static::SLUG_SYMBOL_LIST);
 	}
 
 	/**
@@ -56,7 +56,7 @@ class PolyRand {
 	 * @return string
 	 */
 	public static function fax(int $length) : string {
-		return static::string(static::FAX_SYMBOL_LIST, $length);
+		return static::string($length, static::FAX_SYMBOL_LIST);
 	}
 
 	/**
