@@ -66,6 +66,7 @@ def test_should_parse_hashes_from_js():
     assert actual['cost'] is 10
     assert actual['salt'] == 'f5449ok7vQOhhHwKwjZqx.'
     assert actual['hash'] == 'cKeuroAr68DDwhxd78JUPJVqoVFqseS'
+    assert len(actual) is 5
 
 def test_should_parse_hashes_from_python():
     actual = PolyBcrypt.info(fromPython)
@@ -74,6 +75,7 @@ def test_should_parse_hashes_from_python():
     assert actual['cost'] is 12
     assert actual['salt'] == 'GZJDKqVrXLi0JWdhWZ55Eu'
     assert actual['hash'] == 'Cb7tKoMINe3Z/RrFFIbQpG3sW8sR7qu'
+    assert len(actual) is 5
 
 def test_should_parse_hashes_from_php():
     actual = PolyBcrypt.info(fromPhp)
@@ -82,3 +84,9 @@ def test_should_parse_hashes_from_php():
     assert actual['cost'] is 10
     assert actual['salt'] == 'npEa/T9.5/aR36tMgICKYu'
     assert actual['hash'] == 'fSsReq9P9ioxV0cIpbB20KynjoYOz4.'
+    assert len(actual) is 5
+
+def test_should_fail_to_parse_invalid_hash():
+    actual = PolyBcrypt.info('$2a$10$0')
+    assert actual['valid'] is False
+    assert len(actual) is 1    

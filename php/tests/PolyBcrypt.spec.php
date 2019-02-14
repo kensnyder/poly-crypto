@@ -125,4 +125,13 @@ describe('PolyBcrypt::info()', function() use($password, $fromJs, $fromPython, $
 		expect($diff)->toBeEmpty();
 	});
 
+	it('should fail to parse invalid hash', function() use($fromPhp) {
+		$actual = (array) PolyBcrypt::info('$2a$10$0');
+		$expected = [
+			'valid' => false,
+		];
+		$diff = array_diff_assoc($actual, $expected);
+		expect($diff)->toBeEmpty();
+	});
+
 });

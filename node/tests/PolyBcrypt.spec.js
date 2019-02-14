@@ -105,4 +105,12 @@ describe('PolyBcrypt.info()', () => {
 		};
 		expect(actual).to.deep.equal(expected);
 	});
+
+	it('should fail to parse invalid hash', () => {
+		const actual = PolyBcrypt.info('$2a$10$0');
+		const expected = {
+			valid: false,
+		};
+		expect(actual).to.deep.equal(expected);
+	});
 });
