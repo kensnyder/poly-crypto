@@ -18,7 +18,7 @@ describe('PolyRand::hex()', function() {
 	});
 	it('should return only hex digits', function() {
 		$hash = PolyRand::hex(42);
-		expect($hash)->toMatch('/^[a-f0-9]{42}$/i');
+		expect($hash)->toMatch('/^[a-f0-9]{42}$/');
 	});
 });
 
@@ -41,7 +41,7 @@ describe('PolyRand::fax()', function() {
 	});
 	it('should return the proper symbol list', function() {
 		$hash = PolyRand::fax(2000);
-		expect($hash)->toMatch('/^[3467bcdfhjkmnpqrtvwxy]{2000}$/i');
+		expect($hash)->toMatch('/^[3467bcdfhjkmnpqrtvwxy]{2000}$/');
 	});
 });
 
@@ -60,7 +60,7 @@ describe('PolyRand::string()', function() {
 	});
 	it('should return the proper symbol list', function() {
 		$hash = PolyRand::string(200, ['a', 'b', 'c']);
-		expect($hash)->toMatch('/^[abc]{200}$/i');
+		expect($hash)->toMatch('/^[abc]{200}$/');
 	});
 	it('should handle unicode symbol list', function() {
 		$hash = PolyRand::string(1, ['💻', '🖥️']);

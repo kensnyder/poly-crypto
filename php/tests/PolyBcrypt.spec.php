@@ -4,9 +4,13 @@ require_once(__DIR__ . '/../src/PolyBcrypt.php');
 
 use PolyCrypto\PolyBcrypt;
 
-describe('PolyBcrypt::hash()', function() {
+$password = 'abc';
+$fromJs = '$2a$10$f5449ok7vQOhhHwKwjZqx.cKeuroAr68DDwhxd78JUPJVqoVFqseS';
+$fromPython = '$2a$12$GZJDKqVrXLi0JWdhWZ55EuCb7tKoMINe3Z/RrFFIbQpG3sW8sR7qu';
+$fromPhp = '$2y$10$npEa/T9.5/aR36tMgICKYufSsReq9P9ioxV0cIpbB20KynjoYOz4.';
 
-	$password = 'abc';
+
+describe('PolyBcrypt::hash()', function() use($password) {
 
 	it('should ensure password is at most 72 chars', function () {
 		$longPassword = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ok?';
@@ -18,18 +22,18 @@ describe('PolyBcrypt::hash()', function() {
 		}
 	});
 
-	it('should ensure cost is at least 4', function () {
+	it('should ensure cost is at least 4', function () use($password) {
 		try {
-			PolyBcrypt::hash('abc', 3);
+			PolyBcrypt::hash($password, 3);
 			expect(false)->toBe(true);
 		} catch (Exception $e) {
 			expect($e)->toBeAnInstanceOf('Exception');
 		}
 	});
 
-	it('should ensure cost is at most 31', function () {
+	it('should ensure cost is at most 31', function () use($password) {
 		try {
-			PolyBcrypt::hash('abc', 32);
+			PolyBcrypt::hash($password, 32);
 			expect(false)->toBe(true);
 		} catch (Exception $e) {
 			expect($e)->toBeAnInstanceOf('Exception');
@@ -42,9 +46,14 @@ describe('PolyBcrypt::hash()', function() {
 	});
 
 	it('should produce different hashes every time', function () use ($password) {
-		$hash1 = PolyBcrypt::hash($password);
-		$hash2 = PolyBcrypt::hash($password);
+		$hash1 = PolyBcrypt::hash($password, 10);
+		$hash2 = PolyBcrypt::hash($password, 10);
 		expect($hash1)->not->toEqual($hash2);
+	});
+
+	it('should handle unicode', function() {
+		$hash = PolyBcrypt::hash('Ich weiß nicht 🔥. Bitte schön.', 10);
+		expect($hash)->toMatch('/^\$\d[a-z]\$10\$[\w.\/]{53}$/i');
 	});
 
 	it('should verify its own hashes', function () use ($password) {
@@ -55,12 +64,7 @@ describe('PolyBcrypt::hash()', function() {
 
 });
 
-describe('PolyBcrypt::verify()', function() {
-
-	$password = 'abc';
-	$fromJs = '$2a$10$f5449ok7vQOhhHwKwjZqx.cKeuroAr68DDwhxd78JUPJVqoVFqseS';
-	$fromPython = '$2a$12$GZJDKqVrXLi0JWdhWZ55EuCb7tKoMINe3Z/RrFFIbQpG3sW8sR7qu';
-	$fromPhp = '$2y$10$npEa/T9.5/aR36tMgICKYufSsReq9P9ioxV0cIpbB20KynjoYOz4.';
+describe('PolyBcrypt::verify()', function() use($password, $fromJs, $fromPython, $fromPhp) {
 
 	it('should verify passwords from js', function() use($password, $fromJs) {
 		$doesMatch = PolyBcrypt::verify($password, $fromJs);
@@ -80,11 +84,7 @@ describe('PolyBcrypt::verify()', function() {
 });
 
 
-describe('PolyBcrypt::info()', function() {
-
-	$fromJs = '$2a$10$f5449ok7vQOhhHwKwjZqx.cKeuroAr68DDwhxd78JUPJVqoVFqseS';
-	$fromPython = '$2a$12$GZJDKqVrXLi0JWdhWZ55EuCb7tKoMINe3Z/RrFFIbQpG3sW8sR7qu';
-	$fromPhp = '$2y$10$npEa/T9.5/aR36tMgICKYufSsReq9P9ioxV0cIpbB20KynjoYOz4.';
+describe('PolyBcrypt::info()', function() use($password, $fromJs, $fromPython, $fromPhp) {
 
 	it('should parse hashes from js', function() use($fromJs) {
 		$actual = (array) PolyBcrypt::info($fromJs);

@@ -15,7 +15,7 @@ describe('PolyRand.hex()', () => {
 	});
 	it('should return only hex digits', () => {
 		const hash = PolyRand.hex(42);
-		expect(hash).to.match(/^[a-f0-9]{42}$/i);
+		expect(hash).to.match(/^[a-f0-9]{42}$/);
 	});
 });
 
@@ -38,7 +38,7 @@ describe('PolyRand.fax()', () => {
 	});
 	it('should return the proper symbol list', () => {
 		const hash = PolyRand.fax(2000);
-		expect(hash).to.match(/^[3467bcdfhjkmnpqrtvwxy]{2000}$/i);
+		expect(hash).to.match(/^[3467bcdfhjkmnpqrtvwxy]{2000}$/);
 	});
 });
 
@@ -57,7 +57,7 @@ describe('PolyRand.string()', () => {
 	});
 	it('should return the proper symbol list', () => {
 		const hash = PolyRand.string(200, ['a', 'b', 'c']);
-		expect(hash).to.match(/^[abc]{200}$/i);
+		expect(hash).to.match(/^[abc]{200}$/);
 	});
 	it('should handle unicode symbol list', () => {
 		const hash = PolyRand.string(1, ['💻', '🖥️']);
