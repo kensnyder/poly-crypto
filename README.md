@@ -12,11 +12,11 @@
 ## Installation
 
 ```bash
-# PHP
-composer install poly-crypto
-
 # NodeJS
 npm install --save poly-crypto
+
+# PHP
+composer require poly-crypto
 
 # Python
 pip install poly-crypto
@@ -32,7 +32,7 @@ pip install poly-crypto
 | [Decrypt with password](#encrypt-and-decrypt-with-password) | PolyAES.withPassword(password, salt).decrypt(encrypted) | PolyAES::withPassword($password, $salt)->decrypt($encrypted) |
 | [Bcrypt hash](#password-hashing) | PolyBcrypt.hash(password) | PolyBcrypt::hash($password) |
 | [Bcrypt verify](#password-hashing) | PolyBcrypt.verify(password, hash) | PolyBcrypt::verify($password, $hash) |
-| [Digest functions](#digest-functions) | PolyHash.sha256(data) | PolyHash::sha256($data) |
+| [Digest functions](#digest-functions) | PolyDigest.sha256(data) | PolyDigest::sha256($data) |
 | [Random functions](#random-functions) | PolyRand.slug(length) | PolyRand::slug($length) |
 
 ## Table of Contents
@@ -82,7 +82,7 @@ poly-crypto's basic use cases:
 | 2.  | Encrypt data for a user that he or she can decrypt later | User-supplied password & system salt | base-64 encoded string | PolyAES.withPassword(password, salt).encrypt(data) |
 | 3.  | Hash passwords with bcrypt | Password string | bcrypt hash | PolyBcrypt.hash(password) |
 | 4.  | Check if a password matches the given bcrypt hash | Password string & bcrypt hash | True if password matches | PolyBcrypt.verify(password, hash) |
-| 5.  | Generate digests (e.g. sha256) | String data | digest string | PolyHash.sha256(data) |
+| 5.  | Generate digests (e.g. sha256) | String data | digest string | PolyDigest.sha256(data) |
 | 6.  | Generate random slugs | number of characters | a string with random characters | PolyRand.slug(numCharacters) |
 
 ## Misuse
@@ -219,22 +219,22 @@ Standard one-way digest functions.
 
 NodeJS:
 ```js
-const { PolyHash } = require('poly-crypto');
+const { PolyDigest } = require('poly-crypto');
 
-PolyHash.sha512(data);
-PolyHash.sha256(data);
-PolyHash.sha1(data);
-PolyHash.md5(data);
+PolyDigest.sha512(data);
+PolyDigest.sha256(data);
+PolyDigest.sha1(data);
+PolyDigest.md5(data);
 ```
 
 Python:
 ```python
-import PolyHash
+import PolyDigest
 
-PolyHash.sha512(data)
-PolyHash.sha256(data)
-PolyHash.sha1(data)
-PolyHash.md5(data)
+PolyDigest.sha512(data)
+PolyDigest.sha256(data)
+PolyDigest.sha1(data)
+PolyDigest.md5(data)
 ```
 
 PHP:
@@ -242,12 +242,12 @@ PHP:
 <?php
 
 require_once('vendor/autoload.php');
-use PolyCrypto\PolyHash;
+use PolyCrypto\PolyDigest;
 
-PolyHash::sha512($data);
-PolyHash::sha256($data);
-PolyHash::sha1($data);
-PolyHash::md5($data);
+PolyDigest::sha512($data);
+PolyDigest::sha256($data);
+PolyDigest::sha1($data);
+PolyDigest::md5($data);
 ```
 
 ### Random functions
@@ -279,7 +279,7 @@ PolyRand.bytes(length);
 
 Python:
 ```python
-import PolyHash
+import PolyRand
 
 # generate a string containing numbers and letters minus vowels
 # suitable for resources such as URLs with random strings 
