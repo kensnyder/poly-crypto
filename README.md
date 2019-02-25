@@ -332,10 +332,10 @@ poly-crypto functions can be used in your Node project from the command line
 using `npx` to invoke any of the following commands:
 
 ```bash
-npx aes:key $key $dataToEncrypt
-npx aes:pass $password $salt $dataToEncrypt
-npx aes:key:decrypt $key $stringToDecrypt
-npx aes:pass:decrypt $password $salt $stringToDecrypt
+npx key:encrypt $key $dataToEncrypt
+npx pass:encrypt $password $salt $dataToEncrypt
+npx key:decrypt $key $stringToDecrypt
+npx pass:decrypt $password $salt $stringToDecrypt
 npx bcrypt:hash $password
 npx bcrypt:verify $password $againstHash
 npx hash:md5 $string
