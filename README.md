@@ -353,12 +353,13 @@ npx rand:string $length $symbolString
 
 All poly-crypto modules do function in the browser. There are only a few use cases
 where encrypting in the browser is a good idea. If you know what you are doing,
-see the following section for instructions on importing a Poly* module.
+see the following section for instructions on directly importing a Poly* module.
 
 ## JavaScript direct import
 
 If you are using [esm](https://www.npmjs.com/package/esm) or a bundler such as
-[webpack](https://webpack.js.org/) you may import a single JavaScript module like so:
+[webpack](https://webpack.js.org/) or [parcel](https://parceljs.org/)
+you may import a single JavaScript module like so:
 ```js
 import { PolyBcrypt } from './node_modules/poly-crypto/node/src/PolyBcrypt.js';
 ```
@@ -381,6 +382,9 @@ pytest
 
 ## Contributing
 
+Contributions welcome! See 
+[CONTRIBUTING.md](https://github.com/kensnyder/poly-crypto/blob/master/CONTRIBUTING.md).
+
 ## License
 
-Open Source, under the [ISC](https://opensource.org/licenses/ISC) License.
+Open Source, under the [ISC License](https://opensource.org/licenses/ISC).
