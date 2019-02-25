@@ -333,8 +333,8 @@ using `npx` to invoke any of the following commands:
 
 ```bash
 npx key:encrypt $key $dataToEncrypt
-npx pass:encrypt $password $salt $dataToEncrypt
 npx key:decrypt $key $stringToDecrypt
+npx pass:encrypt $password $salt $dataToEncrypt
 npx pass:decrypt $password $salt $stringToDecrypt
 npx bcrypt:hash $password
 npx bcrypt:verify $password $againstHash
