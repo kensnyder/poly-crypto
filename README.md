@@ -7,6 +7,7 @@
 1. Two-way symmetric encryption with a key or with password and salt
 1. Password hashing
 1. APIs that work exactly the same on NodeJS, PHP 7.1, and Python
+1. Packages for Python and Node that can be used on serverless functions without external C bindings
 
 ## Installation
 
@@ -57,18 +58,18 @@ pip install poly-crypto
 
 ### AES-256 GCM
 
-As of January 2019, the most secure symmetric encryption that is available across PHP, NodeJS and Python is
+As of February 2019, the most secure symmetric encryption that is available across PHP, NodeJS and Python is
 AES-256 Encryption with GCM block mode. With the right arguments and options, these 3 libraries can decrypt 
 one another's encrypted strings: Python's PyCryptodome, PHP 7.1's openssl_* functions and npm's node-forge.
 
 ### Bcrypt
 
-As of January 2019, the industry standard for hashing passwords is bcrypt. These 3 libraries can hash and
+As of February 2019, the industry standard for hashing passwords is bcrypt. These 3 libraries can hash and
 verify one another's hashes: Python's bcrypt, PHP's password_hash function, npm's bcrypt-js
 
 ### urandom
 
-Cryptographic randomness is hard. These 3 sources can provide good randomness: Python's os.urandom()
+Cryptographic randomness is tricky. These 3 sources can provide good randomness: Python's os.urandom()
 function, PHP's openssl_random_pseudo_bytes() function and Node's crypto.randomBytes() function.
 
 ## Use cases
@@ -90,10 +91,8 @@ poly-crypto's basic use cases:
 entire files. You'll want to use a C-based library that is designed to encrypt
 large amounts of data quickly. File encryption considerations:
 	1. poly-crypto is not fast for large files.
-	1. AES-256 GCM encryption can be parallelized for faster processing
-	of large chunks of data.
-	1. You don't want the extra overhead or storage space of base64 encoding
-	that poly-crypto uses.
+	1. AES-256 GCM encryption can be parallelized in languages that support
+	   threading for faster processing
 1. **Streaming data.** PolyAES is not designed to encrypt streaming data.	
 1. **Secure key storage.** If you store encryption keys or user passwords in 
 plain text, encryption will not provide protection.
@@ -105,7 +104,7 @@ designed for hashing passwords.
 
 #### Encrypt and decrypt with key
 
-Key should be a 64 character hex-encoded string stored in a secure param store.
+Note: key should be a 64-character hex-encoded string stored in a secure param store.
 To generate a cryptographically secure random key, use `PolyAES.generateKey(64)`.
 
 NodeJS:
@@ -136,12 +135,6 @@ use PolyCrypto\PolyAES;
 $hexKey = '64-char hex encoded string from secure param store';
 $encrypted = PolyAES::withKey($hexKey)->encrypt($data);
 $decrypted = PolyAES::withKey($hexKey)->decrypt($encrypted);
-```
-
-OpenSSL on commmand line:
-```bash
-openssl enc -aes-256-gcm  openssl dgst -md5 -hex ~/abc.txt
-
 ```
 
 #### Encrypt and decrypt with password
@@ -255,12 +248,6 @@ PolyHash::sha512($data);
 PolyHash::sha256($data);
 PolyHash::sha1($data);
 PolyHash::md5($data);
-```
-
-OpenSSL on commmand line:
-```bash
-openssl dgst -md5 -hex $filepath | cut -c-32
-
 ```
 
 ### Random functions
