@@ -1,6 +1,41 @@
 {
-  "name": "kensnyder/poly-aes",
+  "name": "poly-crypto/poly-crypto",
   "description": "High-level cryptographic functions that are interoperable between NodeJS, PHP 7.1+, and Python.",
+  "keywords": [
+    "encryption",
+    "decryption",
+    "encrypt",
+    "decrypt",
+    "AES",
+    "AES-256",
+    "AES256",
+    "AES-256-GCM",
+    "AES256GCM",
+    "GCM",
+    "bcrypt",
+    "md5",
+    "sha1",
+    "sha256",
+    "sha512",
+    "hash",
+    "digest",
+    "slug",
+    "symetric",
+    "cipher",
+    "ciphertext",
+    "crypto",
+    "cryptography",
+    "Node",
+    "NodeJS",
+    "node-forge",
+    "PHP",
+    "openssl",
+    "Python",
+    "PyCryptodome",
+    "random",
+    "urandom"
+  ],
+  "homepage": "https://github.com/kensnyder/poly-crypto",
   "type": "library",
   "license": "ISC",
   "authors": [
@@ -15,7 +50,7 @@
   },
   "autoload": {
     "psr-0": {
-      "PolyCrypto": "php/src/"
+      "PolyCrypto": "php/src"
     }
   },
   "require-dev": {
