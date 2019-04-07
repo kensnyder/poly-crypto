@@ -64,7 +64,7 @@ var PolyAES =
 						throw new Error(PolyAES.KEY_FORMAT_ERROR);
 					}
 
-					var binKey = _nodeForge.default.util.hexToBytes(hexKey);
+					var binKey = _nodeForge['default'].util.hexToBytes(hexKey);
 
 					return new PolyAES(binKey);
 				},
@@ -88,7 +88,7 @@ var PolyAES =
 
 					var bytes = 32;
 
-					var binKey = _nodeForge.default.pkcs5.pbkdf2(
+					var binKey = _nodeForge['default'].pkcs5.pbkdf2(
 						password,
 						salt,
 						numIterations,
@@ -156,9 +156,9 @@ var PolyAES =
 						if (this._encoding === 'bin') {
 							return bin;
 						} else if (this._encoding === 'base64') {
-							return _nodeForge.default.util.encode64(bin);
+							return _nodeForge['default'].util.encode64(bin);
 						} else if (this._encoding === 'hex') {
-							return _nodeForge.default.util.bytesToHex(bin);
+							return _nodeForge['default'].util.bytesToHex(bin);
 						}
 					},
 					/**
@@ -174,9 +174,9 @@ var PolyAES =
 						if (this._encoding === 'bin') {
 							return str;
 						} else if (this._encoding === 'base64') {
-							return _nodeForge.default.util.decode64(str);
+							return _nodeForge['default'].util.decode64(str);
 						} else if (this._encoding === 'hex') {
-							return _nodeForge.default.util.hexToBytes(str);
+							return _nodeForge['default'].util.hexToBytes(str);
 						}
 					},
 					/**
@@ -191,15 +191,17 @@ var PolyAES =
 					value: function encrypt(data) {
 						var mode = 'AES-GCM';
 
-						var iv = _nodeForge.default.random.getBytesSync(128 / 8);
+						var iv = _nodeForge['default'].random.getBytesSync(128 / 8);
 
-						var cipher = _nodeForge.default.cipher.createCipher(mode, this._key);
+						var cipher = _nodeForge['default'].cipher.createCipher(mode, this._key);
 
 						cipher.start({
 							iv: iv,
 							tagLength: 128,
 						});
-						cipher.update(_nodeForge.default.util.createBuffer(this._utf8ToBin(data)));
+						cipher.update(
+							_nodeForge['default'].util.createBuffer(this._utf8ToBin(data))
+						);
 						cipher.finish();
 						return this._binToStr(iv + cipher.mode.tag.data + cipher.output.data);
 					},
@@ -221,13 +223,13 @@ var PolyAES =
 						var tag = bytes.slice(16, 32);
 						var ciphertext = bytes.slice(32);
 
-						var decipher = _nodeForge.default.cipher.createDecipher(mode, this._key);
+						var decipher = _nodeForge['default'].cipher.createDecipher(mode, this._key);
 
 						decipher.start({
 							iv: iv,
 							tag: tag,
 						});
-						decipher.update(_nodeForge.default.util.createBuffer(ciphertext));
+						decipher.update(_nodeForge['default'].util.createBuffer(ciphertext));
 						var ok = decipher.finish();
 						return ok ? this._binToUtf8(decipher.output.data) : false;
 					},
@@ -298,8 +300,8 @@ var PolyAES =
 							return decoder.decode(Uint8Array.from(arr));
 						} else {
 							// slower but vanilla js
-							var escstr = data.replace(/./g, function(char) {
-								var code = char
+							var escstr = data.replace(/./g, function(_char) {
+								var code = _char
 									.charCodeAt(0)
 									.toString(16)
 									.toUpperCase();
@@ -321,8 +323,8 @@ var PolyAES =
 					value: function generateKey() {
 						var length =
 							arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 64;
-						return _nodeForge.default.util.bytesToHex(
-							_nodeForge.default.random.getBytesSync(length / 2)
+						return _nodeForge['default'].util.bytesToHex(
+							_nodeForge['default'].random.getBytesSync(length / 2)
 						);
 					},
 					/**
@@ -336,8 +338,8 @@ var PolyAES =
 					value: function generateSalt() {
 						var length =
 							arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 64;
-						return _nodeForge.default.util.bytesToHex(
-							_nodeForge.default.random.getBytesSync(length / 2)
+						return _nodeForge['default'].util.bytesToHex(
+							_nodeForge['default'].random.getBytesSync(length / 2)
 						);
 					},
 				},
@@ -414,9 +416,9 @@ var PolyBcrypt = {
 			throw Error(PolyBcrypt.COST_ERROR);
 		}
 
-		var salt = _bcryptjs.default.genSaltSync(cost);
+		var salt = _bcryptjs['default'].genSaltSync(cost);
 
-		return _bcryptjs.default.hashSync(password, salt);
+		return _bcryptjs['default'].hashSync(password, salt);
 	},
 
 	/**
@@ -431,7 +433,7 @@ var PolyBcrypt = {
 			throw Error(PolyBcrypt.LENGTH_ERROR);
 		}
 
-		return _bcryptjs.default.compareSync(password, hash);
+		return _bcryptjs['default'].compareSync(password, hash);
 	},
 
 	/**
@@ -519,7 +521,7 @@ var PolyDigest = {
 	 * @private
 	 */
 	_digest: function _digest(algo, data) {
-		var md = _nodeForge.default.md[algo].create();
+		var md = _nodeForge['default'].md[algo].create();
 
 		md.update(data);
 		return md.digest().toHex();
@@ -564,7 +566,7 @@ var PolyRand = {
 	 * @return {String}
 	 */
 	bytes: function bytes(length) {
-		return _nodeForge.default.random.getBytesSync(length);
+		return _nodeForge['default'].random.getBytesSync(length);
 	},
 
 	/**
@@ -573,7 +575,7 @@ var PolyRand = {
 	 * @return {String}
 	 */
 	hex: function hex(length) {
-		return _nodeForge.default.util.bytesToHex(PolyRand.bytes(length / 2));
+		return _nodeForge['default'].util.bytesToHex(PolyRand.bytes(length / 2));
 	},
 
 	/**

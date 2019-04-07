@@ -155,10 +155,11 @@ class PolyAES {
 	 * Encrypt the given data
 	 * @param string data  The string to encrypt
 	 * @return string
+	 * @throws \Exception if platform does not provide cryptographically secure randomness
 	 */
 	public function encrypt(string $data) : string {
 		$mode = 'aes-256-gcm';
-		$iv = openssl_random_pseudo_bytes(128 / 8);
+		$iv = random_bytes(128 / 8);
 		$ciphertext = openssl_encrypt($data, $mode, $this->_key, OPENSSL_RAW_DATA, $iv, $tag); // tag is 128 bits or (16 bytes)
 		return $this->_binToStr($iv . $tag . $ciphertext);
 	}
@@ -184,18 +185,20 @@ class PolyAES {
 	 * Generate key to use with PolyAES::withKey()
 	 * @param int $length  The character length of the key
 	 * @return string  The key in hexadecimal
+	 * @throws \Exception if platform does not provide cryptographically secure randomness
 	 */
 	public static function generateKey($length = 64) {
-		return bin2hex(openssl_random_pseudo_bytes($length / 2));
+		return bin2hex(random_bytes($length / 2));
 	}
 
 	/**
 	 * Generate salt to use with PolyAES::withPassword()
 	 * @param int $length  The character length of the salt
 	 * @return string  The salt in hexadecimal
+	 * @throws \Exception if platform does not provide cryptographically secure randomness
 	 */
 	public static function generateSalt($length = 64) {
-		return bin2hex(openssl_random_pseudo_bytes($length / 2));
+		return bin2hex(random_bytes($length / 2));
 	}
 
 }

@@ -4,10 +4,10 @@
 
 ## Project Goals
 
-1. Two-way symmetric encryption with a key or with password and salt
-1. Password hashing
 1. APIs that work exactly the same on NodeJS, PHP 7.1, and Python
 1. Packages for Python and Node that can be used on serverless functions without external C bindings
+1. Two-way symmetric encryption with a key or with password and salt
+1. Password hashing
 
 ## Installation
 
@@ -40,7 +40,9 @@ pip install poly-crypto
 1. [Technology choices](#technology-choices)
 	1. [AES-255 GCM](#aes-256-gcm)
 	1. [Bcrypt](#bcrypt)
+	1. [Randomness](#randomness)
 1. [Use Cases](#use-cases)	
+1. [Misuse](#misuse)	
 1. [AES encryption](#aes-encryption)
 	1. [Encrypt and decrypt with key](#encrypt-and-decrypt-with-key)
 	1. [Encrypt and decrypt with password](#encrypt-and-decrypt-with-password)
@@ -53,24 +55,26 @@ pip install poly-crypto
 1. [JavaScript direct import](#javascript-direct-import)
 1. [Unit tests](#unit-tests)
 1. [Open Source ISC Licence](#licence)
+1. [Changelog](https://github.com/kensnyder/poly-crypto/blob/master/CHANGELOG.md)
 
 ## Technology choices
 
 ### AES-256 GCM
 
-As of February 2019, the most secure symmetric encryption that is available across PHP, NodeJS and Python is
-AES-256 Encryption with GCM block mode. With the right arguments and options, these 3 libraries can decrypt 
-one another's encrypted strings: Python's PyCryptodome, PHP 7.1's openssl_* functions and npm's node-forge.
+As of April 2019, AES-256 Encryption with GCM block mode is a reputable and secure method
+that is available across PHP 7.1, NodeJS and Python without any extensions.
+With the right arguments and options, these 3 libraries can decrypt one another's encrypted
+strings: Python's PyCryptodome, PHP 7.1's openssl_* functions and npm's node-forge.
 
 ### Bcrypt
 
-As of February 2019, the industry standard for hashing passwords is bcrypt. These 3 libraries can hash and
+As of April 2019, Bcrypt password hashing is reputable and secure. These 3 libraries can hash and
 verify one another's hashes: Python's bcrypt, PHP's password_hash function, npm's bcrypt-js
 
-### urandom
+### Randomness
 
-Cryptographic randomness is tricky. These 3 sources can provide good randomness: Python's os.urandom()
-function, PHP's openssl_random_pseudo_bytes() function and Node's crypto.randomBytes() function.
+Cryptographic randomness is tricky. These 3 libraries can provide secure randomness:
+Python's os.urandom(), PHP's random_bytes() and Node's crypto.randomBytes() functions.
 
 ## Use cases
 
@@ -104,7 +108,7 @@ designed for hashing passwords.
 
 #### Encrypt and decrypt with key
 
-Note: key should be a 64-character hex-encoded string stored in a secure param store.
+**Note:** key should be a 64-character hex-encoded string stored in a secure param store.
 To generate a cryptographically secure random key, use `PolyAES.generateKey(64)`.
 
 NodeJS:
@@ -135,6 +139,41 @@ use PolyCrypto\PolyAES;
 $hexKey = '64-char hex encoded string from secure param store';
 $encrypted = PolyAES::withKey($hexKey)->encrypt($data);
 $decrypted = PolyAES::withKey($hexKey)->decrypt($encrypted);
+```
+
+**Note:** You can re-use the "cipher" object. For example:
+
+NodeJS:
+```js
+const { PolyAES } = require('poly-crypto');
+
+const hexKey = '64-char hex encoded string from secure param store';
+const cipher = PolyAES.withKey(hexKey);
+const encrypted = cipher.encrypt(data); 
+const decrypted = cipher.decrypt(encrypted); 
+```
+
+Python:
+```python
+import PolyAES
+
+hexKey = '64-char hex encoded string from secure param store'
+cipher = PolyAES.withKey(hexKey);
+encrypted = cipher.encrypt(data)
+decrypted = cipher.decrypt(encrypted)
+```
+
+PHP:
+```php
+<?php
+
+require_once('vendor/autoload.php');
+use PolyCrypto\PolyAES;
+
+$hexKey = '64-char hex encoded string from secure param store';
+$cipher = PolyAES::withKey($hexKey);
+$encrypted = $cipher->encrypt($data);
+$decrypted = $cipher->decrypt($encrypted);
 ```
 
 #### Encrypt and decrypt with password
@@ -171,6 +210,8 @@ $salt = 'String from secure param store';
 $encrypted = PolyAES::withPassword($password, $salt)->encrypt($data); 
 $decrypted = PolyAES::withPassword($password, $salt)->decrypt($encrypted); 
 ```
+
+**Note:** You can re-use the "cipher" as an object.
 
 ### Password hashing
 
@@ -338,10 +379,10 @@ npx pass:encrypt $password $salt $dataToEncrypt
 npx pass:decrypt $password $salt $stringToDecrypt
 npx bcrypt:hash $password
 npx bcrypt:verify $password $againstHash
-npx hash:md5 $string
-npx hash:sha1 $string
-npx hash:sha256 $string
-npx hash:sha512 $string
+npx dig:md5 $string
+npx dig:sha1 $string
+npx dig:sha256 $string
+npx dig:sha512 $string
 npx rand:bytes $length
 npx rand:hex $length
 npx rand:slug $length
@@ -368,7 +409,7 @@ import { PolyBcrypt } from './node_modules/poly-crypto/node/src/PolyBcrypt.js';
 
 ```bash
 # test all languages
-npm run test-all
+npm run test:all
 
 # PHP
 ./vendor/bin/kahlan --spec=php/tests

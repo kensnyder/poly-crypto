@@ -1,7 +1,7 @@
 {
   "name": "poly-crypto",
   "version": "1.0.0",
-  "description": "Encrypt and decrypt data with AES-256 GCM; compatible with PHP's openssl_encrypt() and Python's PyCryptodome.",
+  "description": "High-level cryptographic functions that are interoperable between NodeJS, PHP 7.1+, and Python.",
   "main": "index.js",
   "scripts": {
     "dist": "npx babel --presets=@babel/preset-env node/src/* --out-file index.js",
@@ -41,9 +41,10 @@
     "sha1",
     "sha256",
     "sha512",
+    "hash",
+    "digest",
     "slug",
     "symetric",
-    "encryption",
     "cipher",
     "ciphertext",
     "crypto",
@@ -54,7 +55,6 @@
     "PHP",
     "openssl",
     "Python",
-    "PyCrypto",
     "PyCryptodome",
     "random",
     "urandom"
@@ -63,15 +63,15 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "node-forge": "^0.7.6"
+    "node-forge": "^0.8.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.3.1",
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
     "chai": "^4.2.0",
-    "mocha": "^5.2.0",
-    "parcel": "^1.11.0",
-    "prettier": "^1.16.1"
+    "mocha": "^6.1.0",
+    "parcel": "^1.12.3",
+    "prettier": "^1.16.4"
   }
 }

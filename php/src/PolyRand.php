@@ -25,15 +25,17 @@ class PolyRand {
 	 * Create a string of the given length with random bytes
 	 * @param int length  The desired length
 	 * @return string
+	 * @throws \Exception if platform does not provide cryptographically secure randomness
 	 */
 	public static function bytes(int $length) : string {
-		return openssl_random_pseudo_bytes($length);
+		return random_bytes($length);
 	}
 
 	/**
 	 * Create a string of the given length with hexidecimal characters
 	 * @param int length  The desired length
 	 * @return string
+	 * @throws \Exception if platform does not provide cryptographically secure randomness
 	 */
 	public static function hex(int $length) : string {
 		return bin2hex(static::bytes($length / 2));
