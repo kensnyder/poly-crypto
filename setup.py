@@ -1,22 +1,16 @@
-from distutils.core import setup
+import setuptools
 
-setup(
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
+setuptools.setup(
     name = 'poly-crypto',
     version = '1.0.0',
     description = "High-level cryptographic functions that are interoperable between NodeJS, PHP 7.1+, and Python.",
     author = 'kensnyder',
     author_email = 'kendsnyder@gmail.com',
+    long_description = long_description,
+    long_description_content_type = "text/markdown",
     url = 'https://github.com/kensnyder/poly-crypto',
-    py_modules=[],
-    install_requires=[
-        'pycryptodome==3.7.3',
-        'py-bcrypt==0.4'
-    ],
-    namespace_packages=['PolyCrypto'],
-    entry_points='''
-        [PolyCrypto.PolyAES]
-        [PolyCrypto.PolyBcrypt]
-        [PolyCrypto.PolyDigest]
-        [PolyCrypto.PolyRand]
-    ''',
+    packages = setuptools.find_packages(),
 )
