@@ -1,6 +1,6 @@
 {
   "name": "poly-crypto/poly-crypto",
-  "description": "High-level cryptographic functions that are interoperable between NodeJS, PHP 7.1+, and Python.",
+  "description": "High-level cryptographic functions that are interoperable between NodeJS, PHP 7.0+, and Python.",
   "keywords": [
     "encryption",
     "decryption",
@@ -20,7 +20,7 @@
     "hash",
     "digest",
     "slug",
-    "symetric",
+    "symmetric",
     "cipher",
     "ciphertext",
     "crypto",
@@ -46,7 +46,7 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "php": ">=7.1.0"
+    "php": ">=7.0.0"
   },
   "autoload": {
     "psr-0": {

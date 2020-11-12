@@ -1,10 +1,10 @@
 # poly-crypto
 
-**Poly**glot **Crypto**graphy. High-level cryptographic functions that are interoperable between NodeJS, PHP 7.1+, and Python.
+**Poly**glot **Crypto**graphy. High-level cryptographic functions that are interoperable between NodeJS, PHP 7.0+, and Python.
 
 ## Project Goals
 
-1. APIs that work exactly the same on NodeJS, PHP 7.1, and Python
+1. APIs that work exactly the same on NodeJS, PHP 7.0+, and Python
 1. Packages for Python and Node that can be used on serverless functions without external C bindings
 1. Two-way symmetric encryption with a key or with password and salt
 1. Password hashing
@@ -26,8 +26,8 @@ pip install poly-crypto
 
 | Section | NodeJS/Python | PHP |
 | --- | --- | --- |
-| [Encrypt with key](#encrypt-and-decrypt-with-key) | PolyAES.withKey(key).encrypt(data) | PolyAES::withKey($key)->encrypt($data) | 
-| [Decrypt with key](#encrypt-and-decrypt-with-key) | PolyAES.withKey(key).decrypt(encrypted) | PolyAES::withKey($key)->decrypt($encrypted) | 
+| [Encrypt with key](#encrypt-and-decrypt-with-key) | PolyAES.withKey(key).encrypt(data) | PolyAES::withKey($key)->encrypt($data) |
+| [Decrypt with key](#encrypt-and-decrypt-with-key) | PolyAES.withKey(key).decrypt(encrypted) | PolyAES::withKey($key)->decrypt($encrypted) |
 | [Encrypt with password](#encrypt-and-decrypt-with-password) | PolyAES.withPassword(password, salt).encrypt(data) | PolyAES::withPassword($password, $salt)->encrypt($data) |
 | [Decrypt with password](#encrypt-and-decrypt-with-password) | PolyAES.withPassword(password, salt).decrypt(encrypted) | PolyAES::withPassword($password, $salt)->decrypt($encrypted) |
 | [Bcrypt hash](#password-hashing) | PolyBcrypt.hash(password) | PolyBcrypt::hash($password) |
@@ -41,16 +41,16 @@ pip install poly-crypto
 	1. [AES-255 GCM](#aes-256-gcm)
 	1. [Bcrypt](#bcrypt)
 	1. [Randomness](#randomness)
-1. [Use Cases](#use-cases)	
-1. [Misuse](#misuse)	
+1. [Use Cases](#use-cases)
+1. [Misuse](#misuse)
 1. [AES encryption](#aes-encryption)
 	1. [Encrypt and decrypt with key](#encrypt-and-decrypt-with-key)
 	1. [Encrypt and decrypt with password](#encrypt-and-decrypt-with-password)
-1. [Password hashing](#password-hashing) 
+1. [Password hashing](#password-hashing)
 1. [Digest functions](#digest-functions)
 1. [Random functions](#random-functions)
 1. [Performance](#performance)
-1. [Command line utilities](#command-line-utilities)	
+1. [Command line utilities](#command-line-utilities)
 1. [Browser usage](#browser-usage)
 1. [JavaScript direct import](#javascript-direct-import)
 1. [Unit tests](#unit-tests)
@@ -62,13 +62,13 @@ pip install poly-crypto
 ### AES-256 GCM
 
 As of April 2019, AES-256 Encryption with GCM block mode is a reputable and secure method
-that is available across PHP 7.1, NodeJS and Python without any extensions.
+that is available across PHP, NodeJS and Python without any extensions.
 With the right arguments and options, these 3 libraries can decrypt one another's encrypted
-strings: Python's PyCryptodome, PHP 7.1's openssl_* functions and npm's node-forge.
+strings: Python's PyCryptodome, PHP's openssl_* functions and npm's node-forge.
 
 ### Bcrypt
 
-As of April 2019, Bcrypt password hashing is reputable and secure. These 3 libraries can hash and
+As of November 2020, Bcrypt password hashing is reputable and secure. These 3 libraries can hash and
 verify one another's hashes: Python's bcrypt, PHP's password_hash function, npm's bcrypt-js
 
 ### Randomness
@@ -86,22 +86,23 @@ poly-crypto's basic use cases:
 | 2.  | Encrypt data for a user that he or she can decrypt later | User-supplied password & system salt | base-64 encoded string | PolyAES.withPassword(password, salt).encrypt(data) |
 | 3.  | Hash passwords with bcrypt | Password string | bcrypt hash | PolyBcrypt.hash(password) |
 | 4.  | Check if a password matches the given bcrypt hash | Password string & bcrypt hash | True if password matches | PolyBcrypt.verify(password, hash) |
-| 5.  | Generate digests (e.g. sha256) | String data | digest string | PolyDigest.sha256(data) |
+| 5.  | Calculate digests (e.g. sha256) | String data | digest string | PolyDigest.sha256(data) |
 | 6.  | Generate random slugs | number of characters | a string with random characters | PolyRand.slug(numCharacters) |
 
 ## Misuse
 
-1. **File encryption.** poly-crypto modules are not meant to be used to encrypt 
+1. **File encryption.** poly-crypto modules are not meant to be used to encrypt
 entire files. You'll want to use a C-based library that is designed to encrypt
-large amounts of data quickly. File encryption considerations:
+large amounts of data quickly. For example, consider the following:
 	1. poly-crypto is not fast for large files.
 	1. AES-256 GCM encryption can be parallelized in languages that support
 	   threading for faster processing
-1. **Streaming data.** PolyAES is not designed to encrypt streaming data.	
-1. **Secure key storage.** If you store encryption keys or user passwords in 
-plain text, encryption will not provide protection.
-1. **Digests for passwords.** Do not use md5 or any sha* digest for hashing
-passwords, even if you use salt. PolyBcrypt is the only poly-crypto module 
+1. **Streaming data.** PolyAES is not designed to encrypt streaming data.
+1. **Secure key storage.** If you store encryption keys or user passwords in
+plain text, encryption will not provide protection. You'll want to store keys
+in secure parameter store.
+1. **Digests for passwords.** Do not use md5 or any sha digest for hashing
+passwords, even if you use salt. PolyBcrypt is the only poly-crypto module
 designed for hashing passwords.
 
 ### AES Encryption
@@ -116,8 +117,8 @@ NodeJS:
 const { PolyAES } = require('poly-crypto');
 
 const hexKey = '64-char hex encoded string from secure param store';
-const encrypted = PolyAES.withKey(hexKey).encrypt(data); 
-const decrypted = PolyAES.withKey(hexKey).decrypt(encrypted); 
+const encrypted = PolyAES.withKey(hexKey).encrypt(data);
+const decrypted = PolyAES.withKey(hexKey).decrypt(encrypted);
 ```
 
 Python:
@@ -149,8 +150,8 @@ const { PolyAES } = require('poly-crypto');
 
 const hexKey = '64-char hex encoded string from secure param store';
 const cipher = PolyAES.withKey(hexKey);
-const encrypted = cipher.encrypt(data); 
-const decrypted = cipher.decrypt(encrypted); 
+const encrypted = cipher.encrypt(data);
+const decrypted = cipher.decrypt(encrypted);
 ```
 
 Python:
@@ -184,8 +185,8 @@ const { PolyAES } = require('poly-crypto');
 
 const password = 'String from user';
 const salt = 'String from secure param store';
-const encrypted = PolyAES.withPassword(password, salt).encrypt(data); 
-const decrypted = PolyAES.withPassword(password, salt).decrypt(encrypted); 
+const encrypted = PolyAES.withPassword(password, salt).encrypt(data);
+const decrypted = PolyAES.withPassword(password, salt).decrypt(encrypted);
 ```
 
 Python:
@@ -207,8 +208,8 @@ use PolyCrypto\PolyAES;
 
 $password = 'String from user';
 $salt = 'String from secure param store';
-$encrypted = PolyAES::withPassword($password, $salt)->encrypt($data); 
-$decrypted = PolyAES::withPassword($password, $salt)->decrypt($encrypted); 
+$encrypted = PolyAES::withPassword($password, $salt)->encrypt($data);
+$decrypted = PolyAES::withPassword($password, $salt)->decrypt($encrypted);
 ```
 
 **Note:** You can re-use the "cipher" as an object.
@@ -229,7 +230,7 @@ NodeJS:
 const { PolyBcrypt } = require('poly-crypto');
 
 const password = 'Password from a user';
-const hash = PolyBcrypt.hash(password); 
+const hash = PolyBcrypt.hash(password);
 const isCorrect = PolyBcrypt.verify(password, hash);
 ```
 
@@ -250,11 +251,11 @@ require_once('vendor/autoload.php');
 use PolyCrypto\PolyBcrypt;
 
 $password = 'Password from a user';
-$hash = PolyBcrypt::hash($password); 
+$hash = PolyBcrypt::hash($password);
 $isCorrect = PolyBcrypt::verify($password, $hash);
 ```
 
-### Digest functions 
+### Digest functions
 
 Standard one-way digest functions.
 
@@ -300,7 +301,7 @@ NodeJS:
 const { PolyRand } = require('poly-crypto');
 
 // generate a string containing numbers and letters minus vowels
-// suitable for resources such as URLs with random strings 
+// suitable for resources such as URLs with random strings
 PolyRand.slug(length);
 
 // generate a string containing hexadecimal characters
@@ -323,7 +324,7 @@ Python:
 import PolyRand
 
 # generate a string containing numbers and letters minus vowels
-# suitable for resources such as URLs with random strings 
+# suitable for resources such as URLs with random strings
 PolyRand.slug(length)
 
 # generate a string containing hexadecimal characters
@@ -349,7 +350,7 @@ require_once('vendor/autoload.php');
 use PolyCrypto\PolyRand;
 
 // generate a string containing numbers and letters minus vowels
-// suitable for resources such as URLs with random strings 
+// suitable for resources such as URLs with random strings
 PolyRand::slug($length);
 
 // generate a string containing hexadecimal characters
@@ -423,7 +424,7 @@ pytest
 
 ## Contributing
 
-Contributions welcome! See 
+Contributions welcome! See
 [CONTRIBUTING.md](https://github.com/kensnyder/poly-crypto/blob/master/CONTRIBUTING.md).
 
 ## License

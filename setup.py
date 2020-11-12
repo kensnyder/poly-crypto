@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name = 'poly-crypto',
-    version = '1.0.0',
+    version = '1.0.2',
     description = "High-level cryptographic functions that are interoperable between NodeJS, PHP 7.1+, and Python.",
     author = 'kensnyder',
     author_email = 'kendsnyder@gmail.com',
