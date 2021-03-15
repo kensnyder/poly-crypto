@@ -1,4 +1,4 @@
-import forge from 'node-forge';
+const forge = require('node-forge');
 
 /**
  * Service for encrypting and decrypting data with AES-256 GCM
@@ -14,7 +14,7 @@ import forge from 'node-forge';
  * const encrypted = PolyAES.withPassword(password, salt).encrypt(data);
  * const decrypted = PolyAES.withPassword(password, salt).decrypt(encrypted);
  */
-export class PolyAES {
+class PolyAES {
 	/**
 	 * Static function to return new Crypto instance
 	 * @param {String} hexKey  The 256-bit key in hexadecimal (should be 64 characters)
@@ -247,3 +247,5 @@ PolyAES.ENCODING_ERROR = 'PolyAES: encoding must be base64, hex, or bin.';
  * Default value for this._encoding
  */
 PolyAES.DEFAULT_ENCODING = 'base64';
+
+module.exports = PolyAES;

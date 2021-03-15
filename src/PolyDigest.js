@@ -1,9 +1,9 @@
-import forge from 'node-forge';
+const forge = require('node-forge');
 
 /**
  * Calculate digests of strings
  */
-export const PolyDigest = {
+const PolyDigest = {
 	/**
 	 * Calculate the md5 digest of a string
 	 * @param {String} data  The string to digest
@@ -53,3 +53,5 @@ export const PolyDigest = {
 		return md.digest().toHex();
 	},
 };
+
+module.exports = PolyDigest;

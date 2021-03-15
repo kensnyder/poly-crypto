@@ -1,4 +1,4 @@
-const { PolyRand } = require('../../index.js');
+const { PolyRand } = require('../index.js');
 const expect = require('chai').expect;
 
 describe('PolyRand.bytes()', () => {

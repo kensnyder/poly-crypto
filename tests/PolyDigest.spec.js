@@ -1,4 +1,4 @@
-const { PolyDigest } = require('../../index.js');
+const { PolyDigest } = require('../index.js');
 const expect = require('chai').expect;
 
 describe('PolyDigest', () => {

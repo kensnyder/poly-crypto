@@ -1,4 +1,4 @@
-const { PolyAES } = require('../../index.js');
+const { PolyAES } = require('../index.js');
 const expect = require('chai').expect;
 
 describe('PolyAES.withKey()', () => {

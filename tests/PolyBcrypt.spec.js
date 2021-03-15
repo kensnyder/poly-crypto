@@ -1,4 +1,4 @@
-const { PolyBcrypt } = require('../../index.js');
+const { PolyBcrypt } = require('../index.js');
 const expect = require('chai').expect;
 
 const password = 'abc';

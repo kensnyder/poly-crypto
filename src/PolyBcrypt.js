@@ -1,9 +1,9 @@
-import bcrypt from 'bcryptjs';
+const bcrypt = require('bcryptjs');
 
 /**
  * Functions to hash and verify passwords using bcrypt
  */
-export const PolyBcrypt = {
+const PolyBcrypt = {
 	/**
 	 * Exception message when password is too long
 	 */
@@ -68,3 +68,5 @@ export const PolyBcrypt = {
 		};
 	},
 };
+
+module.exports = PolyBcrypt;

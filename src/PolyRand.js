@@ -1,9 +1,9 @@
-import forge from 'node-forge';
+const forge = require('node-forge');
 
 /**
  * Methods to generate random strings
  */
-export const PolyRand = {
+const PolyRand = {
 	/**
 	 * {String} Error message to throw when symbol list is too big or small
 	 */
@@ -76,3 +76,5 @@ export const PolyRand = {
 		return output;
 	},
 };
+
+module.exports = PolyRand;
