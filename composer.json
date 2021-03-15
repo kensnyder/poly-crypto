@@ -30,7 +30,6 @@
     "node-forge",
     "PHP",
     "openssl",
-    "PyCryptodome",
     "random",
     "urandom"
   ],
