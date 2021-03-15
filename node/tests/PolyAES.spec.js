@@ -58,7 +58,7 @@ describe('PolyAES.withKey()', () => {
 		expect(decrypted3).to.equal(data);
 	});
 
-	it('should interoperate with Python and PHP', () => {
+	it('should interoperate with PHP', () => {
 		const data = PolyAES.withKey(keyUpper).decrypt(sheSellsEncrypted);
 		expect(data).to.equal(sheSellsDecrypted);
 	});
@@ -104,7 +104,7 @@ describe('PolyAES.withPassword()', () => {
 		expect(encrypted1).to.not.equal(encrypted2);
 	});
 
-	it('should interoperate with Python and PHP', () => {
+	it('should interoperate with PHP', () => {
 		const data = PolyAES.withPassword(password, salt).decrypt(sheSellsEncrypted);
 		expect(data).to.equal(sheSellsDecrypted);
 	});

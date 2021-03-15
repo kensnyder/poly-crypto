@@ -9,11 +9,5 @@ node/demo/.cache
 # PHP
 vendor
 
-# Python
-*.pyc
-__pycache__
-.tox
-ENV
-
 # IDEs
 .idea

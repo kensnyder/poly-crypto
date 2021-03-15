@@ -6,7 +6,6 @@ use PolyCrypto\PolyBcrypt;
 
 $password = 'abc';
 $fromJs = '$2a$10$f5449ok7vQOhhHwKwjZqx.cKeuroAr68DDwhxd78JUPJVqoVFqseS';
-$fromPython = '$2a$12$GZJDKqVrXLi0JWdhWZ55EuCb7tKoMINe3Z/RrFFIbQpG3sW8sR7qu';
 $fromPhp = '$2y$10$npEa/T9.5/aR36tMgICKYufSsReq9P9ioxV0cIpbB20KynjoYOz4.';
 
 
@@ -64,15 +63,10 @@ describe('PolyBcrypt::hash()', function() use($password) {
 
 });
 
-describe('PolyBcrypt::verify()', function() use($password, $fromJs, $fromPython, $fromPhp) {
+describe('PolyBcrypt::verify()', function() use($password, $fromJs, $fromPhp) {
 
 	it('should verify passwords from js', function() use($password, $fromJs) {
 		$doesMatch = PolyBcrypt::verify($password, $fromJs);
-		expect($doesMatch)->toBe(true);
-	});
-
-	it('should verify passwords from python', function() use($password, $fromPython) {
-		$doesMatch = PolyBcrypt::verify($password, $fromPython);
 		expect($doesMatch)->toBe(true);
 	});
 
@@ -84,7 +78,7 @@ describe('PolyBcrypt::verify()', function() use($password, $fromJs, $fromPython,
 });
 
 
-describe('PolyBcrypt::info()', function() use($password, $fromJs, $fromPython, $fromPhp) {
+describe('PolyBcrypt::info()', function() use($password, $fromJs, $fromPhp) {
 
 	it('should parse hashes from js', function() use($fromJs) {
 		$actual = (array) PolyBcrypt::info($fromJs);
@@ -94,19 +88,6 @@ describe('PolyBcrypt::info()', function() use($password, $fromJs, $fromPython, $
 			'cost' => 10,
 			'salt' => 'f5449ok7vQOhhHwKwjZqx.',
 			'hash' => 'cKeuroAr68DDwhxd78JUPJVqoVFqseS',
-		];
-		$diff = array_diff_assoc($actual, $expected);
-		expect($diff)->toBeEmpty();
-	});
-
-	it('should parse hashes from python', function() use($fromPython) {
-		$actual = (array) PolyBcrypt::info($fromPython);
-		$expected = [
-			'valid' => true,
-			'version' => '$2a$',
-			'cost' => 12,
-			'salt' => 'GZJDKqVrXLi0JWdhWZ55Eu',
-			'hash' => 'Cb7tKoMINe3Z/RrFFIbQpG3sW8sR7qu',
 		];
 		$diff = array_diff_assoc($actual, $expected);
 		expect($diff)->toBeEmpty();

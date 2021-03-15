@@ -2,7 +2,7 @@ import forge from 'node-forge';
 
 /**
  * Service for encrypting and decrypting data with AES-256 GCM
- * Compatible with PHP's openssl_encrypt() and Python's PyCryptodome
+ * Compatible with PHP's openssl_encrypt()
  * @example
  * // store hexKey in a secure parameter store
  * const hexKey = '64-char hex encoded string from secure param store';

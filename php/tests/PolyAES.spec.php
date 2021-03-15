@@ -12,7 +12,6 @@ describe('PolyAES::withKey()', function() {
 	$key2     = 'E59DD4C639CF6B095EA17783D32EF3D2710ADD43E4F9F3A572E14D5075C526FD';
 	$plaintext = 'abc';
 	$jsCiphertext = 'vXDhlmEg34iqeAconwUj6blYEsZzyZFoHavO7I1FNWUnYus=';
-	$pyCiphertext = 'x+XOkaWvvhpEddwI5bgP7qAGsRm7mxtcJclnoWZmBGOmsi4=';
 	$phpCiphertext = '38yxiaAquwZwqlHX7TWuxBPLoZKsPt4Lb4w6S3f1nLuffSM=';
 
 	it('should throw exception if key is not 64-char hex', function() {
@@ -72,11 +71,6 @@ describe('PolyAES::withKey()', function() {
 		$data = PolyAES::withKey($keyUpper)->decrypt($jsCiphertext);
 		expect($data)->toBe($plaintext);
 	});
-
-	it('should decrypt python cipertext', function() use($keyUpper, $plaintext, $pyCiphertext) {
-		$data = PolyAES::withKey($keyUpper)->decrypt($pyCiphertext);
-		expect($data)->toBe($plaintext);
-	});
 });
 
 describe('PolyAes::withPassword()', function() {
@@ -130,11 +124,6 @@ describe('PolyAes::withPassword()', function() {
 
 	it('should decrypt php ciphertext', function() use($password, $salt, $phpCiphertext, $plaintext) {
 		$data = PolyAes::withPassword($password, $salt)->decrypt($phpCiphertext);
-		expect($data)->toBe($plaintext);
-	});
-
-	it('should decrypt python ciphertext', function() use($password, $salt, $pyCiphertext, $plaintext) {
-		$data = PolyAes::withPassword($password, $salt)->decrypt($pyCiphertext);
 		expect($data)->toBe($plaintext);
 	});
 

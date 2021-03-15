@@ -1,14 +1,15 @@
 {
   "name": "poly-crypto",
-  "version": "1.0.2",
-  "description": "High-level cryptographic functions that are interoperable between NodeJS, PHP 7.1+, and Python.",
+  "version": "1.0.3",
+  "description": "High-level cryptographic functions that are interoperable between NodeJS and PHP 7.1+.",
   "main": "index.js",
   "scripts": {
     "dist": "npx babel --presets=@babel/preset-env node/src/* --out-file index.js",
     "test": "npx mocha node/tests/*.spec.js",
-    "test:all": "./vendor/bin/kahlan --spec=php/tests && npm test && pytest",
-    "test:php": "./vendor/bin/kahlan --spec=php/tests",
-    "test:python": "pytest",
+    "test:all": "./vendor/bin/kahlan --spec=php/tests && npm test",
+    "test:php": "./vendor/bin/kahlan --spec=php/tests"
+  },
+  "bin": {
     "key:encrypt": "node ./node/cli/aes-key-encrypt.js",
     "pass:encrypt": "node ./node/cli/aes-pass-encrypt.js",
     "key:decrypt": "node ./node/cli/aes-key-decrypt.js",
@@ -54,8 +55,6 @@
     "node-forge",
     "PHP",
     "openssl",
-    "Python",
-    "PyCryptodome",
     "random",
     "urandom"
   ],
@@ -66,12 +65,12 @@
     "node-forge": "^0.10.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.1",
-    "@babel/core": "^7.12.3",
-    "@babel/preset-env": "^7.12.1",
-    "chai": "^4.2.0",
-    "mocha": "^8.2.1",
+    "@babel/cli": "^7.13.10",
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.10",
+    "chai": "^4.3.4",
+    "mocha": "^8.3.2",
     "parcel": "^1.12.4",
-    "prettier": "^2.1.2"
+    "prettier": "^2.2.1"
   }
 }

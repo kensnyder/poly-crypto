@@ -4,7 +4,7 @@ namespace PolyCrypto;
 
 /**
  * Service for encrypting and decrypting data with openssl
- * Compatible with NodeJS's node-forge and Python's PyCryptodome
+ * Compatible with NodeJS's node-forge
  * @example
  * // store hexKey in a secure parameter store
  * $hexKey = '64-char hex encoded string from secure param store';

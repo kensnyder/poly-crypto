@@ -3,7 +3,6 @@ const expect = require('chai').expect;
 
 const password = 'abc';
 const fromPhp = '$2y$10$npEa/T9.5/aR36tMgICKYufSsReq9P9ioxV0cIpbB20KynjoYOz4.';
-const fromPython = '$2a$12$GZJDKqVrXLi0JWdhWZ55EuCb7tKoMINe3Z/RrFFIbQpG3sW8sR7qu';
 const fromJs = '$2a$10$f5449ok7vQOhhHwKwjZqx.cKeuroAr68DDwhxd78JUPJVqoVFqseS';
 
 describe('PolyBcrypt.hash', () => {
@@ -59,10 +58,6 @@ describe('PolyBcrypt.verify', () => {
 		const doesMatch = PolyBcrypt.verify(password, fromJs);
 		expect(doesMatch).to.equal(true);
 	});
-	it('should verify passwords from python', () => {
-		const doesMatch = PolyBcrypt.verify(password, fromPython);
-		expect(doesMatch).to.equal(true);
-	});
 	it('should verify passwords from php', () => {
 		const doesMatch = PolyBcrypt.verify(password, fromPhp);
 		expect(doesMatch).to.equal(true);
@@ -78,18 +73,6 @@ describe('PolyBcrypt.info()', () => {
 			cost: 10,
 			salt: 'f5449ok7vQOhhHwKwjZqx.',
 			hash: 'cKeuroAr68DDwhxd78JUPJVqoVFqseS',
-		};
-		expect(actual).to.deep.equal(expected);
-	});
-
-	it('should parse hashes from python', () => {
-		const actual = PolyBcrypt.info(fromPython);
-		const expected = {
-			valid: true,
-			version: '$2a$',
-			cost: 12,
-			salt: 'GZJDKqVrXLi0JWdhWZ55Eu',
-			hash: 'Cb7tKoMINe3Z/RrFFIbQpG3sW8sR7qu',
 		};
 		expect(actual).to.deep.equal(expected);
 	});

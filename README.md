@@ -1,11 +1,13 @@
 # poly-crypto
 
-**Poly**glot **Crypto**graphy. High-level cryptographic functions that are interoperable between NodeJS, PHP 7.0+, and Python.
+**Poly**glot **Crypto**graphy. High-level cryptographic functions that are
+interoperable between NodeJS and PHP 7.1+.
 
 ## Project Goals
 
-1. APIs that work exactly the same on NodeJS, PHP 7.0+, and Python
-1. Packages for Python and Node that can be used on serverless functions without external C bindings
+1. APIs that work exactly the same on NodeJS and PHP 7.1+
+1. Package for Node that can be used on serverless functions without external C
+   bindings
 1. Two-way symmetric encryption with a key or with password and salt
 1. Password hashing
 
@@ -18,13 +20,11 @@ npm install --save poly-crypto
 # PHP
 composer require poly-crypto
 
-# Python
-pip install poly-crypto
 ```
 
 ## Cheatsheet
 
-| Section | NodeJS/Python | PHP |
+| Section | NodeJS | PHP |
 | --- | --- | --- |
 | [Encrypt with key](#encrypt-and-decrypt-with-key) | PolyAES.withKey(key).encrypt(data) | PolyAES::withKey($key)->encrypt($data) |
 | [Decrypt with key](#encrypt-and-decrypt-with-key) | PolyAES.withKey(key).decrypt(encrypted) | PolyAES::withKey($key)->decrypt($encrypted) |
@@ -61,26 +61,29 @@ pip install poly-crypto
 
 ### AES-256 GCM
 
-As of April 2019, AES-256 Encryption with GCM block mode is a reputable and secure method
-that is available across PHP, NodeJS and Python without any extensions.
-With the right arguments and options, these 3 libraries can decrypt one another's encrypted
-strings: Python's PyCryptodome, PHP's openssl_* functions and npm's node-forge.
+As of March 2021, AES-256 Encryption with GCM block mode is a reputable and
+secure method that is available across PHP and NodeJS without any extensions.
+With the right arguments and options, these 2 languages can decrypt one
+another's encrypted strings using PHP's openssl_* functions and npm's
+node-forge.
 
 ### Bcrypt
 
-As of November 2020, Bcrypt password hashing is reputable and secure. These 3 libraries can hash and
-verify one another's hashes: Python's bcrypt, PHP's password_hash function, npm's bcrypt-js
+As of March 2021, Bcrypt password hashing is reputable and secure. These 2
+languages can hash and verify one another's hashes: npm's bcrypt-js and PHP's
+password_hash function.
 
 ### Randomness
 
-Cryptographic randomness is tricky. These 3 libraries can provide secure randomness:
-Python's os.urandom(), PHP's random_bytes() and Node's crypto.randomBytes() functions.
+Cryptographic randomness is tricky. These 2 languages can provide secure
+randomness:
+PHP's random_bytes() and Node's crypto.randomBytes() functions.
 
 ## Use cases
 
 poly-crypto's basic use cases:
 
-|     | Case | Input | Output | NodeJS/Python |
+|     | Case | Input | Output | NodeJS |
 | --- | ---- | ----- | ------ | ------------- |
 | 1.  | Encrypt data that you can to decrypt later | Encryption key string | base-64 encoded string | PolyAES.withKey(hexKey).encrypt(data) |
 | 2.  | Encrypt data for a user that he or she can decrypt later | User-supplied password & system salt | base-64 encoded string | PolyAES.withPassword(password, salt).encrypt(data) |
@@ -92,45 +95,39 @@ poly-crypto's basic use cases:
 ## Misuse
 
 1. **File encryption.** poly-crypto modules are not meant to be used to encrypt
-entire files. You'll want to use a C-based library that is designed to encrypt
-large amounts of data quickly. For example, consider the following:
+   entire files. You'll want to use a C-based library that is designed to
+   encrypt large amounts of data quickly. For example, consider the following:
 	1. poly-crypto is not fast for large files.
 	1. AES-256 GCM encryption can be parallelized in languages that support
 	   threading for faster processing
 1. **Streaming data.** PolyAES is not designed to encrypt streaming data.
 1. **Secure key storage.** If you store encryption keys or user passwords in
-plain text, encryption will not provide protection. You'll want to store keys
-in secure parameter store.
+   plain text, encryption will not provide protection. You'll want to store keys
+   in secure parameter store.
 1. **Digests for passwords.** Do not use md5 or any sha digest for hashing
-passwords, even if you use salt. PolyBcrypt is the only poly-crypto module
-designed for hashing passwords.
+   passwords, even if you use salt. PolyBcrypt is the only poly-crypto module
+   designed for hashing passwords.
 
 ### AES Encryption
 
 #### Encrypt and decrypt with key
 
-**Note:** key should be a 64-character hex-encoded string stored in a secure param store.
-To generate a cryptographically secure random key, use `PolyAES.generateKey(64)`.
+**Note:** key should be a 64-character hex-encoded string stored in a secure
+param store. To generate a cryptographically secure random key,
+use `PolyAES.generateKey(64)`.
 
 NodeJS:
+
 ```js
-const { PolyAES } = require('poly-crypto');
+const {PolyAES} = require('poly-crypto');
 
 const hexKey = '64-char hex encoded string from secure param store';
 const encrypted = PolyAES.withKey(hexKey).encrypt(data);
 const decrypted = PolyAES.withKey(hexKey).decrypt(encrypted);
 ```
 
-Python:
-```python
-import PolyAES
-
-hexKey = '64-char hex encoded string from secure param store'
-encrypted = PolyAES.withKey(hexKey).encrypt(data)
-decrypted = PolyAES.withKey(hexKey).decrypt(encrypted)
-```
-
 PHP:
+
 ```php
 <?php
 
@@ -145,8 +142,9 @@ $decrypted = PolyAES::withKey($hexKey)->decrypt($encrypted);
 **Note:** You can re-use the "cipher" object. For example:
 
 NodeJS:
+
 ```js
-const { PolyAES } = require('poly-crypto');
+const {PolyAES} = require('poly-crypto');
 
 const hexKey = '64-char hex encoded string from secure param store';
 const cipher = PolyAES.withKey(hexKey);
@@ -154,17 +152,8 @@ const encrypted = cipher.encrypt(data);
 const decrypted = cipher.decrypt(encrypted);
 ```
 
-Python:
-```python
-import PolyAES
-
-hexKey = '64-char hex encoded string from secure param store'
-cipher = PolyAES.withKey(hexKey);
-encrypted = cipher.encrypt(data)
-decrypted = cipher.decrypt(encrypted)
-```
-
 PHP:
+
 ```php
 <?php
 
@@ -180,8 +169,9 @@ $decrypted = $cipher->decrypt($encrypted);
 #### Encrypt and decrypt with password
 
 NodeJS:
+
 ```js
-const { PolyAES } = require('poly-crypto');
+const {PolyAES} = require('poly-crypto');
 
 const password = 'String from user';
 const salt = 'String from secure param store';
@@ -189,17 +179,8 @@ const encrypted = PolyAES.withPassword(password, salt).encrypt(data);
 const decrypted = PolyAES.withPassword(password, salt).decrypt(encrypted);
 ```
 
-Python:
-```python
-import PolyAES
-
-password = 'String from user'
-salt = 'String from secure param store'
-encrypted = PolyAES.withPassword(password, salt).encrypt(data)
-decrypted = PolyAES.withPassword(password, salt).decrypt(encrypted)
-```
-
 PHP:
+
 ```php
 <?php
 
@@ -216,34 +197,27 @@ $decrypted = PolyAES::withPassword($password, $salt)->decrypt($encrypted);
 
 ### Password hashing
 
-Bcrypt hashes are designed to store user passwords with a max length of 72 bytes.
-If a longer string is passed, an exception will be thrown. Keep in mind that
-Unicode characters require multiple bytes.
+Bcrypt hashes are designed to store user passwords with a max length of 72
+bytes. If a longer string is passed, an exception will be thrown. Keep in mind
+that Unicode characters require multiple bytes.
 
 Bcrypt conveniently stores salt along with the password. That ensures that
-identical passwords will get different hashes. As such, you cannot compare
-two hashes, you must use the `PolyBcrypt.verify()` function to see if the
-given password matches the hash you have on record.
+identical passwords will get different hashes. As such, you cannot compare two
+hashes, you must use the `PolyBcrypt.verify()` function to see if the given
+password matches the hash you have on record.
 
 NodeJS:
+
 ```js
-const { PolyBcrypt } = require('poly-crypto');
+const {PolyBcrypt} = require('poly-crypto');
 
 const password = 'Password from a user';
 const hash = PolyBcrypt.hash(password);
 const isCorrect = PolyBcrypt.verify(password, hash);
 ```
 
-Python:
-```python
-import PolyBcrypt
-
-password = 'Password from a user'
-hash = PolyBcrypt.hash(password)
-is_correct = PolyBcrypt.verify(password, hash)
-```
-
 PHP:
+
 ```php
 <?php
 
@@ -260,8 +234,9 @@ $isCorrect = PolyBcrypt::verify($password, $hash);
 Standard one-way digest functions.
 
 NodeJS:
+
 ```js
-const { PolyDigest } = require('poly-crypto');
+const {PolyDigest} = require('poly-crypto');
 
 PolyDigest.sha512(data);
 PolyDigest.sha256(data);
@@ -269,17 +244,8 @@ PolyDigest.sha1(data);
 PolyDigest.md5(data);
 ```
 
-Python:
-```python
-import PolyDigest
-
-PolyDigest.sha512(data)
-PolyDigest.sha256(data)
-PolyDigest.sha1(data)
-PolyDigest.md5(data)
-```
-
 PHP:
+
 ```php
 <?php
 
@@ -297,8 +263,9 @@ PolyDigest::md5($data);
 Simple functions to generate random values synchronously.
 
 NodeJS:
+
 ```js
-const { PolyRand } = require('poly-crypto');
+const {PolyRand} = require('poly-crypto');
 
 // generate a string containing numbers and letters minus vowels
 // suitable for resources such as URLs with random strings
@@ -319,30 +286,8 @@ PolyRand.string(symbolList, length);
 PolyRand.bytes(length);
 ```
 
-Python:
-```python
-import PolyRand
-
-# generate a string containing numbers and letters minus vowels
-# suitable for resources such as URLs with random strings
-PolyRand.slug(length)
-
-# generate a string containing hexadecimal characters
-PolyRand.hex(length)
-
-# generate a string containing numbers and lowercase letters
-# that are unambiguous when written down
-PolyRand.fax(length)
-
-# generate a string containing lowercase letters minus vowels
-const symbolList = 'bcdfghjklmnpqrstvwxyz'
-PolyRand.string(symbolList, length)
-
-# generate random bytes in binary form
-PolyRand.bytes(length)
-```
-
 PHP:
+
 ```php
 <?php
 
@@ -393,15 +338,17 @@ npx rand:string $length $symbolString
 
 ## Browser usage
 
-All poly-crypto modules do function in the browser. There are only a few use cases
-where encrypting in the browser is a good idea. If you know what you are doing,
-see the following section for instructions on directly importing a Poly* module.
+All poly-crypto modules do function in the browser. There are only a few use
+cases where encrypting in the browser is a good idea. If you know what you are
+doing, see the following section for instructions on directly importing a Poly*
+module.
 
 ## JavaScript direct import
 
 If you are using [esm](https://www.npmjs.com/package/esm) or a bundler such as
 [webpack](https://webpack.js.org/) or [parcel](https://parceljs.org/)
 you may import a single JavaScript module like so:
+
 ```js
 import { PolyBcrypt } from './node_modules/poly-crypto/node/src/PolyBcrypt.js';
 ```
@@ -409,7 +356,7 @@ import { PolyBcrypt } from './node_modules/poly-crypto/node/src/PolyBcrypt.js';
 ## Unit tests
 
 ```bash
-# test all languages
+# test both languages
 npm run test:all
 
 # PHP
@@ -417,15 +364,13 @@ npm run test:all
 
 # NodeJS
 npm test
-
-# Python
-pytest
 ```
 
 ## Contributing
 
 Contributions welcome! See
-[CONTRIBUTING.md](https://github.com/kensnyder/poly-crypto/blob/master/CONTRIBUTING.md).
+[CONTRIBUTING.md](https://github.com/kensnyder/poly-crypto/blob/master/CONTRIBUTING.md)
+.
 
 ## License
 
