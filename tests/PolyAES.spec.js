@@ -1,5 +1,4 @@
 const { PolyAES } = require('../index.js');
-const expect = require('chai').expect;
 
 describe('PolyAES.withKey()', () => {
 	const keyUpper = 'C639A572E14D5075C526FDDD43E4ECF6B095EA17783D32EF3D2710AF9F359DD4';
@@ -13,9 +12,9 @@ describe('PolyAES.withKey()', () => {
 	it('should throw Error if key is not 64-char hex', () => {
 		try {
 			PolyAES.withKey('xyz');
-			expect(false).to.equal(true);
+			expect(false).toBe(true);
 		} catch (e) {
-			expect(e).to.be.instanceOf(Error);
+			expect(e).toBeInstanceOf(Error);
 		}
 	});
 
@@ -24,7 +23,7 @@ describe('PolyAES.withKey()', () => {
 		const data = 'I love encryption';
 		const encrypted = crypto.encrypt(data);
 		const decrypted = crypto.decrypt(encrypted);
-		expect(decrypted).to.equal(data);
+		expect(decrypted).toBe(data);
 	});
 
 	it('should handle unicode', () => {
@@ -32,7 +31,7 @@ describe('PolyAES.withKey()', () => {
 		const data = 'I ❤️ encryption';
 		const encrypted = crypto.encrypt(data);
 		const decrypted = crypto.decrypt(encrypted);
-		expect(decrypted).to.equal(data);
+		expect(decrypted).toBe(data);
 	});
 
 	it('should encrypt differently every time', () => {
@@ -40,27 +39,27 @@ describe('PolyAES.withKey()', () => {
 		const data = 'Pack my box with five dozen liquor jugs.';
 		const encrypted1 = crypto.encrypt(data);
 		const encrypted2 = crypto.encrypt(data);
-		expect(encrypted1).to.not.equal(encrypted2);
+		expect(encrypted1).not.toBe(encrypted2);
 	});
 
 	it('should treat hexadecimal case insensitively', () => {
 		const data = 'She sells sea shells by the sea shore';
 		const encrypted = PolyAES.withKey(keyUpper).encrypt(data);
 		const decrypted = PolyAES.withKey(keyLower).decrypt(encrypted);
-		expect(decrypted).to.equal(data);
+		expect(decrypted).toBe(data);
 
 		const encrypted2 = PolyAES.withKey(keyLower).encrypt(data);
 		const decrypted2 = PolyAES.withKey(keyMixed).decrypt(encrypted2);
-		expect(decrypted2).to.equal(data);
+		expect(decrypted2).toBe(data);
 
 		const encrypted3 = PolyAES.withKey(keyMixed).encrypt(data);
 		const decrypted3 = PolyAES.withKey(keyUpper).decrypt(encrypted3);
-		expect(decrypted3).to.equal(data);
+		expect(decrypted3).toBe(data);
 	});
 
 	it('should interoperate with PHP', () => {
 		const data = PolyAES.withKey(keyUpper).decrypt(sheSellsEncrypted);
-		expect(data).to.equal(sheSellsDecrypted);
+		expect(data).toBe(sheSellsDecrypted);
 	});
 });
 
@@ -74,9 +73,9 @@ describe('PolyAES.withPassword()', () => {
 	it('should throw exception if password is shorter than 8 characters', () => {
 		try {
 			PolyAES.withPassword(password, 'hello w');
-			expect(false).to.equal(true);
+			expect(false).toBe(true);
 		} catch (e) {
-			expect(e).to.be.instanceOf(Error);
+			expect(e).toBeInstanceOf(Error);
 		}
 	});
 
@@ -85,7 +84,7 @@ describe('PolyAES.withPassword()', () => {
 		const data = 'I love encryption';
 		const encrypted = crypto.encrypt(data);
 		const decrypted = crypto.decrypt(encrypted);
-		expect(decrypted).to.equal(data);
+		expect(decrypted).toBe(data);
 	});
 
 	it('should handle unicode', () => {
@@ -93,7 +92,7 @@ describe('PolyAES.withPassword()', () => {
 		const data = 'I ❤️ encryption';
 		const encrypted = crypto.encrypt(data);
 		const decrypted = crypto.decrypt(encrypted);
-		expect(decrypted).to.equal(data);
+		expect(decrypted).toBe(data);
 	});
 
 	it('should encrypt differently every time', () => {
@@ -101,11 +100,11 @@ describe('PolyAES.withPassword()', () => {
 		const data = 'Pack my box with five dozen liquor jugs.';
 		const encrypted1 = crypto.encrypt(data);
 		const encrypted2 = crypto.encrypt(data);
-		expect(encrypted1).to.not.equal(encrypted2);
+		expect(encrypted1).not.toBe(encrypted2);
 	});
 
 	it('should interoperate with PHP', () => {
 		const data = PolyAES.withPassword(password, salt).decrypt(sheSellsEncrypted);
-		expect(data).to.equal(sheSellsDecrypted);
+		expect(data).toBe(sheSellsDecrypted);
 	});
 });

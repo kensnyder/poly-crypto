@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { PolyAES } = require('../../index.js');
+const { PolyAES } = require('../index.js');
 
 try {
 	const [$0, $1, key, plaintext] = process.argv;

@@ -39,11 +39,10 @@ class PolyBcrypt {
 	 * @param string $password  The password to check
 	 * @param string $hash  The hash the password should match
 	 * @return bool  True if password is correct
-	 * @throws \Exception  When password is too long
 	 */
 	public static function verify(string $password, string $hash) : bool {
 		if (strlen($password) > 72) {
-			throw new \Exception(static::LENGTH_ERROR);
+			return false;
 		}
 		return password_verify($password, $hash);
 	}

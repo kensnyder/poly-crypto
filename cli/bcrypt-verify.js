@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { PolyBcrypt } = require('../../index.js');
+const { PolyBcrypt } = require('../index.js');
 
 try {
 	const [$0, $1, password, hash] = process.argv;

@@ -38,11 +38,10 @@ const PolyBcrypt = {
 	 * @param {String} password  The password to check
 	 * @param {String} hash  The hash the password should match
 	 * @return {Boolean}  True if password is correct
-	 * @throws Error  When password is too long
 	 */
 	verify(password, hash) {
 		if (password.length > 72) {
-			throw Error(PolyBcrypt.LENGTH_ERROR);
+			return false;
 		}
 		return bcrypt.compareSync(password, hash);
 	},

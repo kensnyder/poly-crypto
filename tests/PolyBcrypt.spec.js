@@ -1,5 +1,4 @@
 const { PolyBcrypt } = require('../index.js');
-const expect = require('chai').expect;
 
 const password = 'abc';
 const fromPhp = '$2y$10$npEa/T9.5/aR36tMgICKYufSsReq9P9ioxV0cIpbB20KynjoYOz4.';
@@ -11,56 +10,60 @@ describe('PolyBcrypt.hash', () => {
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ok?';
 		try {
 			PolyBcrypt.hash(longPassword);
-			expect(false).to.equal(true);
+			expect(false).toBe(true);
 		} catch (e) {
-			expect(e).to.be.instanceOf(Error);
+			expect(e).toBeInstanceOf(Error);
 		}
 	});
 	it('should ensure cost is at least 4', () => {
 		try {
 			PolyBcrypt.hash(password, 3);
-			expect(false).to.equal(true);
+			expect(false).toBe(true);
 		} catch (e) {
-			expect(e).to.be.instanceOf(Error);
+			expect(e).toBeInstanceOf(Error);
 		}
 	});
 	it('should ensure cost is at most 31', () => {
 		try {
 			PolyBcrypt.hash(password, 32);
-			expect(false).to.equal(true);
+			expect(false).toBe(true);
 		} catch (e) {
-			expect(e).to.be.instanceOf(Error);
+			expect(e).toBeInstanceOf(Error);
 		}
 	});
 	it('should produce 60 char string', () => {
 		const hash = PolyBcrypt.hash(password);
-		expect(hash.length).to.equal(60);
+		expect(hash.length).toBe(60);
 	});
 
 	it('should produce different hashes every time', () => {
 		const hash1 = PolyBcrypt.hash(password, 10);
 		const hash2 = PolyBcrypt.hash(password, 10);
-		expect(hash1).not.to.equal(hash2);
+		expect(hash1).not.toBe(hash2);
 	});
 	it('should handle unicode', () => {
 		const hash = PolyBcrypt.hash('Ich weiß nicht 🔥. Bitte schön.', 10);
-		expect(hash).to.match(/^\$\d[a-z]\$10\$[\w.\/]{53}$/i);
+		expect(hash).toMatch(/^\$\d[a-z]\$10\$[\w.\/]{53}$/i);
 	});
 	it('should verify its own hashes', () => {
 		const hash = PolyBcrypt.hash(password);
 		const doesMatch = PolyBcrypt.verify(password, hash);
-		expect(doesMatch).to.equal(true);
+		expect(doesMatch).toBe(true);
 	});
 });
 
 describe('PolyBcrypt.verify', () => {
 	it('should verify passwords from js', () => {
 		const doesMatch = PolyBcrypt.verify(password, fromJs);
-		expect(doesMatch).to.equal(true);
+		expect(doesMatch).toBe(true);
+	});
+	it('should reject strings that are too long', () => {
+		const doesMatch = PolyBcrypt.verify(new Array(74).join('a'), fromJs);
+		expect(doesMatch).toBe(false);
 	});
 	it('should verify passwords from php', () => {
 		const doesMatch = PolyBcrypt.verify(password, fromPhp);
-		expect(doesMatch).to.equal(true);
+		expect(doesMatch).toBe(true);
 	});
 });
 
@@ -74,7 +77,7 @@ describe('PolyBcrypt.info()', () => {
 			salt: 'f5449ok7vQOhhHwKwjZqx.',
 			hash: 'cKeuroAr68DDwhxd78JUPJVqoVFqseS',
 		};
-		expect(actual).to.deep.equal(expected);
+		expect(actual).toEqual(expected);
 	});
 
 	it('should parse hashes from php', () => {
@@ -86,7 +89,7 @@ describe('PolyBcrypt.info()', () => {
 			salt: 'npEa/T9.5/aR36tMgICKYu',
 			hash: 'fSsReq9P9ioxV0cIpbB20KynjoYOz4.',
 		};
-		expect(actual).to.deep.equal(expected);
+		expect(actual).toEqual(expected);
 	});
 
 	it('should fail to parse invalid hash', () => {
@@ -94,6 +97,6 @@ describe('PolyBcrypt.info()', () => {
 		const expected = {
 			valid: false,
 		};
-		expect(actual).to.deep.equal(expected);
+		expect(actual).toEqual(expected);
 	});
 });

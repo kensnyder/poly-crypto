@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { PolyRand } = require('../../index.js');
+const { PolyRand } = require('../index.js');
 
 try {
 	const [$0, $1, length, symbols] = process.argv;

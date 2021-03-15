@@ -4,26 +4,27 @@
   "description": "High-level cryptographic functions that are interoperable between NodeJS and PHP 7.1+.",
   "main": "index.js",
   "scripts": {
-    "test": "npx mocha tests/*.spec.js",
-    "test:all": "./vendor/bin/kahlan --spec=tests && npm test",
-    "test:php": "./vendor/bin/kahlan --spec=tests"
+    "test": "npx jest",
+    "coverage": "npx jest --collectCoverage",
+    "test:php": "./vendor/bin/kahlan --spec=tests",
+    "test:all": "./vendor/bin/kahlan --spec=tests && npm test"
   },
   "bin": {
-    "key:encrypt": "node ./node/cli/aes-key-encrypt.js",
-    "pass:encrypt": "node ./node/cli/aes-pass-encrypt.js",
-    "key:decrypt": "node ./node/cli/aes-key-decrypt.js",
-    "pass:decrypt": "node ./node/cli/aes-pass-decrypt.js",
-    "bcrypt:hash": "node ./node/cli/bcrypt-hash.js",
-    "bcrypt:verify": "node ./node/cli/bcrypt-verify.js",
-    "dig:md5": "node ./node/cli/digest.js md5",
-    "dig:sha1": "node ./node/cli/digest.js sha1",
-    "dig:sha256": "node ./node/cli/digest.js sha256",
-    "dig:sha512": "node ./node/cli/digest.js sha512",
-    "rand:bytes": "node ./node/cli/rand.js bytes",
-    "rand:hex": "node ./node/cli/rand.js hex",
-    "rand:slug": "node ./node/cli/rand.js slug",
-    "rand:fax": "node ./node/cli/rand.js fax",
-    "rand:string": "node ./node/cli/rand-string.js"
+    "key:encrypt": "node ./cli/aes-key-encrypt.js",
+    "pass:encrypt": "node ./cli/aes-pass-encrypt.js",
+    "key:decrypt": "node ./cli/aes-key-decrypt.js",
+    "pass:decrypt": "node ./cli/aes-pass-decrypt.js",
+    "bcrypt:hash": "node ./cli/bcrypt-hash.js",
+    "bcrypt:verify": "node ./cli/bcrypt-verify.js",
+    "dig:md5": "node ./cli/digest.js md5",
+    "dig:sha1": "node ./cli/digest.js sha1",
+    "dig:sha256": "node ./cli/digest.js sha256",
+    "dig:sha512": "node ./cli/digest.js sha512",
+    "rand:bytes": "node ./cli/rand.js bytes",
+    "rand:hex": "node ./cli/rand.js hex",
+    "rand:slug": "node ./cli/rand.js slug",
+    "rand:fax": "node ./cli/rand.js fax",
+    "rand:string": "node ./cli/rand-string.js"
   },
   "keywords": [
     "encryption",
@@ -64,9 +65,7 @@
     "node-forge": "^0.10.0"
   },
   "devDependencies": {
-    "chai": "^4.3.4",
-    "mocha": "^8.3.2",
-    "parcel": "^1.12.4",
+    "jest": "^26.6.3",
     "prettier": "^2.2.1"
   }
 }

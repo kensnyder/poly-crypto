@@ -70,6 +70,11 @@ describe('PolyBcrypt::verify()', function() use($password, $fromJs, $fromPhp) {
 		expect($doesMatch)->toBe(true);
 	});
 
+	it('should reject strings that are too long', function() use($password, $fromJs)  {
+		$doesMatch = PolyBcrypt::verify(str_repeat('a', 73), $fromJs);
+		expect($doesMatch)->toBe(false);
+	});
+
 	it('should verify passwords from php', function() use($password, $fromPhp) {
 		$doesMatch = PolyBcrypt::verify($password, $fromPhp);
 		expect($doesMatch)->toBe(true);
