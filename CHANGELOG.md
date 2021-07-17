@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.0.1 - July 17, 2021
+
+- Update dependencies
+
 ## Version 2.0.0 - March 14, 2021
 
 - Drop Python support

@@ -53,6 +53,6 @@
     }
   },
   "require-dev": {
-    "kahlan/kahlan": "4.5.0"
+    "kahlan/kahlan": "5.1.3"
   }
 }
