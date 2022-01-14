@@ -62,7 +62,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "node-forge": "^0.10.0"
+    "node-forge": "^1.0.0"
   },
   "devDependencies": {
     "jest": "^27.0.6",
