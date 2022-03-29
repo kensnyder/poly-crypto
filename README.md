@@ -3,11 +3,11 @@
 **Poly**glot **Crypto**graphy. High-level cryptographic functions that are
 interoperable between NodeJS and PHP 7.1+.
 
-[![NPM Link](https://img.shields.io/npm/v/poly-crypto?v=2.0.1)](https://npm.com/package/poly-crypto)
-[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.0.1)](https://packagist.org/packages/poly-crypto/poly-crypto)
-[![Build Status](https://travis-ci.org/kensnyder/poly-crypto.svg?branch=master&v=2.0.1)](https://travis-ci.org/kensnyder/poly-crypto)
-[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/master/graph/badge.svg?v=2.0.1)](https://codecov.io/gh/kensnyder/poly-crypto)
-[![ISC License](https://img.shields.io/npm/l/poly-crypto.svg?v=2.0.1)](https://opensource.org/licenses/ISC)
+[![NPM Link](https://img.shields.io/npm/v/poly-crypto?v=2.0.2)](https://npmjs.com/package/poly-crypto)
+[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.0.2)](https://packagist.org/packages/poly-crypto/poly-crypto)
+[![Build Status](https://travis-ci.org/kensnyder/poly-crypto.svg?branch=master&v=2.0.2)](https://travis-ci.org/kensnyder/poly-crypto)
+[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/master/graph/badge.svg?v=2.0.2)](https://codecov.io/gh/kensnyder/poly-crypto)
+[![ISC License](https://img.shields.io/npm/l/poly-crypto.svg?v=2.0.2)](https://opensource.org/licenses/ISC)
 
 ## Project Goals
 
@@ -30,28 +30,28 @@ composer require poly-crypto
 
 ## Cheatsheet
 
-| Section | NodeJS | PHP |
-| --- | --- | --- |
-| [Encrypt with key](#encrypt-and-decrypt-with-key) | PolyAES.withKey(key).encrypt(data) | PolyAES::withKey($key)->encrypt($data) |
-| [Decrypt with key](#encrypt-and-decrypt-with-key) | PolyAES.withKey(key).decrypt(encrypted) | PolyAES::withKey($key)->decrypt($encrypted) |
-| [Encrypt with password](#encrypt-and-decrypt-with-password) | PolyAES.withPassword(password, salt).encrypt(data) | PolyAES::withPassword($password, $salt)->encrypt($data) |
+| Section                                                     | NodeJS                                                  | PHP                                                          |
+| ----------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------ |
+| [Encrypt with key](#encrypt-and-decrypt-with-key)           | PolyAES.withKey(key).encrypt(data)                      | PolyAES::withKey($key)->encrypt($data)                       |
+| [Decrypt with key](#encrypt-and-decrypt-with-key)           | PolyAES.withKey(key).decrypt(encrypted)                 | PolyAES::withKey($key)->decrypt($encrypted)                  |
+| [Encrypt with password](#encrypt-and-decrypt-with-password) | PolyAES.withPassword(password, salt).encrypt(data)      | PolyAES::withPassword($password, $salt)->encrypt($data)      |
 | [Decrypt with password](#encrypt-and-decrypt-with-password) | PolyAES.withPassword(password, salt).decrypt(encrypted) | PolyAES::withPassword($password, $salt)->decrypt($encrypted) |
-| [Bcrypt hash](#password-hashing) | PolyBcrypt.hash(password) | PolyBcrypt::hash($password) |
-| [Bcrypt verify](#password-hashing) | PolyBcrypt.verify(password, hash) | PolyBcrypt::verify($password, $hash) |
-| [Digest functions](#digest-functions) | PolyDigest.sha256(data) | PolyDigest::sha256($data) |
-| [Random functions](#random-functions) | PolyRand.slug(length) | PolyRand::slug($length) |
+| [Bcrypt hash](#password-hashing)                            | PolyBcrypt.hash(password)                               | PolyBcrypt::hash($password)                                  |
+| [Bcrypt verify](#password-hashing)                          | PolyBcrypt.verify(password, hash)                       | PolyBcrypt::verify($password, $hash)                         |
+| [Digest functions](#digest-functions)                       | PolyDigest.sha256(data)                                 | PolyDigest::sha256($data)                                    |
+| [Random functions](#random-functions)                       | PolyRand.slug(length)                                   | PolyRand::slug($length)                                      |
 
 ## Table of Contents
 
 1. [Technology choices](#technology-choices)
-	1. [AES-255 GCM](#aes-256-gcm)
-	1. [Bcrypt](#bcrypt)
-	1. [Randomness](#randomness)
+    1. [AES-255 GCM](#aes-256-gcm)
+    1. [Bcrypt](#bcrypt)
+    1. [Randomness](#randomness)
 1. [Use Cases](#use-cases)
 1. [Misuse](#misuse)
 1. [AES encryption](#aes-encryption)
-	1. [Encrypt and decrypt with key](#encrypt-and-decrypt-with-key)
-	1. [Encrypt and decrypt with password](#encrypt-and-decrypt-with-password)
+    1. [Encrypt and decrypt with key](#encrypt-and-decrypt-with-key)
+    1. [Encrypt and decrypt with password](#encrypt-and-decrypt-with-password)
 1. [Password hashing](#password-hashing)
 1. [Digest functions](#digest-functions)
 1. [Random functions](#random-functions)
@@ -70,7 +70,7 @@ composer require poly-crypto
 As of March 2021, AES-256 Encryption with GCM block mode is a reputable and
 secure method that is available across PHP and NodeJS without any extensions.
 With the right arguments and options, these 2 languages can decrypt one
-another's encrypted strings using PHP's openssl_* functions and npm's
+another's encrypted strings using PHP's openssl\_\* functions and npm's
 node-forge.
 
 ### Bcrypt
@@ -89,23 +89,23 @@ PHP's random_bytes() and Node's crypto.randomBytes() functions.
 
 poly-crypto's basic use cases:
 
-|     | Case | Input | Output | NodeJS |
-| --- | ---- | ----- | ------ | ------------- |
-| 1.  | Encrypt data that you can to decrypt later | Encryption key string | base-64 encoded string | PolyAES.withKey(hexKey).encrypt(data) |
-| 2.  | Encrypt data for a user that he or she can decrypt later | User-supplied password & system salt | base-64 encoded string | PolyAES.withPassword(password, salt).encrypt(data) |
-| 3.  | Hash passwords with bcrypt | Password string | bcrypt hash | PolyBcrypt.hash(password) |
-| 4.  | Check if a password matches the given bcrypt hash | Password string & bcrypt hash | True if password matches | PolyBcrypt.verify(password, hash) |
-| 5.  | Calculate digests (e.g. sha256) | String data | digest string | PolyDigest.sha256(data) |
-| 6.  | Generate random slugs | number of characters | a string with random characters | PolyRand.slug(numCharacters) |
+|     | Case                                                     | Input                                | Output                          | NodeJS                                             |
+| --- | -------------------------------------------------------- | ------------------------------------ | ------------------------------- | -------------------------------------------------- |
+| 1.  | Encrypt data that you can to decrypt later               | Encryption key string                | base-64 encoded string          | PolyAES.withKey(hexKey).encrypt(data)              |
+| 2.  | Encrypt data for a user that he or she can decrypt later | User-supplied password & system salt | base-64 encoded string          | PolyAES.withPassword(password, salt).encrypt(data) |
+| 3.  | Hash passwords with bcrypt                               | Password string                      | bcrypt hash                     | PolyBcrypt.hash(password)                          |
+| 4.  | Check if a password matches the given bcrypt hash        | Password string & bcrypt hash        | True if password matches        | PolyBcrypt.verify(password, hash)                  |
+| 5.  | Calculate digests (e.g. sha256)                          | String data                          | digest string                   | PolyDigest.sha256(data)                            |
+| 6.  | Generate random slugs                                    | number of characters                 | a string with random characters | PolyRand.slug(numCharacters)                       |
 
 ## Misuse
 
 1. **File encryption.** poly-crypto modules are not meant to be used to encrypt
    entire files. You'll want to use a C-based library that is designed to
    encrypt large amounts of data quickly. For example, consider the following:
-	1. poly-crypto is not fast for large files.
-	1. AES-256 GCM encryption can be parallelized in languages that support
-	   threading for faster processing
+    1. poly-crypto is not fast for large files.
+    1. AES-256 GCM encryption can be parallelized in languages that support
+       threading for faster processing
 1. **Streaming data.** PolyAES is not designed to encrypt streaming data.
 1. **Secure key storage.** If you store encryption keys or user passwords in
    plain text, encryption will not provide protection. You'll want to store keys
@@ -125,7 +125,7 @@ use `PolyAES.generateKey(64)`.
 NodeJS:
 
 ```js
-const {PolyAES} = require('poly-crypto');
+const { PolyAES } = require('poly-crypto');
 
 const hexKey = '64-char hex encoded string from secure param store';
 const encrypted = PolyAES.withKey(hexKey).encrypt(data);
@@ -150,7 +150,7 @@ $decrypted = PolyAES::withKey($hexKey)->decrypt($encrypted);
 NodeJS:
 
 ```js
-const {PolyAES} = require('poly-crypto');
+const { PolyAES } = require('poly-crypto');
 
 const hexKey = '64-char hex encoded string from secure param store';
 const cipher = PolyAES.withKey(hexKey);
@@ -177,7 +177,7 @@ $decrypted = $cipher->decrypt($encrypted);
 NodeJS:
 
 ```js
-const {PolyAES} = require('poly-crypto');
+const { PolyAES } = require('poly-crypto');
 
 const password = 'String from user';
 const salt = 'String from secure param store';
@@ -215,7 +215,7 @@ password matches the hash you have on record.
 NodeJS:
 
 ```js
-const {PolyBcrypt} = require('poly-crypto');
+const { PolyBcrypt } = require('poly-crypto');
 
 const password = 'Password from a user';
 const hash = PolyBcrypt.hash(password);
@@ -242,7 +242,7 @@ Standard one-way digest functions.
 NodeJS:
 
 ```js
-const {PolyDigest} = require('poly-crypto');
+const { PolyDigest } = require('poly-crypto');
 
 PolyDigest.sha512(data);
 PolyDigest.sha256(data);
@@ -271,7 +271,7 @@ Simple functions to generate random values synchronously.
 NodeJS:
 
 ```js
-const {PolyRand} = require('poly-crypto');
+const { PolyRand } = require('poly-crypto');
 
 // generate a string containing numbers and letters minus vowels
 // suitable for resources such as URLs with random strings
@@ -346,7 +346,7 @@ npx rand:string $length $symbolString
 
 All poly-crypto modules do function in the browser. There are only a few use
 cases where encrypting in the browser is a good idea. If you know what you are
-doing, see the following section for instructions on directly importing a Poly*
+doing, see the following section for instructions on directly importing a Poly\*
 module.
 
 ## JavaScript direct import
