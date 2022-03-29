@@ -6,9 +6,9 @@ require_once(__DIR__ . '/../src/PolyRand.php');
 use PolyCrypto\PolyRand;
 
 try {
-	list (, $length, $symbols) = $argv;
+	[, $length, $symbols] = $argv;
 	$out = PolyRand::string((int) $length, explode('', $symbols));
-	echo $digest;
+	echo $out;
 } catch (Exception $e) {
 	fwrite(STDERR, $e->getMessage());
 	exit(1);

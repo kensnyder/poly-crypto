@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env php
 <?php
 
 require_once(__DIR__ . '/../src/PolyBcrypt.php');
@@ -6,7 +6,7 @@ require_once(__DIR__ . '/../src/PolyBcrypt.php');
 use PolyCrypto\PolyBcrypt;
 
 try {
-	list (, $password, $cost) = $argv;
+	[, $password, $cost] = $argv;
 	$hash = PolyBcrypt::hash($password, $cost);
 	echo $hash;
 } catch (Exception $e) {

@@ -3,11 +3,11 @@
 **Poly**glot **Crypto**graphy. High-level cryptographic functions that are
 interoperable between NodeJS and PHP 7.1+.
 
-[![NPM Link](https://img.shields.io/npm/v/poly-crypto?v=2.0.2)](https://npmjs.com/package/poly-crypto)
-[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.0.2)](https://packagist.org/packages/poly-crypto/poly-crypto)
-[![Build Status](https://travis-ci.org/kensnyder/poly-crypto.svg?branch=master&v=2.0.2)](https://travis-ci.org/kensnyder/poly-crypto)
-[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/master/graph/badge.svg?v=2.0.2)](https://codecov.io/gh/kensnyder/poly-crypto)
-[![ISC License](https://img.shields.io/npm/l/poly-crypto.svg?v=2.0.2)](https://opensource.org/licenses/ISC)
+[![NPM Link](https://img.shields.io/npm/v/poly-crypto?v=2.0.3)](https://npmjs.com/package/poly-crypto)
+[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.0.3)](https://packagist.org/packages/poly-crypto/poly-crypto)
+[![Build Status](https://travis-ci.org/kensnyder/poly-crypto.svg?branch=master&v=2.0.3)](https://travis-ci.org/kensnyder/poly-crypto)
+[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/master/graph/badge.svg?v=2.0.3)](https://codecov.io/gh/kensnyder/poly-crypto)
+[![ISC License](https://img.shields.io/npm/l/poly-crypto.svg?v=2.0.3)](https://opensource.org/licenses/ISC)
 
 ## Project Goals
 
@@ -286,7 +286,7 @@ PolyRand.fax(length);
 
 // generate a string containing lowercase letters minus vowels
 const symbolList = 'bcdfghjklmnpqrstvwxyz'.split('');
-PolyRand.string(symbolList, length);
+PolyRand.string(length, symbolList);
 
 // generate random bytes in binary form
 PolyRand.bytes(length);
@@ -313,33 +313,29 @@ PolyRand::fax($length);
 
 // generate a string containing lowercase letters minus vowels
 $symbolList = explode('', 'bcdfghjklmnpqrstvwxyz');
-PolyRand::string($symbolList, $length);
+PolyRand::string($length, $symbolList);
 
 // generate random bytes in binary form
-PolyRand.bytes(length);
+PolyRand::bytes($length);
 ```
 
 ## Command line utilities
 
-poly-crypto functions can be used in your Node project from the command line
-using `npx` to invoke any of the following commands:
+poly-crypto functions can be used from the command line if Node JS is installed.
+After installing poly-crypto with npm, you'll have the following commands as symlinks:
 
 ```bash
-npx key:encrypt $key $dataToEncrypt
-npx key:decrypt $key $stringToDecrypt
-npx pass:encrypt $password $salt $dataToEncrypt
-npx pass:decrypt $password $salt $stringToDecrypt
-npx bcrypt:hash $password
-npx bcrypt:verify $password $againstHash
-npx dig:md5 $string
-npx dig:sha1 $string
-npx dig:sha256 $string
-npx dig:sha512 $string
-npx rand:bytes $length
-npx rand:hex $length
-npx rand:slug $length
-npx rand:fax $length
-npx rand:string $length $symbolString
+# Command and arguments                   # JavaScript equivalent
+# --------------------------------------  # ---------------------
+key-encrypt $hexKey $plaintext            # PolyAES.withKey(hexKey).encrypt(plaintext)
+key-decrypt $hexKey $ciphertext           # PolyAES.withKey(hexKey).decript(ciphertext)
+pass-encrypt $password $salt $plaintext   # PolyAES.withPassword(password, salt).encrypt(plaintext)
+pass-decrypt $password $salt $ciphertext  # PolyAES.withPassword(password, salt).decrypt(plaintext)
+bcrypt-hash $password                     # PolyBcrypt.hash(password)
+bcrypt-verify $password $againstHash      # PolyBcrypt.verify(password, againstHash)
+poly-digest $algo $string                 # PolyDigest[algo](data) where algo is one of: sha1, sha256, sha512, md5
+poly-rand $type $length                   # PolyRand[type](length) where type is one of: slug, hex, fax, bytes
+poly-rand-string $length $symbolString    # PolyRand.string(length, symbolList) where symbolList is a string containing allowed characters
 ```
 
 ## Browser usage

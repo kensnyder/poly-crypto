@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.0.3 - Mar 29, 2022
+
+-   Fix bin files
+
 ## Version 2.0.2 - Mar 29, 2022
 
 -   Update dependencies

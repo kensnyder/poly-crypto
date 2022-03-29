@@ -6,7 +6,7 @@ require_once(__DIR__ . '/../src/PolyAES.php');
 use PolyCrypto\PolyAES;
 
 try {
-	list (, $key, $plaintext) = $argv;
+	[, $key, $plaintext] = $argv;
 	$cipher = PolyAES::withKey($key);
 	$ciphertext = $cipher->encrypt($plaintext);
 	echo $ciphertext;

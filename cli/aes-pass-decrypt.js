@@ -3,7 +3,7 @@
 const { PolyAES } = require('../index.js');
 
 try {
-	const [$0, $1, password, salt, ciphertext] = process.argv;
+	const [, , password, salt, ciphertext] = process.argv;
 	const cipher = PolyAES.withPassword(password, salt);
 	const plaintext = cipher.decrypt(ciphertext);
 	process.stdout.write(plaintext);

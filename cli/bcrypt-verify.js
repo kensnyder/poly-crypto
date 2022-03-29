@@ -3,7 +3,7 @@
 const { PolyBcrypt } = require('../index.js');
 
 try {
-	const [$0, $1, password, hash] = process.argv;
+	const [, , password, hash] = process.argv;
 	const doesMatch = PolyBcrypt.verify(password, hash);
 	process.stdout.write(doesMatch ? '1' : '0');
 } catch (e) {
