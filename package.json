@@ -1,6 +1,6 @@
 {
   "name": "poly-crypto",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "High-level cryptographic functions that are interoperable between NodeJS and PHP 7.1+.",
   "main": "index.js",
   "scripts": {
