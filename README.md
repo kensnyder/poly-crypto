@@ -3,11 +3,11 @@
 **Poly**glot **Crypto**graphy. High-level cryptographic functions that are
 interoperable between NodeJS and PHP 7.1+.
 
-[![NPM Link](https://img.shields.io/npm/v/poly-crypto?v=2.0.3)](https://npmjs.com/package/poly-crypto)
-[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.0.3)](https://packagist.org/packages/poly-crypto/poly-crypto)
-[![Build Status](https://travis-ci.org/kensnyder/poly-crypto.svg?branch=master&v=2.0.3)](https://travis-ci.org/kensnyder/poly-crypto)
-[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/master/graph/badge.svg?v=2.0.3)](https://codecov.io/gh/kensnyder/poly-crypto)
-[![ISC License](https://img.shields.io/npm/l/poly-crypto.svg?v=2.0.3)](https://opensource.org/licenses/ISC)
+[![NPM Link](https://img.shields.io/npm/v/poly-crypto?v=2.0.4)](https://npmjs.com/package/poly-crypto)
+[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.0.4)](https://packagist.org/packages/poly-crypto/poly-crypto)
+[![Build Status](https://travis-ci.org/kensnyder/poly-crypto.svg?branch=master&v=2.0.4)](https://travis-ci.org/kensnyder/poly-crypto)
+[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/master/graph/badge.svg?v=2.0.4)](https://codecov.io/gh/kensnyder/poly-crypto)
+[![ISC License](https://img.shields.io/npm/l/poly-crypto.svg?v=2.0.4)](https://opensource.org/licenses/ISC)
 
 ## Project Goals
 
@@ -322,10 +322,13 @@ PolyRand::bytes($length);
 ## Command line utilities
 
 poly-crypto functions can be used from the command line if Node JS is installed.
-After installing poly-crypto with npm, you'll have the following commands as symlinks:
+
+### Global install of poly-crypto
+
+You'll have the following commands as symlinks:
 
 ```bash
-# Command and arguments                   # JavaScript equivalent
+# Global install command and arguments    # JavaScript equivalent
 # --------------------------------------  # ---------------------
 key-encrypt $hexKey $plaintext            # PolyAES.withKey(hexKey).encrypt(plaintext)
 key-decrypt $hexKey $ciphertext           # PolyAES.withKey(hexKey).decript(ciphertext)
@@ -338,12 +341,16 @@ poly-rand $type $length                   # PolyRand[type](length) where type is
 poly-rand-string $length $symbolString    # PolyRand.string(length, symbolList) where symbolList is a string containing allowed characters
 ```
 
+### Local install of poly-crypto
+
+Prefix each of the commands above with `npm exec`.
+
 ## Browser usage
 
-All poly-crypto modules do function in the browser. There are only a few use
-cases where encrypting in the browser is a good idea. If you know what you are
-doing, see the following section for instructions on directly importing a Poly\*
-module.
+All poly-crypto modules do indeed function in the browser. There are only a few use
+cases where encrypting in the browser is a good idea. If you have a good reason to
+use poly-crypto in the browser, see the following section for instructions on
+directly importing a Poly\* module.
 
 ## JavaScript direct import
 
@@ -352,7 +359,7 @@ If you are using [esm](https://www.npmjs.com/package/esm) or a bundler such as
 you may import a single JavaScript module like so:
 
 ```js
-import { PolyBcrypt } from './node_modules/poly-crypto/node/src/PolyBcrypt.js';
+import { PolyBcrypt } from 'poly-crypto/node/src/PolyBcrypt.js';
 ```
 
 ## Unit tests

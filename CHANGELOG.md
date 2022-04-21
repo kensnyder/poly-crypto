@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.0.4 - Apr 21, 2022
+
+-   Fix composer 2 support
+-   Bump JS dependencies
+
 ## Version 2.0.3 - Mar 29, 2022
 
 -   Fix bin files
