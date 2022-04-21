@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.0.5 - Apr 21, 2022
+
+-   Add git repository links
+
 ## Version 2.0.4 - Apr 21, 2022
 
 -   Fix composer 2 support

@@ -1,6 +1,6 @@
 {
   "name": "poly-crypto",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "High-level cryptographic functions that are interoperable between NodeJS and PHP 7.1+.",
   "main": "index.js",
   "scripts": {
@@ -52,8 +52,16 @@
     "random",
     "urandom"
   ],
-  "author": "Ken Snyder",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kensnyder/sharp-db.git"
+  },
+  "author": "kendsnyder@gmail.com",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kensnyder/sharp-db/issues"
+  },
+  "homepage": "https://github.com/kensnyder/sharp-db#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "node-forge": "^1.3.1"
