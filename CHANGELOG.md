@@ -1,8 +1,8 @@
 # Changelog
 
-## Version 2.0.5 - Apr 21, 2022
+## Version 2.0.6 - Apr 21, 2022
 
--   Add git repository links
+-   Add and fix git repository links
 
 ## Version 2.0.4 - Apr 21, 2022
 
