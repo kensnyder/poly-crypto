@@ -24,7 +24,7 @@ interoperable between NodeJS and PHP 7.1+.
 npm install --save poly-crypto
 
 # PHP
-composer require poly-crypto
+composer require poly-crypto/poly-crypto
 
 ```
 
