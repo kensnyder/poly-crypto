@@ -25,7 +25,7 @@ const PolyRand = {
 	 * @param {Number} length  The desired length
 	 * @return {String}
 	 */
-	bytes(length:number):util.ByteStringBuffer {
+	bytes(length: number): util.ByteStringBuffer {
 		return random.getBytesSync(length);
 	},
 
@@ -34,7 +34,7 @@ const PolyRand = {
 	 * @param {Number} length  The desired length
 	 * @return {String}
 	 */
-	hex(length:number):string {
+	hex(length: number): string {
 		return util.bytesToHex(PolyRand.bytes(length / 2));
 	},
 
@@ -43,7 +43,7 @@ const PolyRand = {
 	 * @param {Number} length  The desired length
 	 * @return {String}
 	 */
-	slug(length:number):string {
+	slug(length: number): string {
 		return PolyRand.string(length, PolyRand.SLUG_SYMBOL_LIST);
 	},
 
@@ -52,7 +52,7 @@ const PolyRand = {
 	 * @param {Number} length  The desired length
 	 * @return {String}
 	 */
-	fax(length:number):string {
+	fax(length: number): string {
 		return PolyRand.string(length, PolyRand.FAX_SYMBOL_LIST);
 	},
 
@@ -63,7 +63,7 @@ const PolyRand = {
 	 * @return {String}
 	 * @throws {Error} if size of symbolList is not between 2 and 256
 	 */
-	string(length:number, symbolList:String[]):string {
+	string(length: number, symbolList: String[]): string {
 		const randomBytes = PolyRand.bytes(length);
 		if (!Array.isArray(symbolList) || symbolList.length < 2 || symbolList.length > 256) {
 			throw new Error(PolyRand.SYMBOL_LIST_ERROR);
@@ -77,14 +77,15 @@ const PolyRand = {
 		return output;
 	},
 
+	/**
+	 * Use cryptographic randomness to generate a uuid v4
+	 * @return string
+	 */
 	uuidv4(): string {
 		const z = PolyRand.string(1, ['8', '9', 'a', 'b']);
 		const x = PolyRand.hex(30);
 		// uuidv4 format is xxxxxxxx-xxxx-4xxx-zxxx-xxxxxxxxxxxx
-		return x.replace(
-			/^(.{8})(.{4})(.{3})(.{3})(.{12})$/,
-			`$1-$2-4$3-${z}$4-$5`
-		);
+		return x.replace(/^(.{8})(.{4})(.{3})(.{3})(.{12})$/, `$1-$2-4$3-${z}$4-$5`);
 	},
 };
 

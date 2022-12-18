@@ -81,4 +81,19 @@ class PolyRand {
 		return $output;
 	}
 
+	/**
+	 * Use cryptographic randomness to generate a uuid v4
+	 * @return string
+	 */
+	public static function uuidv4():string {
+		$z = PolyRand::string(1, ['8', '9', 'a', 'b']);
+		$x = PolyRand::hex(30);
+		// uuidv4 format is xxxxxxxx-xxxx-4xxx-zxxx-xxxxxxxxxxxx
+		return preg_replace(
+			'/^(.{8})(.{4})(.{3})(.{3})(.{12})$/',
+			"$1-$2-4$3-$z$4-$5",
+			$x
+		);
+	}
+
 }

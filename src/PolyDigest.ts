@@ -1,5 +1,5 @@
 import md from 'node-forge/lib/md.all';
-import { SupportedDigestAlgos } from "./types";
+import { SupportedDigestAlgos } from './types';
 
 /**
  * Calculate digests of strings
