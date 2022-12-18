@@ -1,4 +1,4 @@
-const forge = require('node-forge');
+const md = require('node-forge/lib/md.all.js');
 
 /**
  * Calculate digests of strings
@@ -48,9 +48,9 @@ const PolyDigest = {
 	 * @private
 	 */
 	_digest(algo, data) {
-		const md = forge.md[algo].create();
-		md.update(data);
-		return md.digest().toHex();
+		const hash = md[algo].create();
+		hash.update(data);
+		return hash.digest().toHex();
 	},
 };
 

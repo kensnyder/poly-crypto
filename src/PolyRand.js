@@ -1,4 +1,5 @@
-const forge = require('node-forge');
+const random = require('node-forge/lib/random.js');
+const util = require('node-forge/lib/util.js');
 
 /**
  * Methods to generate random strings
@@ -25,7 +26,7 @@ const PolyRand = {
 	 * @return {String}
 	 */
 	bytes(length) {
-		return forge.random.getBytesSync(length);
+		return random.getBytesSync(length);
 	},
 
 	/**
@@ -34,7 +35,7 @@ const PolyRand = {
 	 * @return {String}
 	 */
 	hex(length) {
-		return forge.util.bytesToHex(PolyRand.bytes(length / 2));
+		return util.bytesToHex(PolyRand.bytes(length / 2));
 	},
 
 	/**

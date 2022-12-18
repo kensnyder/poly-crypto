@@ -1,4 +1,7 @@
-const forge = require('node-forge');
+const util = require('node-forge/lib/util.js');
+const pbkdf2 = require('node-forge/lib/pbkdf2.js');
+const random = require('node-forge/lib/random.js');
+const cipher = require('node-forge/lib/cipher.js');
 
 /**
  * Service for encrypting and decrypting data with AES-256 GCM
@@ -24,7 +27,7 @@ class PolyAES {
 		if (!/^[A-F0-9]{64}$/i.test(hexKey)) {
 			throw new Error(PolyAES.KEY_FORMAT_ERROR);
 		}
-		const binKey = forge.util.hexToBytes(hexKey);
+		const binKey = util.hexToBytes(hexKey);
 		return new PolyAES(binKey);
 	}
 
@@ -40,7 +43,7 @@ class PolyAES {
 			throw new Error(PolyAES.SALT_SIZE_ERROR);
 		}
 		const bytes = 32;
-		const binKey = forge.pkcs5.pbkdf2(password, salt, numIterations, bytes);
+		const binKey = pbkdf2(password, salt, numIterations, bytes);
 		return new PolyAES(binKey);
 	}
 
@@ -87,9 +90,9 @@ class PolyAES {
 		if (this._encoding === 'bin') {
 			return bin;
 		} else if (this._encoding === 'base64') {
-			return forge.util.encode64(bin);
+			return util.encode64(bin);
 		} else if (this._encoding === 'hex') {
-			return forge.util.bytesToHex(bin);
+			return util.bytesToHex(bin);
 		}
 	}
 
@@ -103,9 +106,9 @@ class PolyAES {
 		if (this._encoding === 'bin') {
 			return str;
 		} else if (this._encoding === 'base64') {
-			return forge.util.decode64(str);
+			return util.decode64(str);
 		} else if (this._encoding === 'hex') {
-			return forge.util.hexToBytes(str);
+			return util.hexToBytes(str);
 		}
 	}
 
@@ -117,10 +120,10 @@ class PolyAES {
 	 */
 	encrypt(data) {
 		const mode = 'AES-GCM';
-		const iv = forge.random.getBytesSync(128 / 8);
-		const cipher = forge.cipher.createCipher(mode, this._key);
+		const iv = random.getBytesSync(128 / 8);
+		const cipher = cipher.createCipher(mode, this._key);
 		cipher.start({ iv, tagLength: 128 });
-		cipher.update(forge.util.createBuffer(this._utf8ToBin(data)));
+		cipher.update(util.createBuffer(this._utf8ToBin(data)));
 		cipher.finish();
 		return this._binToStr(iv + cipher.mode.tag.data + cipher.output.data);
 	}
@@ -137,9 +140,9 @@ class PolyAES {
 		const iv = bytes.slice(0, 16);
 		const tag = bytes.slice(16, 32);
 		const ciphertext = bytes.slice(32);
-		const decipher = forge.cipher.createDecipher(mode, this._key);
+		const decipher = cipher.createDecipher(mode, this._key);
 		decipher.start({ iv, tag });
-		decipher.update(forge.util.createBuffer(ciphertext));
+		decipher.update(util.createBuffer(ciphertext));
 		const ok = decipher.finish();
 		return ok ? this._binToUtf8(decipher.output.data) : false;
 	}
@@ -150,7 +153,7 @@ class PolyAES {
 	 * @return {String}  The key in hexadecimal
 	 */
 	static generateKey(length = 64) {
-		return forge.util.bytesToHex(forge.random.getBytesSync(length / 2));
+		return util.bytesToHex(random.getBytesSync(length / 2));
 	}
 
 	/**
@@ -159,7 +162,7 @@ class PolyAES {
 	 * @return {String}  The salt in hexadecimal
 	 */
 	static generateSalt(length = 64) {
-		return forge.util.bytesToHex(forge.random.getBytesSync(length / 2));
+		return util.bytesToHex(random.getBytesSync(length / 2));
 	}
 
 	/**
