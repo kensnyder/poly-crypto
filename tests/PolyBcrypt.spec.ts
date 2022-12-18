@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { PolyBcrypt } from '../index.js';
+import { PolyBcrypt } from '../src';
 
 const password = 'abc';
 const fromPhp = '$2y$10$npEa/T9.5/aR36tMgICKYufSsReq9P9ioxV0cIpbB20KynjoYOz4.';

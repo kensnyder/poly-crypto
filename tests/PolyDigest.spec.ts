@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { PolyDigest } from "../index.js";
+import { PolyDigest } from "../src";
 
 describe('PolyDigest', () => {
 	it('should run md5 properly', () => {

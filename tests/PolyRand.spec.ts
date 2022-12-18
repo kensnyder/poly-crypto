@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { PolyRand } from "../index.js";
+import { PolyRand } from "../src";
 
 describe('PolyRand.bytes()', () => {
 	it('should return requested size', () => {
