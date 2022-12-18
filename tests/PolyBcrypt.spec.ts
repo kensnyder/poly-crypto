@@ -1,3 +1,4 @@
+import { describe, it, expect } from "vitest";
 import { PolyBcrypt } from '../index.js';
 
 const password = 'abc';

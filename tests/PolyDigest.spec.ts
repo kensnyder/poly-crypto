@@ -1,3 +1,4 @@
+import { describe, it, expect } from "vitest";
 import { PolyDigest } from "../index.js";
 
 describe('PolyDigest', () => {
