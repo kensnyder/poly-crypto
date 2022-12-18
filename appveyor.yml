@@ -1,5 +1,5 @@
 # Use generic build mode on Ubuntu
-image: Ubuntu
+image: Ubuntu2004
 build: off
 
 environment:
