@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.1.0 - Dec 18, 2022
+
+-   Convert JavaScript to TypeScript
+-   Add PolyRand.uuidv4()
+
 ## Version 2.0.6 - Apr 21, 2022
 
 -   Add and fix git repository links
