@@ -1,4 +1,5 @@
 import md from 'node-forge/lib/md.all';
+import { SupportedDigestAlgos } from "./types";
 
 /**
  * Calculate digests of strings
@@ -9,7 +10,7 @@ const PolyDigest = {
 	 * @param {String} data  The string to digest
 	 * @return {String} The digest in hexadecimal
 	 */
-	md5(data) {
+	md5(data: string): string {
 		return PolyDigest._digest('md5', data);
 	},
 
@@ -18,7 +19,7 @@ const PolyDigest = {
 	 * @param {String} data  The string to digest
 	 * @return {String} The digest in hexadecimal
 	 */
-	sha1(data) {
+	sha1(data: string): string {
 		return PolyDigest._digest('sha1', data);
 	},
 
@@ -27,7 +28,7 @@ const PolyDigest = {
 	 * @param {String} data  The string to digest
 	 * @return {String} The digest in hexadecimal
 	 */
-	sha256(data) {
+	sha256(data: string): string {
 		return PolyDigest._digest('sha256', data);
 	},
 
@@ -36,7 +37,7 @@ const PolyDigest = {
 	 * @param {String} data  The string to digest
 	 * @return {String} The digest in hexadecimal
 	 */
-	sha512(data) {
+	sha512(data: string): string {
 		return PolyDigest._digest('sha512', data);
 	},
 
@@ -47,7 +48,7 @@ const PolyDigest = {
 	 * @return {String} The digest in hexadecimal
 	 * @private
 	 */
-	_digest(algo, data) {
+	_digest(algo: SupportedDigestAlgos, data: string): string {
 		const hash = md[algo].create();
 		hash.update(data);
 		return hash.digest().toHex();

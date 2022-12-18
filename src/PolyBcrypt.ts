@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import {BcryptInfoInterface} from './types';
 
 /**
  * Functions to hash and verify passwords using bcrypt
@@ -21,7 +22,7 @@ const PolyBcrypt = {
 	 * @return {String}
 	 * @throws Error  When password is too long or cost is out of range
 	 */
-	hash(password, cost = 13) {
+	hash(password:string, cost:number = 13):string {
 		if (password.length > 72) {
 			throw Error(PolyBcrypt.LENGTH_ERROR);
 		}
@@ -39,7 +40,7 @@ const PolyBcrypt = {
 	 * @param {String} hash  The hash the password should match
 	 * @return {Boolean}  True if password is correct
 	 */
-	verify(password, hash) {
+	verify(password:string, hash:string):boolean {
 		if (password.length > 72) {
 			return false;
 		}
@@ -51,7 +52,7 @@ const PolyBcrypt = {
 	 * @param {String} hash  The hash to parse
 	 * @return {Object}
 	 */
-	info(hash) {
+	info(hash:string):BcryptInfoInterface {
 		const match = String(hash).match(/^(\$..?\$)(\d\d)\$(.{22})(.{31})$/);
 		if (!match) {
 			return {

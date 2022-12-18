@@ -25,7 +25,7 @@ const PolyRand = {
 	 * @param {Number} length  The desired length
 	 * @return {String}
 	 */
-	bytes(length) {
+	bytes(length:number):util.ByteStringBuffer {
 		return random.getBytesSync(length);
 	},
 
@@ -34,7 +34,7 @@ const PolyRand = {
 	 * @param {Number} length  The desired length
 	 * @return {String}
 	 */
-	hex(length) {
+	hex(length:number):string {
 		return util.bytesToHex(PolyRand.bytes(length / 2));
 	},
 
@@ -43,7 +43,7 @@ const PolyRand = {
 	 * @param {Number} length  The desired length
 	 * @return {String}
 	 */
-	slug(length) {
+	slug(length:number):string {
 		return PolyRand.string(length, PolyRand.SLUG_SYMBOL_LIST);
 	},
 
@@ -52,18 +52,18 @@ const PolyRand = {
 	 * @param {Number} length  The desired length
 	 * @return {String}
 	 */
-	fax(length) {
+	fax(length:number):string {
 		return PolyRand.string(length, PolyRand.FAX_SYMBOL_LIST);
 	},
 
 	/**
 	 * Create a random string of the given length limited to the given symbols
 	 * @param {Number} length  The desired length
-	 * @param {Array} symbolList  An array of characters to use
+	 * @param {String[]} symbolList  An array of characters to use
 	 * @return {String}
 	 * @throws {Error} if size of symbolList is not between 2 and 256
 	 */
-	string(length, symbolList) {
+	string(length:number, symbolList:String[]):string {
 		const randomBytes = PolyRand.bytes(length);
 		if (!Array.isArray(symbolList) || symbolList.length < 2 || symbolList.length > 256) {
 			throw new Error(PolyRand.SYMBOL_LIST_ERROR);
@@ -75,6 +75,16 @@ const PolyRand = {
 			output += symbolList[ord % numSymbols];
 		}
 		return output;
+	},
+
+	uuidv4(): string {
+		const z = PolyRand.string(1, ['8', '9', 'a', 'b']);
+		const x = PolyRand.hex(30);
+		// uuidv4 format is xxxxxxxx-xxxx-4xxx-zxxx-xxxxxxxxxxxx
+		return x.replace(
+			/^(.{8})(.{4})(.{3})(.{3})(.{12})$/,
+			`$1-$2-4$3-${z}$4-$5`
+		);
 	},
 };
 

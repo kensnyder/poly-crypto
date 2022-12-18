@@ -1,3 +1,4 @@
+import {AesEncodings} from "./types";
 import util from 'node-forge/lib/util';
 import pbkdf2 from 'node-forge/lib/pbkdf2';
 import random from 'node-forge/lib/random';
@@ -36,7 +37,7 @@ export default class PolyAES {
 	/**
 	 * Default value for this._encoding
 	 */
-	static DEFAULT_ENCODING = 'base64';
+	static DEFAULT_ENCODING : AesEncodings = 'base64';
 
 	private readonly _key;
 	private _encoding;
@@ -46,7 +47,7 @@ export default class PolyAES {
 	 * @param {String} hexKey  The 256-bit key in hexadecimal (should be 64 characters)
 	 * @return {PolyAES}
 	 */
-	static withKey(hexKey) {
+	static withKey(hexKey:string):PolyAES {
 		if (!/^[A-F0-9]{64}$/i.test(hexKey)) {
 			throw new Error(PolyAES.KEY_FORMAT_ERROR);
 		}
@@ -61,7 +62,7 @@ export default class PolyAES {
 	 * @param {Number} [numIterations=10000]  The number of iterations for the PBKDF2 hash
 	 * @return {PolyAES}
 	 */
-	static withPassword(password, salt, numIterations = 10000) {
+	static withPassword(password:string, salt:string, numIterations:number = 10000):PolyAES {
 		if (String(salt).length < 8) {
 			throw new Error(PolyAES.SALT_SIZE_ERROR);
 		}
@@ -72,10 +73,10 @@ export default class PolyAES {
 
 	/**
 	 * Instantiate using a binary key
-	 * @param {String} binKey  The encryption key in binary
+	 * @param {util.ByteStringBuffer} binKey  The encryption key in binary
 	 * @throws Error  If PolyAES.DEFAULT_ENCODING is invalid
 	 */
-	constructor(binKey) {
+	constructor(binKey:util.ByteStringBuffer) {
 		this._key = binKey;
 		this.setEncoding(PolyAES.DEFAULT_ENCODING);
 	}
@@ -86,7 +87,7 @@ export default class PolyAES {
 	 * @return {PolyAES}
 	 * @chainable
 	 */
-	setEncoding(encoding) {
+	setEncoding(encoding:AesEncodings) {
 		const allowed = ['base64', 'hex', 'bin'];
 		if (allowed.indexOf(encoding) === -1) {
 			throw new Error(PolyAES.ENCODING_ERROR);
@@ -99,7 +100,7 @@ export default class PolyAES {
 	 * Get the current encoding type
 	 * @return {String}  One of: base64, hex, bin
 	 */
-	getEncoding() {
+	getEncoding():string {
 		return this._encoding;
 	}
 
@@ -109,7 +110,7 @@ export default class PolyAES {
 	 * @return {String}  The encoded ciphertext
 	 * @private
 	 */
-	_binToStr(bin) {
+	_binToStr(bin:util.ByteStringBuffer) {
 		if (this._encoding === 'bin') {
 			return bin;
 		} else if (this._encoding === 'base64') {
@@ -125,7 +126,7 @@ export default class PolyAES {
 	 * @return {String}  The ciphertext in binary
 	 * @private
 	 */
-	_strToBin(str) {
+	_strToBin(str:string):util.ByteStringBuffer {
 		if (this._encoding === 'bin') {
 			return str;
 		} else if (this._encoding === 'base64') {
@@ -141,7 +142,7 @@ export default class PolyAES {
 	 * @note The first 32 characters of output will be the IV (128 bits in hexadecimal)
 	 * @return {String}
 	 */
-	encrypt(data) {
+	encrypt(data:string):string {
 		const mode = 'AES-GCM';
 		const iv = random.getBytesSync(128 / 8);
 		const ciph = cipher.createCipher(mode, this._key);
@@ -157,7 +158,7 @@ export default class PolyAES {
 	 * @note The first 32 characters must be the hex-encoded IV
 	 * @return {String}
 	 */
-	decrypt(data) {
+	decrypt(data:string):string {
 		const mode = 'AES-GCM';
 		const bytes = this._strToBin(data);
 		const iv = bytes.slice(0, 16);
@@ -175,7 +176,7 @@ export default class PolyAES {
 	 * @param {Number} length  The character length of the key
 	 * @return {String}  The key in hexadecimal
 	 */
-	static generateKey(length = 64) {
+	static generateKey(length:number = 64):string {
 		return util.bytesToHex(random.getBytesSync(length / 2));
 	}
 
@@ -184,7 +185,7 @@ export default class PolyAES {
 	 * @param {Number} length  The character length of the salt
 	 * @return {String}  The salt in hexadecimal
 	 */
-	static generateSalt(length = 64) {
+	static generateSalt(length:number = 64):string {
 		return util.bytesToHex(random.getBytesSync(length / 2));
 	}
 
@@ -195,7 +196,7 @@ export default class PolyAES {
 	 * @see https://coolaj86.com/articles/javascript-and-unicode-strings-how-to-deal/
 	 * @private
 	 */
-	_utf8ToBin(data) {
+	_utf8ToBin(data:string):string {
 		if (typeof Buffer !== 'undefined') {
 			// node
 			return Buffer.from(data, 'utf8').toString('binary');
@@ -225,7 +226,7 @@ export default class PolyAES {
 	 * @see https://coolaj86.com/articles/javascript-and-unicode-strings-how-to-deal/
 	 * @private
 	 */
-	_binToUtf8(data) {
+	_binToUtf8(data:string):util.ByteStringBuffer {
 		if (typeof Buffer !== 'undefined') {
 			// node
 			return Buffer.from(data, 'binary').toString('utf8');
