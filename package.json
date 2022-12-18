@@ -64,7 +64,10 @@
     "PHP",
     "openssl",
     "random",
-    "urandom"
+    "urandom",
+    "uuid",
+    "uuidv4",
+    "uuid v4"
   ],
   "repository": {
     "type": "git",
