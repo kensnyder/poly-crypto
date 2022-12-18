@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs');
+import bcrypt from 'bcryptjs';
 
 /**
  * Functions to hash and verify passwords using bcrypt
@@ -68,4 +68,4 @@ const PolyBcrypt = {
 	},
 };
 
-module.exports = PolyBcrypt;
+export default PolyBcrypt;

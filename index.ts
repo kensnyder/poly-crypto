@@ -1,11 +1,4 @@
-const PolyAES = require('./src/PolyAES.js');
-const PolyBcrypt = require('./src/PolyBcrypt.js');
-const PolyDigest = require('./src/PolyDigest.js');
-const PolyRand = require('./src/PolyRand.js');
-
-module.exports = {
-	PolyAES,
-	PolyBcrypt,
-	PolyDigest,
-	PolyRand,
-};
+export { default as PolyAES } from './src/PolyAES';
+export { default as PolyBcrypt } from './src/PolyBcrypt';
+export { default as PolyDigest } from './src/PolyDigest';
+export { default as PolyRand } from './src/PolyRand';

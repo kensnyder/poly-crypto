@@ -1,7 +1,7 @@
-const util = require('node-forge/lib/util.js');
-const pbkdf2 = require('node-forge/lib/pbkdf2.js');
-const random = require('node-forge/lib/random.js');
-const cipher = require('node-forge/lib/cipher.js');
+import util from 'node-forge/lib/util';
+import pbkdf2 from 'node-forge/lib/pbkdf2';
+import random from 'node-forge/lib/random';
+import cipher from 'node-forge/lib/cipher';
 
 /**
  * Service for encrypting and decrypting data with AES-256 GCM
@@ -17,7 +17,30 @@ const cipher = require('node-forge/lib/cipher.js');
  * const encrypted = PolyAES.withPassword(password, salt).encrypt(data);
  * const decrypted = PolyAES.withPassword(password, salt).decrypt(encrypted);
  */
-class PolyAES {
+export default class PolyAES {
+	/**
+	 * Error message when key is not in correct format
+	 */
+	static KEY_FORMAT_ERROR = 'PolyAES: key must be 64-character hexadecimal string.';
+
+	/**
+	 * Error message when salt is too short
+	 */
+	static SALT_SIZE_ERROR = 'PolyAES: salt must be 8+ characters.';
+
+	/**
+	 * Error message when encoding is set to an invalid value
+	 */
+	static ENCODING_ERROR = 'PolyAES: encoding must be base64, hex, or bin.';
+
+	/**
+	 * Default value for this._encoding
+	 */
+	static DEFAULT_ENCODING = 'base64';
+
+	private readonly _key;
+	private _encoding;
+
 	/**
 	 * Static function to return new Crypto instance
 	 * @param {String} hexKey  The 256-bit key in hexadecimal (should be 64 characters)
@@ -121,11 +144,11 @@ class PolyAES {
 	encrypt(data) {
 		const mode = 'AES-GCM';
 		const iv = random.getBytesSync(128 / 8);
-		const cipher = cipher.createCipher(mode, this._key);
-		cipher.start({ iv, tagLength: 128 });
-		cipher.update(util.createBuffer(this._utf8ToBin(data)));
-		cipher.finish();
-		return this._binToStr(iv + cipher.mode.tag.data + cipher.output.data);
+		const ciph = cipher.createCipher(mode, this._key);
+		ciph.start({ iv, tagLength: 128 });
+		ciph.update(util.createBuffer(this._utf8ToBin(data)));
+		ciph.finish();
+		return this._binToStr(iv + ciph.mode.tag.data + ciph.output.data);
 	}
 
 	/**
@@ -230,25 +253,3 @@ class PolyAES {
 		}
 	}
 }
-
-/**
- * Error message when key is not in correct format
- */
-PolyAES.KEY_FORMAT_ERROR = 'PolyAES: key must be 64-character hexadecimal string.';
-
-/**
- * Error message when salt is too short
- */
-PolyAES.SALT_SIZE_ERROR = 'PolyAES: salt must be 8+ characters.';
-
-/**
- * Error message when encoding is set to an invalid value
- */
-PolyAES.ENCODING_ERROR = 'PolyAES: encoding must be base64, hex, or bin.';
-
-/**
- * Default value for this._encoding
- */
-PolyAES.DEFAULT_ENCODING = 'base64';
-
-module.exports = PolyAES;

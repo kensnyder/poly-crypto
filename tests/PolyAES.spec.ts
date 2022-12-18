@@ -1,4 +1,4 @@
-const { PolyAES } = require('../index.js');
+import { PolyAES } from '../index.js';
 
 describe('PolyAES.withKey()', () => {
 	const keyUpper = 'C639A572E14D5075C526FDDD43E4ECF6B095EA17783D32EF3D2710AF9F359DD4';

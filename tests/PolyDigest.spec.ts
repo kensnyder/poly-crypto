@@ -1,4 +1,4 @@
-const { PolyDigest } = require('../index.js');
+import { PolyDigest } from "../index.js";
 
 describe('PolyDigest', () => {
 	it('should run md5 properly', () => {

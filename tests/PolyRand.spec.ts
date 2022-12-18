@@ -1,4 +1,4 @@
-const { PolyRand } = require('../index.js');
+import {PolyRand} from "../index.js";
 
 describe('PolyRand.bytes()', () => {
 	it('should return requested size', () => {

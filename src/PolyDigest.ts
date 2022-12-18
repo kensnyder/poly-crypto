@@ -1,4 +1,4 @@
-const md = require('node-forge/lib/md.all.js');
+import md from 'node-forge/lib/md.all';
 
 /**
  * Calculate digests of strings
@@ -54,4 +54,4 @@ const PolyDigest = {
 	},
 };
 
-module.exports = PolyDigest;
+export default PolyDigest;

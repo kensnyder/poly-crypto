@@ -1,5 +1,5 @@
-const random = require('node-forge/lib/random.js');
-const util = require('node-forge/lib/util.js');
+import util from 'node-forge/lib/util';
+import random from 'node-forge/lib/random';
 
 /**
  * Methods to generate random strings
@@ -78,4 +78,4 @@ const PolyRand = {
 	},
 };
 
-module.exports = PolyRand;
+export default PolyRand;
