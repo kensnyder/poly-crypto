@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
+    "outDir": "./dist",
+    "declaration": true,
+    "removeComments": false,
+    "noEmit": false,
+    "pretty": true,
+    "isolatedModules": true,
+    "lib": ["ESNext"],
+    "sourceMap": false,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "files": ["index.ts"]
+}
