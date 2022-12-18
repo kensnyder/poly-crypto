@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { PolyRand } = require('../src/index.ts');
+const { PolyRand } = require('../dist/index.cjs');
 
 try {
 	const [, , length, symbols] = process.argv;

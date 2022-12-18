@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { PolyDigest } = require('../src/index.ts');
+const { PolyDigest } = require('../dist/index.cjs');
 
 const [, , algo, data] = process.argv;
 const digest = PolyDigest[algo](data);

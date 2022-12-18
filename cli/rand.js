@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { PolyRand } = require('../src/index.ts');
+const { PolyRand } = require('../dist/index.cjs');
 
 const [, , type, length] = process.argv;
 const out = PolyRand[type](Number(length));

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { PolyAES } = require('../src/index.ts');
+const { PolyAES } = require('../dist/index.cjs');
 
 try {
 	const [, , password, salt, ciphertext] = process.argv;
