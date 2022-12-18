@@ -8,7 +8,7 @@ environment:
 # Install scripts. (runs after repo cloning)
 install:
   # install modules
-  - nvm use 16
+  - nvm use 18
   - npm install
 
 # Post-install test scripts.

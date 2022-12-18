@@ -5,17 +5,18 @@ interoperable between NodeJS and PHP 7.1+.
 
 [![NPM Link](https://img.shields.io/npm/v/poly-crypto?v=2.1.0)](https://npmjs.com/package/poly-crypto)
 [![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.1.0)](https://packagist.org/packages/poly-crypto/poly-crypto)
-[![Build Status](https://travis-ci.org/kensnyder/poly-crypto.svg?branch=master&v=2.1.0)](https://travis-ci.org/kensnyder/poly-crypto)
+[![Build Status](https://ci.appveyor.com/api/projects/status/o56xcpp5xtvxywfg?svg=true&v=2.1.0)](https://ci.appveyor.com/project/kensnyder/poly-crypto)
 [![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/master/graph/badge.svg?v=2.1.0)](https://codecov.io/gh/kensnyder/poly-crypto)
 [![ISC License](https://img.shields.io/npm/l/poly-crypto.svg?v=2.1.0)](https://opensource.org/licenses/ISC)
 
 ## Project Goals
 
 1. APIs that work exactly the same on NodeJS and PHP 7.1+
-1. Package for Node that can be used on serverless functions without external C
+2. Package for Node that can be used on serverless functions without external C
    bindings
-1. Two-way symmetric encryption with a key or with password and salt
-1. Password hashing
+3. Two-way symmetric encryption with a key or with password and salt
+4. Password hashing
+5. Support ESM with tree shaking; support CommonJS; Typescript
 
 ## Installation
 
@@ -67,7 +68,7 @@ composer require poly-crypto/poly-crypto
 
 ### AES-256 GCM
 
-As of March 2021, AES-256 Encryption with GCM block mode is a reputable and
+As of December 2022, AES-256 Encryption with GCM block mode is a reputable and
 secure method that is available across PHP and NodeJS without any extensions.
 With the right arguments and options, these 2 languages can decrypt one
 another's encrypted strings using PHP's openssl\_\* functions and npm's
@@ -75,7 +76,7 @@ node-forge.
 
 ### Bcrypt
 
-As of March 2021, Bcrypt password hashing is reputable and secure. These 2
+As of December 2022, Bcrypt password hashing is reputable and secure. These 2
 languages can hash and verify one another's hashes: npm's bcrypt-js and PHP's
 password_hash function.
 
@@ -290,6 +291,9 @@ PolyRand.string(length, symbolList);
 
 // generate random bytes in binary form
 PolyRand.bytes(length);
+
+// generate a uuid v4
+PolyRand.uuidv4();
 ```
 
 PHP:
@@ -317,6 +321,9 @@ PolyRand::string($length, $symbolList);
 
 // generate random bytes in binary form
 PolyRand::bytes($length);
+
+// generate a uuid v4
+PolyRand::uuidv4();
 ```
 
 ## Command line utilities
@@ -328,17 +335,17 @@ poly-crypto functions can be used from the command line if Node JS is installed.
 You'll have the following commands as symlinks:
 
 ```bash
-# Global install command and arguments    # JavaScript equivalent
-# --------------------------------------  # ---------------------
-key-encrypt $hexKey $plaintext            # PolyAES.withKey(hexKey).encrypt(plaintext)
-key-decrypt $hexKey $ciphertext           # PolyAES.withKey(hexKey).decript(ciphertext)
-pass-encrypt $password $salt $plaintext   # PolyAES.withPassword(password, salt).encrypt(plaintext)
-pass-decrypt $password $salt $ciphertext  # PolyAES.withPassword(password, salt).decrypt(plaintext)
-bcrypt-hash $password                     # PolyBcrypt.hash(password)
-bcrypt-verify $password $againstHash      # PolyBcrypt.verify(password, againstHash)
-poly-digest $algo $string                 # PolyDigest[algo](data) where algo is one of: sha1, sha256, sha512, md5
-poly-rand $type $length                   # PolyRand[type](length) where type is one of: slug, hex, fax, bytes
-poly-rand-string $length $symbolString    # PolyRand.string(length, symbolList) where symbolList is a string containing allowed characters
+# Global install command and arguments        # JavaScript equivalent
+# ------------------------------------------- # ---------------------
+npx key-encrypt $hexKey $plaintext            # PolyAES.withKey(hexKey).encrypt(plaintext)
+npx key-decrypt $hexKey $ciphertext           # PolyAES.withKey(hexKey).decript(ciphertext)
+npx pass-encrypt $password $salt $plaintext   # PolyAES.withPassword(password, salt).encrypt(plaintext)
+npx pass-decrypt $password $salt $ciphertext  # PolyAES.withPassword(password, salt).decrypt(plaintext)
+npx bcrypt-hash $password                     # PolyBcrypt.hash(password)
+npx bcrypt-verify $password $againstHash      # PolyBcrypt.verify(password, againstHash)
+npx poly-digest $algo $string                 # PolyDigest[algo](data) where algo is one of: sha1, sha256, sha512, md5
+npx poly-rand $type $length                   # PolyRand[type](length) where type is one of: slug, hex, fax, bytes, uuidv4
+npx poly-rand-string $length $symbolString    # PolyRand.string(length, symbolList) where symbolList is a string containing allowed characters
 ```
 
 ### Local install of poly-crypto
@@ -354,12 +361,12 @@ directly importing a Poly\* module.
 
 ## JavaScript direct import
 
-If you are using [esm](https://www.npmjs.com/package/esm) or a bundler such as
-[webpack](https://webpack.js.org/) or [parcel](https://parceljs.org/)
-you may import a single JavaScript module like so:
+If you are using ESM or a bundler such as
+[vite](https://vitejs.dev) or [esbuild](https://esbuild.github.io)
+you will benefit from tree shaking by using an import statement.
 
 ```js
-import { PolyBcrypt } from 'poly-crypto/node/src/PolyBcrypt.js';
+import { PolyBcrypt } from 'poly-crypto';
 ```
 
 ## Unit tests
