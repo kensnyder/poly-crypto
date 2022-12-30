@@ -82,6 +82,12 @@ const PolyRand = {
 	 * @return string
 	 */
 	uuidv4(): string {
+		try {
+			// In non-https web pages and older node versions,
+			// globalThis.crypto is undefined, so we must
+			// provide an alternate implementation below.
+			return globalThis.crypto.randomUUID();
+		} catch (e) {}
 		const z = PolyRand.string(1, ['8', '9', 'a', 'b']);
 		const x = PolyRand.hex(30);
 		// uuidv4 format is xxxxxxxx-xxxx-4xxx-zxxx-xxxxxxxxxxxx

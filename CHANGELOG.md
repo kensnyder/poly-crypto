@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.1.1 - Dec 30, 2022
+
+-   Node: Use crypto.randomUUID() if available
+
 ## Version 2.1.0 - Dec 18, 2022
 
 -   Convert JavaScript to TypeScript
