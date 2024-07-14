@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.1.2 - Jul 13, 2024
+
+-  Bump dependencies
+
 ## Version 2.1.1 - Dec 30, 2022
 
 -   Node: Use crypto.randomUUID() if available

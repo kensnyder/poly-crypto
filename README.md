@@ -3,11 +3,11 @@
 **Poly**glot **Crypto**graphy. High-level cryptographic functions that are
 interoperable between NodeJS and PHP 7.1+.
 
-[![NPM Link](https://img.shields.io/npm/v/poly-crypto?v=2.1.1)](https://npmjs.com/package/poly-crypto)
-[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.1.1)](https://packagist.org/packages/poly-crypto/poly-crypto)
-[![Build Status](https://ci.appveyor.com/api/projects/status/o56xcpp5xtvxywfg?svg=true&v=2.1.1)](https://ci.appveyor.com/project/kensnyder/poly-crypto)
-[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/master/graph/badge.svg?v=2.1.1)](https://codecov.io/gh/kensnyder/poly-crypto)
-[![ISC License](https://img.shields.io/npm/l/poly-crypto.svg?v=2.1.1)](https://opensource.org/licenses/ISC)
+[![NPM Link](https://img.shields.io/npm/v/poly-crypto?v=2.1.2)](https://npmjs.com/package/poly-crypto)
+[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.0.6)](https://packagist.org/packages/poly-crypto/poly-crypto)
+[![Build Status](https://ci.appveyor.com/api/projects/status/o56xcpp5xtvxywfg?svg=true&v=2.1.2)](https://ci.appveyor.com/project/kensnyder/poly-crypto)
+[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/master/graph/badge.svg?v=2.1.2)](https://codecov.io/gh/kensnyder/poly-crypto)
+[![ISC License](https://img.shields.io/npm/l/poly-crypto.svg?v=2.1.2)](https://opensource.org/licenses/ISC)
 
 ## Project Goals
 
@@ -22,7 +22,7 @@ interoperable between NodeJS and PHP 7.1+.
 
 ```bash
 # NodeJS
-npm install --save poly-crypto
+npm install poly-crypto
 
 # PHP
 composer require poly-crypto/poly-crypto
