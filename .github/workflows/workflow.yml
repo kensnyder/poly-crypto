@@ -1,7 +1,8 @@
 name: build
 on: [push]
 jobs:
-  run:
+  node:
+    name: node ${{ matrix.node-versions }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -24,8 +25,45 @@ jobs:
         run: npm run coverage
 
       - name: ☂️ Upload to codecov
+        if: matrix.node-version == 'latest'
         uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
+
+  php:
+    name: PHP ${{ matrix.php-versions }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ['7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
+
+    steps:
+      - name: Setup PHP Action
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "${{ matrix.php-versions }}"
+          coverage: xdebug
+
+      - name: ➡️ Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⬇️ Install dependencies
+        run: composer install --no-interaction
+
+      - name: 🏃 Run tests
+        run: bin/kahlan --spec=tests --clover=clover.xml
+
+      - name: ☂️ Upload to codecov
+        if: matrix.php-versions == '7.4' && github.event.pull_request.head.repo.full_name == 'kahlan/kahlan'
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./clover.xml
+          flags: tests
+          yml: ./codecov.yml
           verbose: true
