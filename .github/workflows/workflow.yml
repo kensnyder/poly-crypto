@@ -25,7 +25,7 @@ jobs:
         run: npm run coverage
 
       - name: ☂️ Upload to codecov
-        if: matrix.node-version == 'latest' && github.event.pull_request.head.repo.full_name == 'kensnyder/poly-crypto'
+        if: matrix.node-version == 'latest'
         uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: true
@@ -58,7 +58,7 @@ jobs:
         run: ./vendor/bin/kahlan --spec=tests --clover=clover.xml
 
       - name: ☂️ Upload to codecov
-        if: matrix.php-versions == '7.4' && github.event.pull_request.head.repo.full_name == 'kensnyder/poly-crypto'
+        if: matrix.php-versions == '8.3'
         uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: true
