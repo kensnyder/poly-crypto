@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { PolyRand } from "../src";
+import { describe, expect, it } from 'vitest';
+import { PolyRand } from '../src';
 
 describe('PolyRand.bytes()', () => {
 	it('should return requested size', () => {
@@ -62,5 +62,23 @@ describe('PolyRand.string()', () => {
 	it('should handle unicode symbol list', () => {
 		const hash = PolyRand.string(1, ['💻', '🖥️']);
 		expect(hash === '💻' || hash === '🖥️').toBe(true);
+	});
+});
+
+describe('PolyRand.uuidv4()', () => {
+	it('should return uuid', () => {
+		const uuid = PolyRand.uuidv4();
+		expect(uuid).toMatch(/^[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}$/);
+	});
+	it('should return work if crypto is not available', () => {
+		const crypto = globalThis.crypto;
+		Object.defineProperty(globalThis, 'crypto', {
+			value: undefined,
+		});
+		const uuid = PolyRand.uuidv4();
+		expect(uuid).toMatch(/^[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}$/);
+		Object.defineProperty(globalThis, 'crypto', {
+			value: crypto,
+		});
 	});
 });

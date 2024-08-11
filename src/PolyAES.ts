@@ -1,8 +1,8 @@
-import { AesEncodings } from './types';
-import util from 'node-forge/lib/util';
+import cipher from 'node-forge/lib/cipher';
 import pbkdf2 from 'node-forge/lib/pbkdf2';
 import random from 'node-forge/lib/random';
-import cipher from 'node-forge/lib/cipher';
+import util from 'node-forge/lib/util';
+import { AesEncodings } from './types';
 
 /**
  * Service for encrypting and decrypting data with AES-256 GCM
@@ -44,8 +44,8 @@ export default class PolyAES {
 
 	/**
 	 * Static function to return new Crypto instance
-	 * @param {String} hexKey  The 256-bit key in hexadecimal (should be 64 characters)
-	 * @return {PolyAES}
+	 * @param hexKey  The 256-bit key in hexadecimal (should be 64 characters)
+	 * @chainable
 	 */
 	static withKey(hexKey: string): PolyAES {
 		if (!/^[A-F0-9]{64}$/i.test(hexKey)) {
@@ -57,10 +57,10 @@ export default class PolyAES {
 
 	/**
 	 * Return new Crypto instance with the given user-supplied password
-	 * @param {String} password  The password from the user
-	 * @param {String} salt  An application secret salt
-	 * @param {Number} [numIterations=10000]  The number of iterations for the PBKDF2 hash
-	 * @return {PolyAES}
+	 * @param password  The password from the user
+	 * @param salt  An application secret salt
+	 * @param [numIterations=10000]  The number of iterations for the PBKDF2 hash
+	 * @chainable
 	 */
 	static withPassword(password: string, salt: string, numIterations: number = 10000): PolyAES {
 		if (String(salt).length < 8) {
@@ -74,20 +74,19 @@ export default class PolyAES {
 	/**
 	 * Instantiate using a binary key
 	 * @param {util.ByteStringBuffer} binKey  The encryption key in binary
-	 * @throws Error  If PolyAES.DEFAULT_ENCODING is invalid
+	 * @throws {Error}  If PolyAES.DEFAULT_ENCODING is invalid
 	 */
-	constructor(binKey: util.ByteStringBuffer) {
+	constructor(binKey: string) {
 		this._key = binKey;
 		this.setEncoding(PolyAES.DEFAULT_ENCODING);
 	}
 
 	/**
 	 * After encryption, use base64 encoding, hexadecimal or binary
-	 * @param {String} encoding  One of: base64, hex, bin
-	 * @return {PolyAES}
+	 * @param encoding  One of: base64, hex, bin
 	 * @chainable
 	 */
-	setEncoding(encoding: AesEncodings) {
+	setEncoding(encoding: AesEncodings): PolyAES {
 		const allowed = ['base64', 'hex', 'bin'];
 		if (allowed.indexOf(encoding) === -1) {
 			throw new Error(PolyAES.ENCODING_ERROR);
@@ -98,7 +97,7 @@ export default class PolyAES {
 
 	/**
 	 * Get the current encoding type
-	 * @return {String}  One of: base64, hex, bin
+	 * @return  One of: base64, hex, bin
 	 */
 	getEncoding(): string {
 		return this._encoding;
@@ -106,11 +105,11 @@ export default class PolyAES {
 
 	/**
 	 * Encode encrypted bytes using the current encoding
-	 * @param {String} bin  The ciphertext in binary
-	 * @return {String}  The encoded ciphertext
+	 * @param bin  The ciphertext in binary
+	 * @return  The encoded ciphertext
 	 * @private
 	 */
-	_binToStr(bin: util.ByteStringBuffer) {
+	_binToStr(bin: string): string {
 		if (this._encoding === 'bin') {
 			return bin;
 		} else if (this._encoding === 'base64') {
@@ -122,11 +121,11 @@ export default class PolyAES {
 
 	/**
 	 * Decode encrypted bytes using the current encoding
-	 * @param {String} str  The encoded ciphertext
-	 * @return {String}  The ciphertext in binary
+	 * @param str  The encoded ciphertext
+	 * @return  The ciphertext in binary
 	 * @private
 	 */
-	_strToBin(str: string): util.ByteStringBuffer {
+	_strToBin(str: string): string {
 		if (this._encoding === 'bin') {
 			return str;
 		} else if (this._encoding === 'base64') {
@@ -138,9 +137,8 @@ export default class PolyAES {
 
 	/**
 	 * Encrypt the given data
-	 * @param {String} data  The string to encrypt
+	 * @param data  The string to encrypt
 	 * @note The first 32 characters of output will be the IV (128 bits in hexadecimal)
-	 * @return {String}
 	 */
 	encrypt(data: string): string {
 		const mode = 'AES-GCM';
@@ -154,9 +152,8 @@ export default class PolyAES {
 
 	/**
 	 * Decrypt the given data
-	 * @param {String} data  Data encrypted with AES-256 CBC mode
+	 * @param data  Data encrypted with AES-256 CBC mode
 	 * @note The first 32 characters must be the hex-encoded IV
-	 * @return {String}
 	 */
 	decrypt(data: string): string {
 		const mode = 'AES-GCM';
@@ -168,13 +165,14 @@ export default class PolyAES {
 		decipher.start({ iv, tag });
 		decipher.update(util.createBuffer(ciphertext));
 		const ok = decipher.finish();
-		return ok ? this._binToUtf8(decipher.output.data) : false;
+		/* v8 ignore next */
+		return ok ? this._binToUtf8(decipher.output.data) : '';
 	}
 
 	/**
 	 * Generate a key to use with PolyAES.withKey()
-	 * @param {Number} length  The character length of the key
-	 * @return {String}  The key in hexadecimal
+	 * @param length  The character length of the key
+	 * @return  The key in hexadecimal
 	 */
 	static generateKey(length: number = 64): string {
 		return util.bytesToHex(random.getBytesSync(length / 2));
@@ -182,8 +180,8 @@ export default class PolyAES {
 
 	/**
 	 * Generate salt to use with PolyAES.withPassword()
-	 * @param {Number} length  The character length of the salt
-	 * @return {String}  The salt in hexadecimal
+	 * @param length  The character length of the salt
+	 * @return  The salt in hexadecimal
 	 */
 	static generateSalt(length: number = 64): string {
 		return util.bytesToHex(random.getBytesSync(length / 2));
@@ -191,16 +189,18 @@ export default class PolyAES {
 
 	/**
 	 * Convert a JavaScript string into binary for encryption
-	 * @param {String} data  The regular JavaScript string
-	 * @return {String}
+	 * @param data  The regular JavaScript string
 	 * @see https://coolaj86.com/articles/javascript-and-unicode-strings-how-to-deal/
 	 * @private
 	 */
 	_utf8ToBin(data: string): string {
-		if (typeof Buffer !== 'undefined') {
+		if (typeof Buffer !== 'undefined' && !globalThis.POLY_CRYPTO_TEST_WITHOUT_BUFFER) {
 			// node
 			return Buffer.from(data, 'utf8').toString('binary');
-		} else if (typeof TextEncoder !== 'undefined') {
+		} else if (
+			typeof TextEncoder !== 'undefined' &&
+			!globalThis.POLY_CRYPTO_TEST_WITHOUT_TEXTENCODER
+		) {
 			// modern browsers
 			const encoder = new TextEncoder();
 			const buf = encoder.encode(data);
@@ -221,16 +221,19 @@ export default class PolyAES {
 
 	/**
 	 * Convert binary to a JavaScript string after decryption
-	 * @param {String} data  The regular JavaScript string
-	 * @return {String}
+	 * @param data  The regular JavaScript string
 	 * @see https://coolaj86.com/articles/javascript-and-unicode-strings-how-to-deal/
 	 * @private
 	 */
-	_binToUtf8(data: string): util.ByteStringBuffer {
-		if (typeof Buffer !== 'undefined') {
+	_binToUtf8(data: string): string {
+		if (typeof Buffer !== 'undefined' && !globalThis.POLY_CRYPTO_TEST_WITHOUT_BUFFER) {
 			// node
 			return Buffer.from(data, 'binary').toString('utf8');
-		} else if (typeof TextDecoder !== 'undefined' && typeof Uint8Array !== 'undefined') {
+		} else if (
+			typeof TextDecoder !== 'undefined' &&
+			typeof Uint8Array !== 'undefined' &&
+			!globalThis.POLY_CRYPTO_TEST_WITHOUT_TEXTDECODER
+		) {
 			// modern browsers
 			const decoder = new TextDecoder('utf-8');
 			const arr = [];
@@ -242,6 +245,7 @@ export default class PolyAES {
 			// slower but vanilla js
 			const escstr = data.replace(/./g, function (char) {
 				let code = char.charCodeAt(0).toString(16).toUpperCase();
+				/* v8 ignore next 3 */
 				if (code.length < 2) {
 					code = '0' + code;
 				}

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from 'vitest';
 import { PolyAES } from '../src';
 
 describe('PolyAES.withKey()', () => {
@@ -11,12 +11,8 @@ describe('PolyAES.withKey()', () => {
 		'dOdjhDQkzxa+RS5HuafKdiUC9N20Hd58w1A26RVfanhvAgI5OkHDoWihExGDI1xNZ8d4eH3a0JzQZeGh9BTfNTEatrLr';
 
 	it('should throw Error if key is not 64-char hex', () => {
-		try {
-			PolyAES.withKey('xyz');
-			expect(false).toBe(true);
-		} catch (e) {
-			expect(e).toBeInstanceOf(Error);
-		}
+		const thrower = () => PolyAES.withKey('xyz');
+		expect(thrower).toThrow();
 	});
 
 	it('should encrypt ok', () => {
@@ -61,6 +57,38 @@ describe('PolyAES.withKey()', () => {
 	it('should interoperate with PHP', () => {
 		const data = PolyAES.withKey(keyUpper).decrypt(sheSellsEncrypted);
 		expect(data).toBe(sheSellsDecrypted);
+	});
+
+	it('should interoperate with PHP (No Buffer)', () => {
+		globalThis.POLY_CRYPTO_TEST_WITHOUT_BUFFER = true;
+		const data = PolyAES.withKey(keyUpper).decrypt(sheSellsEncrypted);
+		expect(data).toBe(sheSellsDecrypted);
+		const encrypted = PolyAES.withKey(keyUpper).encrypt(data);
+		const decrypted = PolyAES.withKey(keyLower).decrypt(encrypted);
+		expect(decrypted).toBe(data);
+		globalThis.POLY_CRYPTO_TEST_WITHOUT_BUFFER = false;
+	});
+
+	it('should interoperate with PHP (No TextEncoder)', () => {
+		globalThis.POLY_CRYPTO_TEST_WITHOUT_BUFFER = true;
+		globalThis.POLY_CRYPTO_TEST_WITHOUT_TEXTENCODER = true;
+		const data = PolyAES.withKey(keyUpper).decrypt(sheSellsEncrypted);
+		expect(data).toBe(sheSellsDecrypted);
+		const encrypted = PolyAES.withKey(keyUpper).encrypt(data);
+		const decrypted = PolyAES.withKey(keyLower).decrypt(encrypted);
+		expect(decrypted).toBe(data);
+		globalThis.POLY_CRYPTO_TEST_WITHOUT_BUFFER = false;
+		globalThis.POLY_CRYPTO_TEST_WITHOUT_TEXTENCODER = false;
+	});
+
+	it('should interoperate with PHP (No TextDecoder)', () => {
+		globalThis.POLY_CRYPTO_TEST_WITHOUT_BUFFER = true;
+		globalThis.POLY_CRYPTO_TEST_WITHOUT_TEXTDECODER = true;
+		const encrypted = PolyAES.withKey(keyUpper).encrypt(sheSellsDecrypted);
+		const decrypted = PolyAES.withKey(keyLower).decrypt(encrypted);
+		expect(decrypted).toBe(sheSellsDecrypted);
+		globalThis.POLY_CRYPTO_TEST_WITHOUT_BUFFER = false;
+		globalThis.POLY_CRYPTO_TEST_WITHOUT_TEXTDECODER = false;
 	});
 });
 
@@ -107,5 +135,65 @@ describe('PolyAES.withPassword()', () => {
 	it('should interoperate with PHP', () => {
 		const data = PolyAES.withPassword(password, salt).decrypt(sheSellsEncrypted);
 		expect(data).toBe(sheSellsDecrypted);
+	});
+});
+
+describe('PolyAES.setEncoding()', () => {
+	const keyUpper = 'C639A572E14D5075C526FDDD43E4ECF6B095EA17783D32EF3D2710AF9F359DD4';
+	it('should throw error if encoding is invalid', () => {
+		// @ts-expect-error  Testing invalid input
+		const thrower = () => PolyAES.withKey(keyUpper).setEncoding('xyz');
+		expect(thrower).toThrow();
+	});
+	it('should default to base64', () => {
+		const crypto = PolyAES.withKey(keyUpper);
+		expect(crypto.getEncoding()).toBe('base64');
+	});
+	it('should set encoding to hex', () => {
+		const crypto = PolyAES.withKey(keyUpper).setEncoding('hex');
+		expect(crypto.getEncoding()).toBe('hex');
+	});
+	it('should set encoding to bin', () => {
+		const crypto = PolyAES.withKey(keyUpper).setEncoding('bin');
+		expect(crypto.getEncoding()).toBe('bin');
+	});
+
+	it('should support hex encoding', () => {
+		const crypto = PolyAES.withKey(keyUpper).setEncoding('hex');
+		const data = 'I ❤️ encryption';
+		const encrypted = crypto.encrypt(data);
+		expect(encrypted).toMatch(/^[a-f0-9]+$/);
+		const decrypted = crypto.decrypt(encrypted);
+		expect(decrypted).toBe(data);
+	});
+
+	it('should support bin encoding', () => {
+		const crypto = PolyAES.withKey(keyUpper).setEncoding('bin');
+		const data = 'I ❤️ encryption';
+		const encrypted = crypto.encrypt(data);
+		const decrypted = crypto.decrypt(encrypted);
+		expect(decrypted).toBe(data);
+	});
+});
+
+describe('PolyAES.generateKey()', () => {
+	it('should generate key ok', () => {
+		const key = PolyAES.generateKey();
+		expect(key).toMatch(/^[a-f0-9]{64}$/);
+	});
+	it('should generate key with specified length', () => {
+		const key = PolyAES.generateKey(128);
+		expect(key).toMatch(/^[a-f0-9]{128}$/);
+	});
+});
+
+describe('PolyAES.generateSalt()', () => {
+	it('should generate key ok', () => {
+		const key = PolyAES.generateSalt();
+		expect(key).toMatch(/^[a-f0-9]{64}$/);
+	});
+	it('should generate key with specified length', () => {
+		const key = PolyAES.generateSalt(128);
+		expect(key).toMatch(/^[a-f0-9]{128}$/);
 	});
 });

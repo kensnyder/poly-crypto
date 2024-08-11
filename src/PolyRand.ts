@@ -1,5 +1,5 @@
-import util from 'node-forge/lib/util';
 import random from 'node-forge/lib/random';
+import util from 'node-forge/lib/util';
 
 /**
  * Methods to generate random strings
@@ -22,17 +22,15 @@ const PolyRand = {
 
 	/**
 	 * Create a string of the given length with random bytes
-	 * @param {Number} length  The desired length
-	 * @return {String}
+	 * @param  length  The desired length
 	 */
-	bytes(length: number): util.ByteStringBuffer {
+	bytes(length: number): string {
 		return random.getBytesSync(length);
 	},
 
 	/**
 	 * Create a string of the given length with hexidecimal characters
-	 * @param {Number} length  The desired length
-	 * @return {String}
+	 * @param  length  The desired length
 	 */
 	hex(length: number): string {
 		return util.bytesToHex(PolyRand.bytes(length / 2));
@@ -40,8 +38,7 @@ const PolyRand = {
 
 	/**
 	 * Create a string of the given length with numbers, letters, but no vowels
-	 * @param {Number} length  The desired length
-	 * @return {String}
+	 * @param length  The desired length
 	 */
 	slug(length: number): string {
 		return PolyRand.string(length, PolyRand.SLUG_SYMBOL_LIST);
@@ -49,8 +46,7 @@ const PolyRand = {
 
 	/**
 	 * Create a string of the given length with numbers and lowercase letters that are unambiguious when written down
-	 * @param {Number} length  The desired length
-	 * @return {String}
+	 * @param  length  The desired length
 	 */
 	fax(length: number): string {
 		return PolyRand.string(length, PolyRand.FAX_SYMBOL_LIST);
@@ -58,9 +54,8 @@ const PolyRand = {
 
 	/**
 	 * Create a random string of the given length limited to the given symbols
-	 * @param {Number} length  The desired length
-	 * @param {String[]} symbolList  An array of characters to use
-	 * @return {String}
+	 * @param length  The desired length
+	 * @param symbolList  An array of characters to use
 	 * @throws {Error} if size of symbolList is not between 2 and 256
 	 */
 	string(length: number, symbolList: String[]): string {

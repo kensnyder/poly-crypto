@@ -7,8 +7,8 @@ import { SupportedDigestAlgos } from './types';
 const PolyDigest = {
 	/**
 	 * Calculate the md5 digest of a string
-	 * @param {String} data  The string to digest
-	 * @return {String} The digest in hexadecimal
+	 * @param data  The string to digest
+	 * @return The digest in hexadecimal
 	 */
 	md5(data: string): string {
 		return PolyDigest._digest('md5', data);
@@ -16,8 +16,8 @@ const PolyDigest = {
 
 	/**
 	 * Calculate the sha1 digest of a string
-	 * @param {String} data  The string to digest
-	 * @return {String} The digest in hexadecimal
+	 * @param data  The string to digest
+	 * @return The digest in hexadecimal
 	 */
 	sha1(data: string): string {
 		return PolyDigest._digest('sha1', data);
@@ -25,8 +25,8 @@ const PolyDigest = {
 
 	/**
 	 * Calculate the sha256 digest of a string
-	 * @param {String} data  The string to digest
-	 * @return {String} The digest in hexadecimal
+	 * @param data  The string to digest
+	 * @return The digest in hexadecimal
 	 */
 	sha256(data: string): string {
 		return PolyDigest._digest('sha256', data);
@@ -34,8 +34,8 @@ const PolyDigest = {
 
 	/**
 	 * Calculate the sha512 digest of a string
-	 * @param {String} data  The string to digest
-	 * @return {String} The digest in hexadecimal
+	 * @param data  The string to digest
+	 * @return The digest in hexadecimal
 	 */
 	sha512(data: string): string {
 		return PolyDigest._digest('sha512', data);
@@ -43,9 +43,9 @@ const PolyDigest = {
 
 	/**
 	 * Private function to calculate digests for the given algorithm
-	 * @param {String} algo  An algorithm on the forge.md namespace
-	 * @param {String} data  The string to digest
-	 * @return {String} The digest in hexadecimal
+	 * @param algo  An algorithm on the forge.md namespace
+	 * @param data  The string to digest
+	 * @return The digest in hexadecimal
 	 * @private
 	 */
 	_digest(algo: SupportedDigestAlgos, data: string): string {

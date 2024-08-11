@@ -17,9 +17,8 @@ const PolyBcrypt = {
 
 	/**
 	 * Hash a password using bcrypt
-	 * @param {String} password  The password to hash
-	 * @param {Number} cost  The compute cost (a logarithmic factor) between 4 and 31
-	 * @return {String}
+	 * @param password  The password to hash
+	 * @param cost  The compute cost (a logarithmic factor) between 4 and 31
 	 * @throws Error  When password is too long or cost is out of range
 	 */
 	hash(password: string, cost: number = 13): string {
@@ -36,9 +35,9 @@ const PolyBcrypt = {
 
 	/**
 	 * Verify that the given password matches the given hash
-	 * @param {String} password  The password to check
-	 * @param {String} hash  The hash the password should match
-	 * @return {Boolean}  True if password is correct
+	 * @param password  The password to check
+	 * @param hash  The hash the password should match
+	 * @return  True if password is correct
 	 */
 	verify(password: string, hash: string): boolean {
 		if (password.length > 72) {
@@ -49,8 +48,7 @@ const PolyBcrypt = {
 
 	/**
 	 * Get information about the given hash including version and cost
-	 * @param {String} hash  The hash to parse
-	 * @return {Object}
+	 * @param hash  The hash to parse
 	 */
 	info(hash: string): BcryptInfoInterface {
 		const match = String(hash).match(/^(\$..?\$)(\d\d)\$(.{22})(.{31})$/);
