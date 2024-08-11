@@ -1,8 +1,14 @@
 # Changelog
 
+## Version 2.1.3 - Aug, 11, 2024
+
+-   Use GitHub Actions instead of Appveyor
+-   Build with ESBuild
+-   Bump dependencies
+
 ## Version 2.1.2 - Jul 13, 2024
 
--  Bump dependencies
+-   Bump dependencies
 
 ## Version 2.1.1 - Dec 30, 2022
 

@@ -3,11 +3,16 @@
 **Poly**glot **Crypto**graphy. High-level cryptographic functions that are
 interoperable between NodeJS and PHP 7.1+.
 
-[![NPM Link](https://img.shields.io/npm/v/poly-crypto?v=2.1.2)](https://npmjs.com/package/poly-crypto)
+[![NPM Link](https://badgen.net/npm/v/poly-crypto?v=2.1.3)](https://npmjs.com/package/poly-crypto)
 [![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.0.6)](https://packagist.org/packages/poly-crypto/poly-crypto)
-[![Build Status](https://ci.appveyor.com/api/projects/status/o56xcpp5xtvxywfg?svg=true&v=2.1.2)](https://ci.appveyor.com/project/kensnyder/poly-crypto)
-[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/master/graph/badge.svg?v=2.1.2)](https://codecov.io/gh/kensnyder/poly-crypto)
-[![ISC License](https://img.shields.io/npm/l/poly-crypto.svg?v=2.1.2)](https://opensource.org/licenses/ISC)
+[![Language](https://badgen.net/static/language/TS?v=2.1.3)](https://github.com/search?q=repo:kensnyder/poly-crypto++language:TypeScript&type=code)
+[![Build Status](https://github.com/kensnyder/poly-crypto/actions/workflows/workflow.yml/badge.svg?v=2.1.3)](https://github.com/kensnyder/poly-crypto/actions)
+[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/main/graph/badge.svg?v=2.1.3)](https://codecov.io/gh/kensnyder/poly-crypto)
+[![Gzipped Size](https://badgen.net/bundlephobia/minzip/poly-crypto?label=minzipped&v=2.1.3)](https://bundlephobia.com/package/poly-crypto@2.1.3)
+[![Dependency details](https://badgen.net/bundlephobia/dependency-count/poly-crypto?v=2.1.3)](https://www.npmjs.com/package/poly-crypto?activeTab=dependencies)
+[![Tree shakeable](https://badgen.net/bundlephobia/tree-shaking/poly-crypto?v=2.1.3)](https://www.npmjs.com/package/poly-crypto)
+[![ISC License](https://badgen.net/github/license/kensnyder/poly-crypto?v=2.1.3)](https://opensource.org/licenses/ISC)
+
 
 ## Project Goals
 
@@ -126,7 +131,7 @@ use `PolyAES.generateKey(64)`.
 NodeJS:
 
 ```js
-const { PolyAES } = require('poly-crypto');
+import { PolyAES } from 'poly-crypto';
 
 const hexKey = '64-char hex encoded string from secure param store';
 const encrypted = PolyAES.withKey(hexKey).encrypt(data);
@@ -151,7 +156,7 @@ $decrypted = PolyAES::withKey($hexKey)->decrypt($encrypted);
 NodeJS:
 
 ```js
-const { PolyAES } = require('poly-crypto');
+import { PolyAES } from 'poly-crypto';
 
 const hexKey = '64-char hex encoded string from secure param store';
 const cipher = PolyAES.withKey(hexKey);
@@ -178,7 +183,7 @@ $decrypted = $cipher->decrypt($encrypted);
 NodeJS:
 
 ```js
-const { PolyAES } = require('poly-crypto');
+import { PolyAES } from 'poly-crypto';
 
 const password = 'String from user';
 const salt = 'String from secure param store';
@@ -216,7 +221,7 @@ password matches the hash you have on record.
 NodeJS:
 
 ```js
-const { PolyBcrypt } = require('poly-crypto');
+import { PolyBcrypt } from 'poly-crypto';
 
 const password = 'Password from a user';
 const hash = PolyBcrypt.hash(password);
@@ -243,7 +248,7 @@ Standard one-way digest functions.
 NodeJS:
 
 ```js
-const { PolyDigest } = require('poly-crypto');
+import { PolyDigest } from 'poly-crypto';
 
 PolyDigest.sha512(data);
 PolyDigest.sha256(data);
@@ -272,7 +277,7 @@ Simple functions to generate random values synchronously.
 NodeJS:
 
 ```js
-const { PolyRand } = require('poly-crypto');
+import { PolyRand } from 'poly-crypto';
 
 // generate a string containing numbers and letters minus vowels
 // suitable for resources such as URLs with random strings
