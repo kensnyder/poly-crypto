@@ -13,6 +13,12 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "files": [
+    "dist",
+    "cli",
+    "README.md",
+    "LICENSE.md"
+  ],
   "sideEffects": false,
   "scripts": {
     "test": "vitest run",
