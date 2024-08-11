@@ -55,7 +55,7 @@ jobs:
         run: composer install --no-interaction
 
       - name: 🏃 Run tests
-        run: bin/kahlan --spec=tests --clover=clover.xml
+        run: ./vendor/bin/kahlan --spec=tests --clover=clover.xml
 
       - name: ☂️ Upload to codecov
         if: matrix.php-versions == '7.4' && github.event.pull_request.head.repo.full_name == 'kahlan/kahlan'
