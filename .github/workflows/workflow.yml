@@ -2,7 +2,7 @@ name: build
 on: [push]
 jobs:
   node:
-    name: node ${{ matrix.node-versions }}
+    name: node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -25,7 +25,7 @@ jobs:
         run: npm run coverage
 
       - name: ☂️ Upload to codecov
-        if: matrix.node-version == 'latest'
+        if: matrix.node-version == 'latest' && github.event.pull_request.head.repo.full_name == 'kensnyder/poly-crypto'
         uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: true
@@ -58,7 +58,7 @@ jobs:
         run: ./vendor/bin/kahlan --spec=tests --clover=clover.xml
 
       - name: ☂️ Upload to codecov
-        if: matrix.php-versions == '7.4' && github.event.pull_request.head.repo.full_name == 'kahlan/kahlan'
+        if: matrix.php-versions == '7.4' && github.event.pull_request.head.repo.full_name == 'kensnyder/poly-crypto'
         uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: true
