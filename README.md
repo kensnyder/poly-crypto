@@ -3,16 +3,15 @@
 **Poly**glot **Crypto**graphy. High-level cryptographic functions that are
 interoperable between NodeJS and PHP 7.1+.
 
-[![NPM Link](https://badgen.net/npm/v/poly-crypto?v=2.1.3)](https://npmjs.com/package/poly-crypto)
-[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.0.6)](https://packagist.org/packages/poly-crypto/poly-crypto)
-[![Language](https://badgen.net/static/language/TS?v=2.1.3)](https://github.com/search?q=repo:kensnyder/poly-crypto++language:TypeScript&type=code)
-[![Build Status](https://github.com/kensnyder/poly-crypto/actions/workflows/workflow.yml/badge.svg?v=2.1.3)](https://github.com/kensnyder/poly-crypto/actions)
-[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/main/graph/badge.svg?v=2.1.3)](https://codecov.io/gh/kensnyder/poly-crypto)
-[![Gzipped Size](https://badgen.net/bundlephobia/minzip/poly-crypto?label=minzipped&v=2.1.3)](https://bundlephobia.com/package/poly-crypto@2.1.3)
-[![Dependency details](https://badgen.net/bundlephobia/dependency-count/poly-crypto?v=2.1.3)](https://www.npmjs.com/package/poly-crypto?activeTab=dependencies)
-[![Tree shakeable](https://badgen.net/bundlephobia/tree-shaking/poly-crypto?v=2.1.3)](https://www.npmjs.com/package/poly-crypto)
-[![ISC License](https://badgen.net/github/license/kensnyder/poly-crypto?v=2.1.3)](https://opensource.org/licenses/ISC)
-
+[![NPM Link](https://badgen.net/npm/v/poly-crypto?v=2.1.4)](https://npmjs.com/package/poly-crypto)
+[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.1.4)](https://packagist.org/packages/poly-crypto/poly-crypto)
+[![Language](https://badgen.net/static/language/TS?v=2.1.4)](https://github.com/search?q=repo:kensnyder/poly-crypto++language:TypeScript&type=code)
+[![Build Status](https://github.com/kensnyder/poly-crypto/actions/workflows/workflow.yml/badge.svg?v=2.1.4)](https://github.com/kensnyder/poly-crypto/actions)
+[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/main/graph/badge.svg?v=2.1.4)](https://codecov.io/gh/kensnyder/poly-crypto)
+[![Gzipped Size](https://badgen.net/bundlephobia/minzip/poly-crypto?label=minzipped&v=2.1.4)](https://bundlephobia.com/package/poly-crypto@2.1.4)
+[![Dependency details](https://badgen.net/bundlephobia/dependency-count/poly-crypto?v=2.1.4)](https://www.npmjs.com/package/poly-crypto?activeTab=dependencies)
+[![Tree shakeable](https://badgen.net/bundlephobia/tree-shaking/poly-crypto?v=2.1.4)](https://www.npmjs.com/package/poly-crypto)
+[![ISC License](https://badgen.net/github/license/kensnyder/poly-crypto?v=2.1.4)](https://opensource.org/licenses/ISC)
 
 ## Project Goals
 

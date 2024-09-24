@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.1.4 - Sep, 24, 2024
+
+-   Bump dependencies
+-   Minify bundles
+
 ## Version 2.1.3 - Aug, 11, 2024
 
 -   Use GitHub Actions instead of Appveyor
