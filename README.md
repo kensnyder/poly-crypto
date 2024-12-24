@@ -1,21 +1,21 @@
 # poly-crypto
 
 **Poly**glot **Crypto**graphy. High-level cryptographic functions that are
-interoperable between NodeJS and PHP 7.1+.
+interoperable between NodeJS and PHP 7.1+/8.0+.
 
-[![NPM Link](https://badgen.net/npm/v/poly-crypto?v=2.1.4)](https://npmjs.com/package/poly-crypto)
-[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.1.4)](https://packagist.org/packages/poly-crypto/poly-crypto)
-[![Language](https://badgen.net/static/language/TS?v=2.1.4)](https://github.com/search?q=repo:kensnyder/poly-crypto++language:TypeScript&type=code)
-[![Build Status](https://github.com/kensnyder/poly-crypto/actions/workflows/workflow.yml/badge.svg?v=2.1.4)](https://github.com/kensnyder/poly-crypto/actions)
-[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/main/graph/badge.svg?v=2.1.4)](https://codecov.io/gh/kensnyder/poly-crypto)
-[![Gzipped Size](https://badgen.net/bundlephobia/minzip/poly-crypto?label=minzipped&v=2.1.4)](https://bundlephobia.com/package/poly-crypto@2.1.4)
-[![Dependency details](https://badgen.net/bundlephobia/dependency-count/poly-crypto?v=2.1.4)](https://www.npmjs.com/package/poly-crypto?activeTab=dependencies)
-[![Tree shakeable](https://badgen.net/bundlephobia/tree-shaking/poly-crypto?v=2.1.4)](https://www.npmjs.com/package/poly-crypto)
-[![ISC License](https://badgen.net/github/license/kensnyder/poly-crypto?v=2.1.4)](https://opensource.org/licenses/ISC)
+[![NPM Link](https://badgen.net/npm/v/poly-crypto?v=2.2.0)](https://npmjs.com/package/poly-crypto)
+[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.0.6)](https://packagist.org/packages/poly-crypto/poly-crypto)
+[![Language](https://badgen.net/static/language/TS?v=2.2.0)](https://github.com/search?q=repo:kensnyder/poly-crypto++language:TypeScript&type=code)
+[![Build Status](https://github.com/kensnyder/poly-crypto/actions/workflows/workflow.yml/badge.svg?v=2.2.0)](https://github.com/kensnyder/poly-crypto/actions)
+[![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/main/graph/badge.svg?v=2.2.0)](https://codecov.io/gh/kensnyder/poly-crypto)
+[![Gzipped Size](https://badgen.net/bundlephobia/minzip/poly-crypto?label=minzipped&v=2.2.0)](https://bundlephobia.com/package/poly-crypto@2.2.0)
+[![Dependency details](https://badgen.net/bundlephobia/dependency-count/poly-crypto?v=2.2.0)](https://www.npmjs.com/package/poly-crypto?activeTab=dependencies)
+[![Tree shakeable](https://badgen.net/bundlephobia/tree-shaking/poly-crypto?v=2.2.0)](https://www.npmjs.com/package/poly-crypto)
+[![ISC License](https://badgen.net/github/license/kensnyder/poly-crypto?v=2.2.0)](https://opensource.org/licenses/ISC)
 
 ## Project Goals
 
-1. APIs that work exactly the same on NodeJS and PHP 7.1+
+1. APIs that work exactly the same on NodeJS and PHP 7.1+ (and 8.0+)
 2. Package for Node that can be used on serverless functions without external C
    bindings
 3. Two-way symmetric encryption with a key or with password and salt
@@ -24,13 +24,14 @@ interoperable between NodeJS and PHP 7.1+.
 
 ## Installation
 
+You can use PolyCrypto in JavaScript, PHP, or both.
+
 ```bash
 # NodeJS
 npm install poly-crypto
 
 # PHP
 composer require poly-crypto/poly-crypto
-
 ```
 
 ## Cheatsheet
@@ -45,6 +46,7 @@ composer require poly-crypto/poly-crypto
 | [Bcrypt verify](#password-hashing)                          | PolyBcrypt.verify(password, hash)                       | PolyBcrypt::verify($password, $hash)                         |
 | [Digest functions](#digest-functions)                       | PolyDigest.sha256(data)                                 | PolyDigest::sha256($data)                                    |
 | [Random functions](#random-functions)                       | PolyRand.slug(length)                                   | PolyRand::slug($length)                                      |
+| [Base conversion](#base-conversion)                         | PolyConvert.base(digits, fromBase, toBase)              | PolyRand::base($digits, $fromBase, $toBase)                  |
 
 ## Table of Contents
 
@@ -60,12 +62,12 @@ composer require poly-crypto/poly-crypto
 1. [Password hashing](#password-hashing)
 1. [Digest functions](#digest-functions)
 1. [Random functions](#random-functions)
-1. [Performance](#performance)
+1. [Base conversion](#base-conversion)
 1. [Command line utilities](#command-line-utilities)
 1. [Browser usage](#browser-usage)
 1. [JavaScript direct import](#javascript-direct-import)
 1. [Unit tests](#unit-tests)
-1. [Open Source ISC Licence](#licence)
+1. [Open Source ISC License](#license)
 1. [Changelog](https://github.com/kensnyder/poly-crypto/blob/master/CHANGELOG.md)
 
 ## Technology choices
@@ -330,6 +332,43 @@ PolyRand::bytes($length);
 PolyRand::uuidv4();
 ```
 
+### Base conversion
+
+Simple functions to convert numbers from one base to another, up to base 95.
+
+Useful in some situations:
+
+- You have a long string in a low base but want fewer characters
+- You need to limit to fewer characters but don't care about length
+- You want output to contain no vowels, ensuring no swear words are present
+
+NodeJS:
+
+```js
+import { PolyConvert } from 'poly-crypto';
+
+PolyConvert.base('1011', 2, 10); // '11'
+PolyConvert.base('FF', 16, 10); // '255'
+PolyConvert.base('18446744073709551615', 10, 62); // 'lYGhA16ahyf'
+PolyConvert.base('And_TypeScript_too!', 92, 62); // 'btjYsDwwuWrElSt7WRf2g'
+
+PolyConvert.fax.applyBase('4BD3DBDFCBCJDBJCD737BC6H43', 10, 21); // '467BCDFHJKMNPQRTVWXY'
+```
+
+PHP:
+
+```php
+<?php
+
+require_once('vendor/autoload.php');
+use PolyCrypto\PolyConvert;
+
+PolyConvert::base('1011', 2, 10); // '11'
+PolyConvert::base('FF', 16, 10); // '255'
+PolyConvert::base('18446744073709551615', 10, 62); // 'lYGhA16ahyf'
+PolyConvert::base('And_TypeScript_too!', 92, 62); // 'btjYsDwwuWrElSt7WRf2g'
+```
+
 ## Command line utilities
 
 poly-crypto functions can be used from the command line if Node JS is installed.
@@ -350,6 +389,7 @@ npx bcrypt-verify $password $againstHash      # PolyBcrypt.verify(password, agai
 npx poly-digest $algo $string                 # PolyDigest[algo](data) where algo is one of: sha1, sha256, sha512, md5
 npx poly-rand $type $length                   # PolyRand[type](length) where type is one of: slug, hex, fax, bytes, uuidv4
 npx poly-rand-string $length $symbolString    # PolyRand.string(length, symbolList) where symbolList is a string containing allowed characters
+npx poly-convert-base $input $from $to        # PolyConvert.base(input, from, to)
 ```
 
 ### Local install of poly-crypto

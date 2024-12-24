@@ -34,15 +34,16 @@
     "test:all": "npm test && npm run test:php"
   },
   "bin": {
-    "key-encrypt": "./cli/aes-key-encrypt.js",
-    "pass-encrypt": "./cli/aes-pass-encrypt.js",
-    "key-decrypt": "./cli/aes-key-decrypt.js",
-    "pass-decrypt": "./cli/aes-pass-decrypt.js",
-    "bcrypt-hash": "./cli/bcrypt-hash.js",
-    "bcrypt-verify": "./cli/bcrypt-verify.js",
-    "poly-digest": "./cli/digest.js",
-    "poly-rand": "./cli/rand.js",
-    "poly-rand-string": "./cli/rand-string.js"
+    "key-encrypt": "./cli/aes-key-encrypt.cjs",
+    "pass-encrypt": "./cli/aes-pass-encrypt.cjs",
+    "key-decrypt": "./cli/aes-key-decrypt.cjs",
+    "pass-decrypt": "./cli/aes-pass-decrypt.cjs",
+    "bcrypt-hash": "./cli/bcrypt-hash.cjs",
+    "bcrypt-verify": "./cli/bcrypt-verify.cjs",
+    "poly-digest": "./cli/digest.cjs",
+    "poly-rand": "./cli/rand.cjs",
+    "poly-rand-string": "./cli/rand-string.cjs",
+    "convert-base": "./cli/convert-base.cjs"
   },
   "keywords": [
     "encryption",
@@ -94,14 +95,14 @@
     "node-forge": "1.3.1"
   },
   "devDependencies": {
-    "@types/node": "22.6.1",
+    "@types/node": "22.10.2",
     "@types/node-forge": "1.3.11",
     "@vitest/coverage-c8": "0.33.0",
-    "@vitest/coverage-v8": "2.1.1",
-    "prettier": "3.3.3",
+    "@vitest/coverage-v8": "2.1.8",
+    "prettier": "3.4.2",
     "prettier-plugin-organize-imports": "4.1.0",
     "rimraf": "6.0.1",
-    "typescript": "5.6.2",
-    "vitest": "2.1.1"
+    "typescript": "5.7.2",
+    "vitest": "2.1.8"
   }
 }

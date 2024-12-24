@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
-const { PolyAES } = require('../dist/index.cjs');
+import { PolyAES } from '../dist/index.cjs';
 
 try {
+	// usage: npx poly-aes decrypt <key> <ciphertext>
 	const [, , key, ciphertext] = process.argv;
 	const cipher = PolyAES.withKey(key);
 	const plaintext = cipher.decrypt(ciphertext);
