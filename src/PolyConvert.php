@@ -2,151 +2,276 @@
 
 namespace PolyCrypto;
 
-require_once(__DIR__ . '/PolyRand.php');
+/**
+ * Default alphabets for substitution
+ */
+class Alphabets {
+    public const STANDARD = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/`~!@#$%^&*()_={}|[]\\:";\'<>?,-. ';
+    public const BASE64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    public const SLUG = '0123456789bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ';
+    public const FAX = '3467bcdfhjkmnpqrtvwxy';
+}
 
-use PolyCrypto\PolyRand;
-
+/**
+ * Class to convert numbers between bases using arbitrary alphabets
+ */
 class PolyConvert {
-    const BASE_ERROR = 'Base must be between 2 and %s';
-    const EMPTY_ERROR = 'Input number cannot be empty';
-    const INVALID_DIGIT_ERROR = 'Invalid digit "%s" for base %s';
+    /**
+     * Error messages
+     */
+    public const BASE_ERROR = 'Base must be between 2 and %d';
+    public const EMPTY_ERROR = 'Input number cannot be empty';
+    public const INVALID_DIGIT_ERROR = 'Invalid digit "%s" for fromBase %d';
 
     /**
-     * @var array
+     * The alphabet to use for conversion
      */
-    private $alphabet;
+    public $alphabet;
 
     /**
-     * @param array $alphabet
+     * Create a new PolyConvert instance given an alphabet
+     * @param string $alphabet
      */
-    public function __construct(array $alphabet) {
-        $this->alphabet = $alphabet;
+    public function __construct(string $alphabet = null) {
+        $this->alphabet = $alphabet ?? Alphabets::STANDARD;
     }
 
     /**
-     * @param array $alphabet
-     * @return self
+     * Ensure that the string number has both upper and lower case characters
+     * @param string $digits The string base
+     * @param int $maxBase The base that will be used for conversion
+     * @return string
      */
-    public static function withAlphabet(array $alphabet) {
-        return new self($alphabet);
+    public function ensureCasing(string $digits, int $maxBase): string {
+        $str = substr($this->alphabet, 0, $maxBase);
+        if (preg_match('/[a-z]/', $str) && preg_match('/[A-Z]/', $str)) {
+            return $digits;
+        }
+        return strtoupper($digits);
     }
 
     /**
-     * @param string $input
-     * @param int $max
+     * Validate the fromBase and toBase values are within the alphabet range
+     * @param int $fromBase Must be between 2 and the alphabet length
+     * @param int $toBase Must be between 2 and the alphabet length
+     * @throws InvalidArgumentException If fromBase or toBase are invalid
+     */
+    public function validateBase(int $fromBase, int $toBase): void {
+        $maxBase = max($fromBase, $toBase, strlen($this->alphabet)) ?: strlen($this->alphabet);
+
+        if ($fromBase < 2 || $fromBase > $maxBase || $toBase < 2 || $toBase > $maxBase) {
+            throw new InvalidArgumentException(sprintf(static::BASE_ERROR, $maxBase));
+        }
+    }
+
+    /**
+     * Convert an array of strings from one base to another
+     * @param array $digits The input array of digits
+     * @param int $fromBase The input's base
+     * @param int $toBase The output's base
      * @return array
      */
-    private function ensureCasing($input, $max) {
-        $str = implode('', array_slice($this->alphabet, 0, $max));
-        if (preg_match('/[a-z]/', $str) && preg_match('/[A-Z]/', $str)) {
-            return array($input, $this->alphabet);
+    public function convertArray(array $digits, int $fromBase, int $toBase): array {
+        if (empty($digits)) {
+            throw new InvalidArgumentException(static::EMPTY_ERROR);
         }
-        return array(strtoupper($input), str_split(strtoupper($str)));
+
+        $result = ['0'];
+
+        if (count($digits) === 1 && $digits[0] === '0') {
+            return $result;
+        }
+
+        // Process each digit
+        foreach ($digits as $digit) {
+            // Multiply current result by source base and add new digit
+            $carry = $digit;
+            for ($i = 0; $i < count($result); $i++) {
+                $product = bcadd(bcmul($result[$i], (string)$fromBase), (string)$carry);
+                $result[$i] = bcmod($product, (string)$toBase);
+                $carry = bcdiv($product, (string)$toBase, 0);
+            }
+
+            // Add any remaining carry digits
+            while (bccomp($carry, '0') > 0) {
+                $result[] = bcmod($carry, (string)$toBase);
+                $carry = bcdiv($carry, (string)$toBase, 0);
+            }
+        }
+
+        return array_reverse($result);
     }
 
     /**
-     * @param string|int|float $input
-     * @param int|string $fromBase
-     * @param int|string $toBase
+     * Convert a number from one base to another
+     * @param string|int $input The number to convert
+     * @param int $fromBase The input's base
+     * @param int $toBase The output's base
      * @return string
-     * @throws Exception
+     * @throws InvalidArgumentException If a base is invalid or the input contains invalid digits
      */
-    public function applyBase($input, $fromBase, $toBase) {
+    public function applyBase($input, int $fromBase, int $toBase): string {
         $input = (string)$input;
-        $fromBase = (int)$fromBase;
-        $toBase = (int)$toBase;
 
-        if ($fromBase === $toBase) {
+        $this->validateBase($fromBase, $toBase);
+
+        if ($fromBase >= 2 && $fromBase === $toBase) {
             return $input;
         }
 
-        list($number, $alphabet) = $this->ensureCasing($input, max($toBase, $fromBase));
+        // Normalize small alphabets to uppercase
+        $digits = $this->ensureCasing($input, $fromBase);
 
-        // Input validation
-        if (
-            $fromBase < 2 ||
-            $fromBase > count($alphabet) ||
-            $toBase < 2 ||
-            $toBase > count($alphabet) ||
-            !is_numeric($fromBase) ||
-            !is_numeric($toBase)
-        ) {
-            throw new \Exception(sprintf(self::BASE_ERROR, count($this->alphabet)));
-        }
-
-        if (!$number) {
-            throw new \Exception(self::EMPTY_ERROR);
-        }
-
-        // First convert to decimal (base 10)
-        $decimal = gmp_init(0);
-        $digits = array_reverse(str_split($number));
-        $fromBaseBig = gmp_init($fromBase);
-
-        for ($i = 0; $i < count($digits); $i++) {
-            $digit = array_search($digits[$i], $alphabet, true);
+        // Convert input string to array of digit values
+        $numericDigits = [];
+        for ($i = 0; $i < strlen($digits); $i++) {
+            $digit = strpos($this->alphabet, $digits[$i]);
             if ($digit === false || $digit >= $fromBase) {
-                throw new \Exception(sprintf(
-                    self::INVALID_DIGIT_ERROR,
-                    $digits[$i],
-                    $fromBase
-                ));
+                throw new InvalidArgumentException(
+                    sprintf(static::INVALID_DIGIT_ERROR, $digits[$i], $fromBase)
+                );
             }
-            // Using GMP for power calculation
-            $decimal = gmp_add(
-                $decimal,
-                gmp_mul(
-                    gmp_init($digit),
-                    gmp_pow($fromBaseBig, $i)
-                )
-            );
+            $numericDigits[] = (string)$digit;
         }
 
-        // Convert decimal to target base
-        $result = '';
-        $toBaseBig = gmp_init($toBase);
+        // Convert using core function
+        $result = $this->convertArray($numericDigits, $fromBase, $toBase);
 
-        while (gmp_cmp($decimal, 0) > 0) {
-            $remainder = gmp_intval(gmp_mod($decimal, $toBaseBig));
-            $result = $alphabet[$remainder] . $result;
-            $decimal = gmp_div_q($decimal, $toBaseBig);
-        }
+        // Convert result back to string using alphabet
+        $mapped = array_map(function($digit) {
+            return $this->alphabet[(int)$digit];
+        }, $result);
 
-        return $result;
+        // Normalize small alphabets to uppercase
+        return $this->ensureCasing(implode('', $mapped), $toBase);
     }
 
     /**
-     * @return self
-     */
-    public static function slug() {
-        return self::withAlphabet(PolyRand::SLUG_SYMBOL_LIST);
-    }
-
-    /**
-     * @return self
-     */
-    public static function fax() {
-        return self::withAlphabet(PolyRand::FAX_SYMBOL_LIST);
-    }
-
-    /**
-     * @return self
-     */
-    public static function ascii() {
-        return self::withAlphabet(str_split(
-            '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`~!@#$%^&*()_+={}|[]\\:";\'<>?,/-. '
-        ));
-    }
-
-    /**
-     * @param string|int|float $input
-     * @param int|string $fromBase
-     * @param int|string $toBase
+     * Static method to substitute characters in a string from one alphabet to another
+     * @param string $input The input string
+     * @param string $fromAlphabet The alphabet of the input
+     * @param string $toAlphabet The alphabet to convert to
      * @return string
-     * @throws Exception
      */
-    public static function base($input, $fromBase, $toBase) {
-        $instance = self::ascii();
-        return $instance->applyBase($input, $fromBase, $toBase);
+    public static function substitute(string $input, string $fromAlphabet, string $toAlphabet): string {
+        $result = [];
+        for ($i = 0; $i < strlen($input); $i++) {
+            $index = strpos($fromAlphabet, $input[$i]);
+            if ($index === false) {
+                $result[] = $input[$i];
+            } else {
+                $result[] = $toAlphabet[$index];
+            }
+        }
+        return implode('', $result);
+    }
+
+    /**
+     * Rotate characters 13 places in the alphabet (ROT13 substitution cipher)
+     * @param string $input
+     * @return string
+     */
+    public static function rot13(string $input): string {
+        return static::substitute(
+            $input,
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+            'ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba'
+        );
+    }
+
+    /**
+     * Static method to convert a number from one base to another with the default alphabet
+     * @param string|int $input The string number
+     * @param int $fromBase The base of the input number
+     * @param int $toBase The base to convert to
+     * @return string
+     */
+    public static function base($input, int $fromBase, int $toBase): string {
+        $converter = new self();
+        return $converter->applyBase($input, $fromBase, $toBase);
+    }
+
+    /**
+     * Static helper method for alphabet conversion
+     * @param string $fromAlphabet
+     * @param string $input
+     * @param int $toBase
+     * @return string
+     */
+    protected static function _from(string $fromAlphabet, string $input, int $toBase): string {
+        $substituted = static::substitute($input, $fromAlphabet, Alphabets::STANDARD);
+        return static::base($substituted, strlen($fromAlphabet), $toBase);
+    }
+
+    /**
+     * Static helper method for alphabet conversion
+     * @param string $toAlphabet
+     * @param string|int $input
+     * @param int $fromBase
+     * @return string
+     */
+    protected static function _to(string $toAlphabet, $input, int $fromBase): string {
+        $converted = static::base($input, $fromBase, strlen($toAlphabet));
+        return static::substitute($converted, Alphabets::STANDARD, $toAlphabet);
+    }
+
+    /**
+     * Convert a number from the fax alphabet to another base
+     * @param string $input The input string, in fax alphabet
+     * @param int $toBase The base to convert to
+     * @return string
+     */
+    public static function fromFax(string $input, int $toBase): string {
+        return static::_from(Alphabets::FAX, $input, $toBase);
+    }
+
+    /**
+     * Convert a string number in the given base into the fax alphabet
+     * @param string|int $input The input string number
+     * @param int $fromBase The base of the input number
+     * @return string
+     */
+    public static function toFax($input, int $fromBase): string {
+        return static::_to(Alphabets::FAX, $input, $fromBase);
+    }
+
+    /**
+     * Convert a number from the slug alphabet to another base
+     * @param string $input The input string, in slug alphabet
+     * @param int $toBase The base to convert to
+     * @return string
+     */
+    public static function fromSlug(string $input, int $toBase): string {
+        return static::_from(Alphabets::SLUG, $input, $toBase);
+    }
+
+    /**
+     * Convert a string number in the given base into the slug alphabet
+     * @param string|int $input The input string number
+     * @param int $fromBase The base of the input number
+     * @return string
+     */
+    public static function toSlug($input, int $fromBase): string {
+        return static::_to(Alphabets::SLUG, $input, $fromBase);
+    }
+
+    /**
+     * Convert a number from the canonical base64 alphabet to another base
+     * @param string $input The input string, in canonical base64 alphabet
+     * @param int $toBase The base to convert to
+     * @return string
+     */
+    public static function from64(string $input, int $toBase): string {
+        return static::_from(Alphabets::BASE64, $input, $toBase);
+    }
+
+    /**
+     * Convert a string number in the given base into the canonical base64 alphabet
+     * @param string|int $input The input string number
+     * @param int $fromBase The base of the input number
+     * @return string
+     */
+    public static function to64($input, int $fromBase): string {
+        return static::_to(Alphabets::BASE64, $input, $fromBase);
     }
 }

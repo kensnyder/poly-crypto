@@ -4,88 +4,183 @@ require_once(__DIR__ . '/../src/PolyConvert.php');
 
 use PolyCrypto\PolyConvert;
 
-describe('PolyConvert', function() {
-    describe('exceptions', function() {
-        it('should fail on base 1', function() {
-            $thrower = function() {
-                PolyConvert::base('1011', 1, 10);
-            };
-            expect($thrower)->toThrow(
-                new \Exception('Base must be between 2 and 95')
-            );
-        });
-
-        it('should fail on invalid base', function() {
-            $thrower = function() {
-                PolyConvert::base('1011', 'a', 10);
-            };
-            expect($thrower)->toThrow(
-                new \Exception('Base must be between 2 and 95')
-            );
-        });
-
-        it('should fail on empty', function() {
-            $thrower = function() {
-                PolyConvert::base('', 2, 10);
-            };
-            expect($thrower)->toThrow(
-                new \Exception('Input number cannot be empty')
-            );
-        });
-
-        it('should fail on invalid digit', function() {
-            $thrower = function() {
-                PolyConvert::base('12', 2, 10);
-            };
-            expect($thrower)->toThrow(
-                new \Exception('Invalid digit "2" for base 2')
-            );
-        });
-    });
-
-    describe('convert()', function() {
-        $specs = [
-            ['args' => [11, 10, 10], 'result' => '11'],
-            ['args' => [11, 10, 2], 'result' => '1011'],
-            ['args' => ['1011', 2, 10], 'result' => '11'],
-            ['args' => ['ff', 16, 10], 'result' => '255'],
-            ['args' => ['FF', 16, 10], 'result' => '255'],
-            ['args' => ['ee', 15, 16], 'result' => 'E0'],
-            ['args' => ['EE', 15, 16], 'result' => 'E0'],
-            ['args' => ['Ee', 15, 16], 'result' => 'E0'],
-            ['args' => ['zz', 36, 10], 'result' => '1295'],
-            ['args' => ['ZZ', 36, 10], 'result' => '1295'],
-            ['args' => ['ZZ', 62, 94], 'result' => 'E:'],
-            ['args' => ['JavaScript_Rocks!', 92, 10], 'result' => '1188231054825008491419286819780752'],
-            ['args' => ['And_TypeScript_too!', 92, 62], 'result' => 'btjYsDwwuWrElSt7WRf2g'],
-            ['args' => ['18446744073709551615', 10, 16], 'result' => 'FFFFFFFFFFFFFFFF'],
-            ['args' => ['18446744073709551615', 10, 62], 'result' => 'lYGhA16ahyf'],
-            ['args' => ['kendsnyder', 42, 36], 'result' => '29h0lkc04u3'],
-            // Note: PHP doesn't have BigInt, but GMP handles large numbers
-            ['args' => ['123456789012345678901234567890', 10, 92], 'result' => 'DZ=_%u(V`A%UxNC'],
-        ];
-
-        foreach ($specs as $spec) {
-            it("should handle converting \"{$spec['args'][0]}\" from base {$spec['args'][1]} to base {$spec['args'][2]}", function() use ($spec) {
-                $result = PolyConvert::base($spec['args'][0], $spec['args'][1], $spec['args'][2]);
-                expect($result)->toBe($spec['result']);
-            });
+describe('PolyConvert exceptions', function() {
+    it('should fail on base 1', function() {
+        $exception = null;
+        try {
+            PolyConvert::base('1011', 1, 10);
+        } catch (InvalidArgumentException $e) {
+            $exception = $e;
         }
+        expect($exception)->toBeAnInstanceOf('InvalidArgumentException');
+        expect($exception->getMessage())->toBe('Base must be between 2 and 95');
     });
 
-    describe('withAlphabet()', function() {
-        it('should handle custom alphabet', function() {
-            $converter = PolyConvert::withAlphabet(str_split('custom'));
-            $result = $converter->applyBase('tom', 6, 5);
-            expect($result)->toBe('UCSS');
+    it('should fail on invalid base', function() {
+        $exception = null;
+        try {
+            PolyConvert::base('1011', 'a', 10);
+        } catch (InvalidArgumentException $e) {
+            $exception = $e;
+        }
+        expect($exception)->toBeAnInstanceOf('InvalidArgumentException');
+        expect($exception->getMessage())->toBe('Base must be between 2 and 95');
+    });
+
+    it('should fail on empty', function() {
+        $exception = null;
+        try {
+            PolyConvert::base('', 2, 10);
+        } catch (InvalidArgumentException $e) {
+            $exception = $e;
+        }
+        expect($exception)->toBeAnInstanceOf('InvalidArgumentException');
+        expect($exception->getMessage())->toBe('Input number cannot be empty');
+    });
+
+    it('should fail on invalid digit', function() {
+        $exception = null;
+        try {
+            PolyConvert::base('12', 2, 10);
+        } catch (InvalidArgumentException $e) {
+            $exception = $e;
+        }
+        expect($exception)->toBeAnInstanceOf('InvalidArgumentException');
+        expect($exception->getMessage())->toBe('Invalid digit "2" for fromBase 2');
+    });
+});
+
+describe('PolyConvert base conversion', function() {
+    $specs = [
+        ['args' => [11, 10, 10], 'result' => '11'],
+        ['args' => [11, 10, 2], 'result' => '1011'],
+        ['args' => ['1011', 2, 10], 'result' => '11'],
+        ['args' => ['ff', 16, 10], 'result' => '255'],
+        ['args' => ['FF', 16, 10], 'result' => '255'],
+        ['args' => ['ee', 15, 16], 'result' => 'E0'],
+        ['args' => ['EE', 15, 16], 'result' => 'E0'],
+        ['args' => ['Ee', 15, 16], 'result' => 'E0'],
+        ['args' => ['zz', 36, 10], 'result' => '1295'],
+        ['args' => ['ZZ', 36, 10], 'result' => '1295'],
+        ['args' => ['ZZ', 62, 94], 'result' => 'Nh'],
+        ['args' => ['JavaScript_Rocks!', 92, 10], 'result' => '510933176934557210798603247955210'],
+        ['args' => ['And_TypeScript_too!', 92, 62], 'result' => '3KlBTupBB5PRF9AchQBHm'],
+        ['args' => ['18446744073709551615', 10, 16], 'result' => 'FFFFFFFFFFFFFFFF'],
+        ['args' => ['18446744073709551615', 10, 62], 'result' => 'LygHa16AHYF'],
+        ['args' => ['kendsnyder', 62, 36], 'result' => '4SR4ME79DEEP'],
+        ['args' => ['123456789012345678901234567890', 10, 92], 'result' => 'dz_(#U&v+a#uXnc'],
+    ];
+
+    foreach ($specs as $spec) {
+        it("should handle converting \"{$spec['args'][0]}\" from base {$spec['args'][1]} to base {$spec['args'][2]}", function() use ($spec) {
+            $result = PolyConvert::base($spec['args'][0], $spec['args'][1], $spec['args'][2]);
+            expect($result)->toBe($spec['result']);
         });
-        it('should support PolyConvert::slug()', function() {
-            $result = PolyConvert::slug()->applyBase('0123456789bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ', 52, 36);
-            expect($result)->toBe('1rxxcgff2s44lsmpCcqtqF9p9vDDd67Bvgpqtlnw3ltFpq4r53m6grGh');
-        });
-        it('should support PolyConvert::fax()', function() {
-            $result = PolyConvert::fax()->applyBase('3467bcdfhjkmnpqrtvwxy', 21, 10);
-            expect($result)->toBe('4BD3DBDFCBCJDBJCD737BC6H43');
-        });
+    }
+});
+
+describe('PolyConvert presets', function() {
+    it('should support PolyConvert::fromFax', function() {
+        $result = PolyConvert::fromFax('467bcdfhjkmnpqrtvwxy', 10);
+        expect($result)->toBe('14606467545964956303452810');
+    });
+
+    it('should support PolyConvert::toFax', function() {
+        $result = PolyConvert::toFax('14606467545964956303452810', 10);
+        expect($result)->toBe('467bcdfhjkmnpqrtvwxy');
+    });
+
+    it('should support PolyConvert::from64', function() {
+        $result = PolyConvert::from64('BCDEFGHIJKLMNOP', 10);
+        expect($result)->toBe('19961744145695222371767183');
+    });
+
+    it('should support PolyConvert::to64', function() {
+        $result = PolyConvert::to64('19961744145695222371767183', 10);
+        expect($result)->toBe('BCDEFGHIJKLMNOP');
+    });
+
+    it('should support PolyConvert::fromSlug', function() {
+        $result = PolyConvert::fromSlug(
+            '123456789bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ',
+            10
+        );
+        expect($result)->toBe(
+            '65619590647494106872079167509227825748311557976153772654499440883483291755167717380843'
+        );
+    });
+
+    it('should support PolyConvert::toSlug', function() {
+        $result = PolyConvert::toSlug(
+            '65619590647494106872079167509227825748311557976153772654499440883483291755167717380843',
+            10
+        );
+        expect($result)->toBe('123456789bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ');
+    });
+
+    it('should support PolyConvert::toSlug/fromSlug on base 16', function() {
+        $result = PolyConvert::toSlug('908af273ca23bd1fdd5e166be5a234b83d6bb332', 16);
+        expect($result)->toBe('KppGKv5wKYb46vJkFWQcGFMkV5CF');
+        $back = PolyConvert::fromSlug($result, 16);
+        expect($back)->toBe('908AF273CA23BD1FDD5E166BE5A234B83D6BB332');
+    });
+});
+
+describe('PolyConvert trivial cases', function() {
+    it('should handle 0', function() {
+        $converter = new PolyConvert();
+        $result = $converter->applyBase('0', 10, 10);
+        expect($result)->toBe('0');
+    });
+
+    it('should throw on invalid character', function() {
+        $exception = null;
+        try {
+            $converter = new PolyConvert();
+            $converter->applyBase('a', 10, 10);
+        } catch (InvalidArgumentException $e) {
+            $exception = $e;
+        }
+        expect($exception)->toBeAnInstanceOf('InvalidArgumentException');
+    });
+});
+
+describe('PolyConvert::substitute()', function() {
+    it('should handle rot13 transformation', function() {
+        $input = 'hello';
+        $from = 'abcdefghijklmnopqrstuvwxyz';
+        $to = 'zyxwvutsrqponmlkjihgfedcba';
+        $result = PolyConvert::substitute($input, $from, $to);
+        expect($result)->toBe('svool');
+    });
+
+    it('should handle have dedicated rot13() function', function() {
+        $input = 'Hello';
+        $result = PolyConvert::rot13($input);
+        expect($result)->toBe('Svool');
+    });
+
+    it('should ignore unknown characters', function() {
+        $input = 'hello!';
+        $from = 'abcdefghijklmnopqrstuvwxyz';
+        $to = 'zyxwvutsrqponmlkjihgfedcba';
+        $result = PolyConvert::substitute($input, $from, $to);
+        expect($result)->toBe('svool!');
+    });
+
+    it('should support multi-byte characters', function() {
+        $input = '1℮ℯ'; // Using UTF-8 characters for demonstration
+        $from = '0123456789℮ℯ';
+        $to = '0123456789AB';
+        $result = PolyConvert::substitute($input, $from, $to);
+        expect($result)->toBe('1AB');
+    });
+
+    it('should support multi-byte output', function() {
+        $input = '1AB';
+        $from = '0123456789AB';
+        $to = '0123456789℮ℯ';
+        $result = PolyConvert::substitute($input, $from, $to);
+        expect($result)->toBe('1℮ℯ');
     });
 });
