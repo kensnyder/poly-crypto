@@ -34,16 +34,16 @@
     "test:all": "npm test && npm run test:php"
   },
   "bin": {
-    "key-encrypt": "./cli/aes-key-encrypt.cjs",
-    "pass-encrypt": "./cli/aes-pass-encrypt.cjs",
-    "key-decrypt": "./cli/aes-key-decrypt.cjs",
-    "pass-decrypt": "./cli/aes-pass-decrypt.cjs",
-    "bcrypt-hash": "./cli/bcrypt-hash.cjs",
-    "bcrypt-verify": "./cli/bcrypt-verify.cjs",
-    "poly-digest": "./cli/digest.cjs",
-    "poly-rand": "./cli/rand.cjs",
-    "poly-rand-string": "./cli/rand-string.cjs",
-    "convert-base": "./cli/convert-base.cjs"
+    "key-encrypt": "cli/aes-key-encrypt.cjs",
+    "pass-encrypt": "cli/aes-pass-encrypt.cjs",
+    "key-decrypt": "cli/aes-key-decrypt.cjs",
+    "pass-decrypt": "cli/aes-pass-decrypt.cjs",
+    "bcrypt-hash": "cli/bcrypt-hash.cjs",
+    "bcrypt-verify": "cli/bcrypt-verify.cjs",
+    "poly-digest": "cli/digest.cjs",
+    "poly-rand": "cli/rand.cjs",
+    "poly-rand-string": "cli/rand-string.cjs",
+    "convert-base": "cli/convert-base.cjs"
   },
   "keywords": [
     "encryption",

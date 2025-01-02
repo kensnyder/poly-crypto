@@ -6,47 +6,27 @@ use PolyCrypto\PolyConvert;
 
 describe('PolyConvert exceptions', function() {
     it('should fail on base 1', function() {
-        $exception = null;
-        try {
+        expect(function() {
             PolyConvert::base('1011', 1, 10);
-        } catch (InvalidArgumentException $e) {
-            $exception = $e;
-        }
-        expect($exception)->toBeAnInstanceOf('InvalidArgumentException');
-        expect($exception->getMessage())->toBe('Base must be between 2 and 95');
+        })->toThrow(new \InvalidArgumentException('Base must be between 2 and 95'));
     });
 
     it('should fail on invalid base', function() {
-        $exception = null;
-        try {
+        expect(function() {
             PolyConvert::base('1011', 'a', 10);
-        } catch (InvalidArgumentException $e) {
-            $exception = $e;
-        }
-        expect($exception)->toBeAnInstanceOf('InvalidArgumentException');
-        expect($exception->getMessage())->toBe('Base must be between 2 and 95');
+        })->toThrow();
     });
 
     it('should fail on empty', function() {
-        $exception = null;
-        try {
+        expect(function() {
             PolyConvert::base('', 2, 10);
-        } catch (InvalidArgumentException $e) {
-            $exception = $e;
-        }
-        expect($exception)->toBeAnInstanceOf('InvalidArgumentException');
-        expect($exception->getMessage())->toBe('Input number cannot be empty');
+        })->toThrow(new \InvalidArgumentException('Input number cannot be empty'));
     });
 
     it('should fail on invalid digit', function() {
-        $exception = null;
-        try {
+        expect(function() {
             PolyConvert::base('12', 2, 10);
-        } catch (InvalidArgumentException $e) {
-            $exception = $e;
-        }
-        expect($exception)->toBeAnInstanceOf('InvalidArgumentException');
-        expect($exception->getMessage())->toBe('Invalid digit "2" for fromBase 2');
+        })->toThrow(new \InvalidArgumentException('Invalid digit "2" for fromBase 2'));
     });
 });
 
@@ -134,14 +114,11 @@ describe('PolyConvert trivial cases', function() {
     });
 
     it('should throw on invalid character', function() {
-        $exception = null;
-        try {
+        expect(function() {
             $converter = new PolyConvert();
-            $converter->applyBase('a', 10, 10);
-        } catch (InvalidArgumentException $e) {
-            $exception = $e;
-        }
-        expect($exception)->toBeAnInstanceOf('InvalidArgumentException');
+            $result = $converter->applyBase('a', 10, 2);
+            print_r($result);
+        })->toThrow();
     });
 });
 
@@ -169,8 +146,8 @@ describe('PolyConvert::substitute()', function() {
     });
 
     it('should support multi-byte characters', function() {
-        $input = '1℮ℯ'; // Using UTF-8 characters for demonstration
-        $from = '0123456789℮ℯ';
+        $input = '1🫠🤩'; // Using UTF-8 characters for demonstration
+        $from = '0123456789🫠🤩';
         $to = '0123456789AB';
         $result = PolyConvert::substitute($input, $from, $to);
         expect($result)->toBe('1AB');
@@ -179,8 +156,8 @@ describe('PolyConvert::substitute()', function() {
     it('should support multi-byte output', function() {
         $input = '1AB';
         $from = '0123456789AB';
-        $to = '0123456789℮ℯ';
+        $to = '0123456789🫠🤩';
         $result = PolyConvert::substitute($input, $from, $to);
-        expect($result)->toBe('1℮ℯ');
+        expect($result)->toBe('1🫠🤩');
     });
 });

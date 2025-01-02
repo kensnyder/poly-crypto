@@ -221,13 +221,16 @@ export default class PolyConvert {
 	 * @param toAlphabet  The alphabet to convert to
 	 */
 	static substitute = (input: string, fromAlphabet: string, toAlphabet: string) => {
+    const inputArray = Array.from(input);
+    const fromArray = Array.from(fromAlphabet);
+    const toArray = Array.from(toAlphabet);
 		let result = [];
 		for (let i = 0; i < input.length; i++) {
-			const index = fromAlphabet.indexOf(input[i]);
+			const index = fromArray.indexOf(inputArray[i]);
 			if (index === -1) {
-				result.push(input[i]); // ignore unknown characters
+				result.push(inputArray[i]); // ignore unknown characters
 			} else {
-				result.push(toAlphabet[index]);
+				result.push(toArray[index]);
 			}
 		}
 		return result.join('');

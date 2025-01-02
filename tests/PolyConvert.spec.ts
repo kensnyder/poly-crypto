@@ -185,8 +185,8 @@ describe('PolyConvert.substitute()', () => {
 	});
 	// see https://en.wikipedia.org/wiki/Duodecimal
 	it('should support multi-byte input', () => {
-		const input = '1\u218A\u218B';
-		const from = '0123456789\u218A\u218B';
+		const input = '1🫠🤩';
+		const from = '0123456789🫠🤩';
 		const toit = '0123456789AB';
 		const result = PolyConvert.substitute(input, from, toit);
 		expect(result).toBe('1AB');
@@ -194,8 +194,8 @@ describe('PolyConvert.substitute()', () => {
 	it('should support multi-byte output', () => {
 		const input = '1AB';
 		const from = '0123456789AB';
-		const toit = '0123456789\u218A\u218B';
+		const toit = '0123456789🫠🤩';
 		const result = PolyConvert.substitute(input, from, toit);
-		expect(result).toBe('1\u218A\u218B');
+		expect(result).toBe('1🫠🤩');
 	});
 });

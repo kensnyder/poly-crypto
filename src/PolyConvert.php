@@ -43,11 +43,11 @@ class PolyConvert {
      * @return string
      */
     public function ensureCasing(string $digits, int $maxBase): string {
-        $str = substr($this->alphabet, 0, $maxBase);
+        $str = mb_substr($this->alphabet, 0, $maxBase);
         if (preg_match('/[a-z]/', $str) && preg_match('/[A-Z]/', $str)) {
             return $digits;
         }
-        return strtoupper($digits);
+        return mb_strtoupper($digits);
     }
 
     /**
@@ -57,10 +57,10 @@ class PolyConvert {
      * @throws InvalidArgumentException If fromBase or toBase are invalid
      */
     public function validateBase(int $fromBase, int $toBase): void {
-        $maxBase = max($fromBase, $toBase, strlen($this->alphabet)) ?: strlen($this->alphabet);
+        $maxBase = max($fromBase, $toBase, mb_strlen($this->alphabet)) ?: mb_strlen($this->alphabet);
 
         if ($fromBase < 2 || $fromBase > $maxBase || $toBase < 2 || $toBase > $maxBase) {
-            throw new InvalidArgumentException(sprintf(static::BASE_ERROR, $maxBase));
+            throw new \InvalidArgumentException(sprintf(static::BASE_ERROR, $maxBase));
         }
     }
 
@@ -73,7 +73,7 @@ class PolyConvert {
      */
     public function convertArray(array $digits, int $fromBase, int $toBase): array {
         if (empty($digits)) {
-            throw new InvalidArgumentException(static::EMPTY_ERROR);
+            throw new \InvalidArgumentException(static::EMPTY_ERROR);
         }
 
         $result = ['0'];
@@ -124,11 +124,12 @@ class PolyConvert {
 
         // Convert input string to array of digit values
         $numericDigits = [];
-        for ($i = 0; $i < strlen($digits); $i++) {
-            $digit = strpos($this->alphabet, $digits[$i]);
+        for ($i = 0; $i < mb_strlen($digits); $i++) {
+            $char = mb_substr($digits, $i, 1);
+            $digit = mb_strpos($this->alphabet, $char);
             if ($digit === false || $digit >= $fromBase) {
-                throw new InvalidArgumentException(
-                    sprintf(static::INVALID_DIGIT_ERROR, $digits[$i], $fromBase)
+                throw new \InvalidArgumentException(
+                    sprintf(static::INVALID_DIGIT_ERROR, $char, $fromBase)
                 );
             }
             $numericDigits[] = (string)$digit;
@@ -155,12 +156,13 @@ class PolyConvert {
      */
     public static function substitute(string $input, string $fromAlphabet, string $toAlphabet): string {
         $result = [];
-        for ($i = 0; $i < strlen($input); $i++) {
-            $index = strpos($fromAlphabet, $input[$i]);
+        for ($i = 0; $i < mb_strlen($input); $i++) {
+            $char = mb_substr($input, $i, 1);
+            $index = mb_strpos($fromAlphabet, $char);
             if ($index === false) {
-                $result[] = $input[$i];
+                $result[] = $char;
             } else {
-                $result[] = $toAlphabet[$index];
+                $result[] = mb_substr($toAlphabet, $index, 1);
             }
         }
         return implode('', $result);

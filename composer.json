@@ -45,7 +45,9 @@
   "minimum-stability": "dev",
   "require": {
     "php": ">=7.1.0",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "ext-gmp": "*",
+    "ext-mbstring": "*"
   },
   "autoload": {
     "psr-0": {
@@ -56,6 +58,6 @@
     }
   },
   "require-dev": {
-    "kahlan/kahlan": "5.1.3"
+    "kahlan/kahlan": "^5.0"
   }
 }
