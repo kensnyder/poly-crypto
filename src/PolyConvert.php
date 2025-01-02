@@ -87,15 +87,15 @@ class PolyConvert {
             // Multiply current result by source base and add new digit
             $carry = $digit;
             for ($i = 0; $i < count($result); $i++) {
-                $product = bcadd(bcmul($result[$i], (string)$fromBase), (string)$carry);
-                $result[$i] = bcmod($product, (string)$toBase);
-                $carry = bcdiv($product, (string)$toBase, 0);
+                $product = gmp_add(gmp_mul($result[$i], $fromBase), $carry);
+                $result[$i] = gmp_strval(gmp_mod($product, $toBase));
+                $carry = gmp_strval(gmp_div_q($product, $toBase));
             }
 
             // Add any remaining carry digits
-            while (bccomp($carry, '0') > 0) {
-                $result[] = bcmod($carry, (string)$toBase);
-                $carry = bcdiv($carry, (string)$toBase, 0);
+            while (gmp_cmp($carry, '0') > 0) {
+                $result[] = gmp_strval(gmp_mod($carry, $toBase));
+                $carry = gmp_strval(gmp_div_q($carry, $toBase));
             }
         }
 

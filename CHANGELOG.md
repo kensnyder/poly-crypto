@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 2.2.0 - Jan 2, 2025
+
+-   Add PolyConvert.base()
+-   Require PHP 7.2+
+-   Bump dependencies
+
 ## Version 2.1.4 - Sep, 24, 2024
 
 -   Bump dependencies

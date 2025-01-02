@@ -15,6 +15,7 @@ vendor
 
 # IDEs
 .idea
+.vscode
 
 # jest
 coverage

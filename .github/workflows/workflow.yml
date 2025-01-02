@@ -39,7 +39,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['7.1', '7.4', '8.0', 'latest']
+        php-versions: ['7.2', '7.4', '8.0', 'latest']
 
     steps:
       - name: Setup PHP Action

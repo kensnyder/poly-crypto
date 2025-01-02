@@ -1,10 +1,10 @@
 # poly-crypto
 
 **Poly**glot **Crypto**graphy. High-level cryptographic functions that are
-interoperable between NodeJS and PHP 7.1+/8.0+.
+interoperable between NodeJS and PHP 7.2+ (and 8.0+).
 
 [![NPM Link](https://badgen.net/npm/v/poly-crypto?v=2.2.0)](https://npmjs.com/package/poly-crypto)
-[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.0.6)](https://packagist.org/packages/poly-crypto/poly-crypto)
+[![Packagist Link](https://img.shields.io/packagist/php-v/poly-crypto/poly-crypto/2.1.0)](https://packagist.org/packages/poly-crypto/poly-crypto)
 [![Language](https://badgen.net/static/language/TS?v=2.2.0)](https://github.com/search?q=repo:kensnyder/poly-crypto++language:TypeScript&type=code)
 [![Build Status](https://github.com/kensnyder/poly-crypto/actions/workflows/workflow.yml/badge.svg?v=2.2.0)](https://github.com/kensnyder/poly-crypto/actions)
 [![Code Coverage](https://codecov.io/gh/kensnyder/poly-crypto/branch/main/graph/badge.svg?v=2.2.0)](https://codecov.io/gh/kensnyder/poly-crypto)
@@ -15,12 +15,12 @@ interoperable between NodeJS and PHP 7.1+/8.0+.
 
 ## Project Goals
 
-1. APIs that work exactly the same on NodeJS and PHP 7.1+ (and 8.0+)
+1. APIs that work exactly the same on NodeJS and PHP 7.2+ (and 8.0+)
 2. Package for Node that can be used on serverless functions without external C
    bindings
 3. Two-way symmetric encryption with a key or with password and salt
 4. Password hashing
-5. Support ESM with tree shaking; support CommonJS; Typescript
+5. Support ESM with tree shaking; support CommonJS; Written in TypeScript
 
 ## Installation
 
@@ -82,7 +82,7 @@ node-forge.
 
 ### Bcrypt
 
-As of December 2022, Bcrypt password hashing is reputable and secure. These 2
+As of January 2025, Bcrypt password hashing is reputable and secure. These 2
 languages can hash and verify one another's hashes: npm's bcrypt-js and PHP's
 password_hash function.
 
@@ -104,6 +104,7 @@ poly-crypto's basic use cases:
 | 4.  | Check if a password matches the given bcrypt hash        | Password string & bcrypt hash        | True if password matches        | PolyBcrypt.verify(password, hash)                  |
 | 5.  | Calculate digests (e.g. sha256)                          | String data                          | digest string                   | PolyDigest.sha256(data)                            |
 | 6.  | Generate random slugs                                    | number of characters                 | a string with random characters | PolyRand.slug(numCharacters)                       |
+| 7.  | Convert numbers between bases                            | number to convert                    | converted number                | PolyConvert.base(input, from, to)                  |
 
 ## Misuse
 
@@ -116,7 +117,7 @@ poly-crypto's basic use cases:
 1. **Streaming data.** PolyAES is not designed to encrypt streaming data.
 1. **Secure key storage.** If you store encryption keys or user passwords in
    plain text, encryption will not provide protection. You'll want to store keys
-   in secure parameter store.
+   in a secure parameter store.
 1. **Digests for passwords.** Do not use md5 or any sha digest for hashing
    passwords, even if you use salt. PolyBcrypt is the only poly-crypto module
    designed for hashing passwords.
@@ -339,7 +340,7 @@ Simple functions to convert numbers from one base to another, up to base 95.
 Useful in some situations:
 
 - You have a long string in a low base but want fewer characters
-- You need to limit to fewer characters but don't care about length
+- You need to limit to a smaller character set but don't care about string length
 - You want output to contain no vowels, ensuring no swear words are present
 
 NodeJS:
@@ -391,10 +392,6 @@ npx poly-rand $type $length                   # PolyRand[type](length) where typ
 npx poly-rand-string $length $symbolString    # PolyRand.string(length, symbolList) where symbolList is a string containing allowed characters
 npx poly-convert-base $input $from $to        # PolyConvert.base(input, from, to)
 ```
-
-### Local install of poly-crypto
-
-Prefix each of the commands above with `npm exec`.
 
 ## Browser usage
 
